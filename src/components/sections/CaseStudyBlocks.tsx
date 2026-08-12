@@ -211,7 +211,7 @@ export function CaseHero({
               {actions.map((a) =>
                 a.variant === "primary" ? (
                   <Link
-                    key={a.href}
+                    key={a.label}
                     href={a.href}
                     className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                   >
@@ -220,7 +220,7 @@ export function CaseHero({
                   </Link>
                 ) : (
                   <Link
-                    key={a.href}
+                    key={a.label}
                     href={a.href}
                     className="border-line-2 text-ink hover:border-accent-400/60 rounded-pill inline-flex items-center border px-6 py-3.5 text-sm font-semibold transition-colors"
                   >

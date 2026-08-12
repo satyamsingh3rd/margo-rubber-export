@@ -45,7 +45,7 @@ export function SiteHeader() {
         <nav className="ml-auto hidden items-center gap-7 lg:flex">
           {NAV.map((n) => (
             <Link
-              key={n.href}
+              key={n.label}
               href={n.href}
               className="text-ink-3 hover:text-ink text-sm transition-colors"
             >
@@ -84,7 +84,7 @@ export function SiteHeader() {
           <Container className="py-4">
             <ul className="divide-line divide-y">
               {NAV.map((n) => (
-                <li key={n.href}>
+                <li key={n.label}>
                   <Link
                     href={n.href}
                     onClick={() => setOpen(false)}
@@ -176,7 +176,7 @@ export function SiteFooter() {
           </p>
           <ul className="flex flex-wrap gap-6">
             {FOOTER_LEGAL.map((l) => (
-              <li key={l.href}>
+              <li key={l.label}>
                 <Link
                   href={l.href}
                   className="text-ink-4 hover:text-ink text-xs transition-colors"

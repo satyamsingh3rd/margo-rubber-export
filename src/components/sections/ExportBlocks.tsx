@@ -414,7 +414,7 @@ export function MarketSection({
             {market.links.length > 0 && (
               <ul className="mt-7 flex flex-wrap gap-x-7 gap-y-3">
                 {market.links.map((l) => (
-                  <li key={l.href}>
+                  <li key={l.label}>
                     <Link
                       href={l.href}
                       className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-2 text-sm transition-colors"
