@@ -348,7 +348,7 @@ export function HomeHero({
               {actions.map((a) =>
                 a.variant === "primary" ? (
                   <Link
-                    key={a.href}
+                    key={a.label}
                     href={a.href}
                     className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                   >
@@ -357,7 +357,7 @@ export function HomeHero({
                   </Link>
                 ) : (
                   <Link
-                    key={a.href}
+                    key={a.label}
                     href={a.href}
                     className="border-line-2 bg-canvas/60 text-ink hover:border-accent-400/60 rounded-pill inline-flex items-center gap-2.5 border px-6 py-3.5 text-sm font-semibold backdrop-blur transition-colors"
                   >
@@ -372,7 +372,7 @@ export function HomeHero({
 
             <ul className="mt-9 flex flex-wrap gap-2.5">
               {chips.map((c) => (
-                <li key={c.href}>
+                <li key={c.label}>
                   <Link
                     href={c.href}
                     className="text-eyebrow border-line-2 bg-canvas/50 text-ink-3 hover:border-accent-400/60 hover:text-ink rounded-pill inline-flex border px-3.5 py-1.5 font-mono backdrop-blur transition-colors"

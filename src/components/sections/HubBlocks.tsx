@@ -118,7 +118,7 @@ export function HubHero({
 
             <div className="mt-8 flex flex-wrap gap-3">
               {actions.map((a) => (
-                <Button key={a.href} href={a.href} variant={a.variant}>
+                <Button key={a.label} href={a.href} variant={a.variant}>
                   {a.label} <span aria-hidden>{a.variant === "primary" ? "→" : "▶"}</span>
                 </Button>
               ))}
