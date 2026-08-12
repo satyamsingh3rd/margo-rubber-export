@@ -1,0 +1,57 @@
+---
+status: placeholder
+h1: Resources & Guides
+h1Lines: ["Resources & *Guides*"]
+
+seo:
+  title: "Rubber Technical Guides & Resources | Margo Rubber"
+  description: "Technical reference library for engineers specifying rubber seals, gaskets and moulded components. Material comparisons, sizing standards, sourcing guides."
+
+breadcrumb:
+  - { label: Margo Rubber Products, href: / }
+  - { label: Resources }
+
+intro: >-
+  Technical reference library for engineers and procurement teams specifying
+  precision rubber seals, gaskets, and moulded components.
+
+lastUpdated: Aug 2026
+searchPlaceholder: Search guides...
+allLabel: All Guides
+featuredLabel: START HERE
+
+# Order here is the order the groups render in. Counts and cards come from the
+# resources collection, so a new guide file needs no edit to this page.
+categories:
+  - key: material-comparison
+    label: Material Comparison
+    blurb: Compound-level analysis to inform your material specification decisions.
+  - key: sizing-spec
+    label: Sizing & Spec
+    blurb: Dimensional standards, tolerances, and design guidelines for sealing elements.
+  - key: sourcing-buyer
+    label: Sourcing & Buyer Decision
+    blurb: Procurement strategy and supplier evaluation for engineered rubber parts.
+
+cta:
+  icon: chat
+  headingLines: ["Can't find your spec?", "Talk to an engineer."]
+  body: >-
+    Our technical team in Nashik is available for application review, compound
+    selection, and custom moulding enquiries.
+  actions:
+    - { label: Request a Quote, href: /contact, variant: primary }
+    - { label: Email Us, href: /contact, variant: secondary }
+
+schemaTypes: [BreadcrumbList]
+
+nonClaims:
+  - "The hub is fully built and reads the resources collection, so guide cards, category groups and counts are all live data. What does NOT exist is the guide copy itself: all seven articles ship as an in-preparation state rather than with invented technical content. There is no Figma design for the article template either, so the article page is derived from the established design system and should be reviewed."
+
+confirmWithMargo:
+  - "GUIDE COUNT: this design shows SEVEN guides across three categories. The implementation plan (§4.0) budgets TWELVE articles at /resources/[slug]. Either the design is a subset or the plan overcounted. Settle this before the article template is drawn, because it changes the hub grid."
+  - "Only four of the guides have drafted content briefs (B1 to B4). The other three have titles and nothing behind them."
+  - "'Last Updated: Aug 2026' is hardcoded page furniture. It should either be derived from the newest guide's date or removed, since a stale date on a resource library is worse than none."
+  - "The O-Ring Size Chart guide is also listed in the plan as an interactive filterable tool (build item 3), not just an article. Confirm which it is: the product pages already link to /resources/o-ring-size-chart expecting it to exist."
+  - "Search and category filtering are client-side over the seven cards. If the library grows past roughly 30 guides this needs revisiting, but it is correct at this size and needs no backend."
+---

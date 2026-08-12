@@ -9,6 +9,14 @@
  * straight into hrefs, producing links that 404 in production but that nothing
  * in the build complained about.
  *
+ * It also guards a second, subtler failure. Retargeting links can leave two
+ * entries in the same list pointing at the same hub. That is fine in itself,
+ * but it silently breaks any list keyed by href: React drops or duplicates
+ * children rather than erroring, so a row just renders short. That is exactly
+ * what happened to the /about portfolio chips. So this script FAILS on any
+ * `key={x.href}` in a component, and reports which content lists have
+ * repeating hrefs.
+ *
  *   node scripts/check-links.mts            report only
  *   node scripts/check-links.mts --strict   exit 1 on any unexpected break
  *
@@ -19,18 +27,16 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import matter from "gray-matter";
 
 const SRC = "src";
 
 /** In the route map but not built yet. Not failures. */
 const PLANNED = new Set([
-  "/resources",
   "/thank-you",
   "/legal/privacy-policy",
   "/legal/terms",
   "/legal/export-compliance",
-  // Build item 3 in the plan: the interactive O-ring size chart.
-  "/resources/o-ring-size-chart",
 ]);
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -60,6 +66,7 @@ const slugs = (dir: string) =>
 
 for (const s of slugs("products")) live.add(`/products/${s}`);
 for (const s of slugs("industries")) live.add(`/industries/${s}`);
+for (const s of slugs("resources")) live.add(`/resources/${s}`);
 
 /* ── What is linked? ────────────────────────────────────────────────────── */
 type Hit = { href: string; file: string };
@@ -88,6 +95,66 @@ for (const { href, file } of hits) {
   bucket.get(path)!.add(file.replace(`${SRC}/`, ""));
 }
 
+/* ── Href-keyed lists ────────────────────────────────────────────────────
+   The real defect. `key={a.href}` is only safe while every href in the list
+   is distinct, and link retargeting breaks that invisibly. Key on label. */
+const hrefKeyed: { file: string; line: number; text: string }[] = [];
+
+for (const f of files) {
+  if (!/\.tsx$/.test(f)) continue;
+  readFileSync(f, "utf8")
+    .split("\n")
+    .forEach((line, i) => {
+      if (/key=\{\s*[A-Za-z_$][\w$]*\.href\s*\}/.test(line)) {
+        hrefKeyed.push({
+          file: f.replace(`${SRC}/`, ""),
+          line: i + 1,
+          text: line.trim(),
+        });
+      }
+    });
+}
+
+/* ── Content lists whose hrefs repeat ────────────────────────────────────
+   Informational: these are the lists that would break if anything ever keys
+   them by href again. */
+const collapsed: { file: string; path: string; dupes: string }[] = [];
+
+function scanForDupes(node: unknown, path: string, file: string): void {
+  if (Array.isArray(node)) {
+    const hrefs = node
+      .filter((i): i is Record<string, unknown> => !!i && typeof i === "object")
+      .map((i) => i.href)
+      .filter((h): h is string => typeof h === "string");
+
+    const counts = new Map<string, number>();
+    for (const h of hrefs) counts.set(h, (counts.get(h) ?? 0) + 1);
+    const dupes = [...counts].filter(([, n]) => n > 1);
+    if (dupes.length) {
+      collapsed.push({
+        file,
+        path: path || "(root)",
+        dupes: dupes.map(([h, n]) => `${h} x${n}`).join(", "),
+      });
+    }
+    node.forEach((item, i) => scanForDupes(item, `${path}[${i}]`, file));
+  } else if (node && typeof node === "object") {
+    for (const [k, v] of Object.entries(node)) {
+      scanForDupes(v, path ? `${path}.${k}` : k, file);
+    }
+  }
+}
+
+for (const f of files) {
+  if (!f.endsWith(".mdx")) continue;
+  try {
+    const { data } = matter(readFileSync(f, "utf8"));
+    scanForDupes(data, "", f.replace(`${SRC}/content/`, ""));
+  } catch {
+    console.log(`  !  could not parse frontmatter: ${f}`);
+  }
+}
+
 const strict = process.argv.includes("--strict");
 
 console.log(`\n  Internal links checked against ${live.size} live routes\n`);
@@ -100,9 +167,34 @@ if (planned.size) {
   console.log("");
 }
 
-if (broken.size === 0) {
-  console.log("  ✓  No broken internal links.\n");
+if (collapsed.length) {
+  console.log(`  ○  ${collapsed.length} content list(s) with repeating hrefs.`);
+  console.log("     Fine as long as nothing keys them by href:\n");
+  for (const c of collapsed) {
+    console.log(`     ${c.file} → ${c.path}`);
+    console.log(`        ${c.dupes}`);
+  }
+  console.log("");
+}
+
+if (hrefKeyed.length) {
+  console.log(`  ✗  ${hrefKeyed.length} list(s) KEYED BY HREF. Key by label instead:\n`);
+  for (const h of hrefKeyed) {
+    console.log(`     ${h.file}:${h.line}`);
+    console.log(`        ${h.text}`);
+  }
+  console.log("");
+}
+
+if (broken.size === 0 && hrefKeyed.length === 0) {
+  console.log("  ✓  No broken internal links. No href-keyed lists.\n");
   process.exit(0);
+}
+
+if (broken.size === 0) {
+  // Links themselves are fine; the href-keyed lists above are the failure.
+  console.log("  ✓  No broken internal links (but fix the keys above).\n");
+  process.exit(strict ? 1 : 0);
 }
 
 console.log(`  ✗  ${broken.size} BROKEN internal link target(s):\n`);

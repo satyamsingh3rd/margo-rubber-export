@@ -301,6 +301,12 @@ export const industrySchema = baseSchema.extend({
 export const resourceSchema = baseSchema.extend({
   navLabel: z.string().min(2),
   category: z.enum(["material-comparison", "sizing-spec", "sourcing-buyer"]),
+  /** Card glyph on the /resources hub. */
+  icon: z
+    .enum(["flask", "thermometer", "book", "ruler", "wrench", "globe", "clipboard"])
+    .default("book"),
+  /** Promotes this guide into the hub's "Start here" slot. Exactly one should. */
+  featured: z.boolean().default(false),
   readingMinutes: z.number().int().positive(),
   intro: z.string().min(40),
   faqs: z.array(faqSchema).default([]),
@@ -1484,6 +1490,96 @@ export const caseStudiesPageSchema = baseSchema.extend({
       ]),
     )
     .default(["BreadcrumbList", "Organization"]),
+});
+
+/**
+ * /resources hub.
+ *
+ * Deliberately carries no guide list. The cards are read from the resources
+ * collection at build time, so adding a guide is one MDX file and it appears
+ * in the right category group with the counts updated. Category order and
+ * copy live here because they are page furniture, not content.
+ */
+export const resourcesHubSchema = baseSchema.extend({
+  breadcrumb: z.array(z.object({ label: z.string(), href: z.string().optional() })).min(1),
+  h1Lines: z.array(z.string()).min(1),
+  intro: z.string().min(40),
+  /** Rendered next to the live guide/category counts. */
+  lastUpdated: z.string(),
+  searchPlaceholder: z.string(),
+  allLabel: z.string(),
+  featuredLabel: z.string(),
+  categories: z
+    .array(
+      z.object({
+        key: z.enum(["material-comparison", "sizing-spec", "sourcing-buyer"]),
+        label: z.string(),
+        blurb: z.string(),
+      }),
+    )
+    .min(1),
+  cta: z.object({
+    icon: z.string(),
+    headingLines: z.array(z.string()).min(1),
+    body: z.string(),
+    actions: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          variant: z.enum(["primary", "secondary"]).default("primary"),
+        }),
+      )
+      .min(1),
+  }),
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["BreadcrumbList"]),
+});
+
+/**
+ * /thank-you and the 404.
+ *
+ * Neither has a Figma design; both are derived from the design system. They
+ * share a shape because they are the same page type: a short statement, a
+ * short list, and routes back into the site.
+ *
+ * Neither states a response time in content. The thank-you page reads
+ * SITE.responsePromise, so the one value Margo still owes us changes in one
+ * place rather than in prose.
+ */
+export const utilityPageSchema = baseSchema.extend({
+  eyebrow: z.string(),
+  h1Lines: z.array(z.string()).min(1),
+  intro: z.string().min(30),
+  /** "What happens next" on /thank-you; omitted on the 404. */
+  steps: z
+    .array(z.object({ name: z.string(), body: z.string() }))
+    .default([]),
+  note: z.string().optional(),
+  linksHeading: z.string(),
+  links: z
+    .array(
+      z.object({
+        icon: z.enum(["box", "sector", "doc", "ribbon", "globe", "mail"]),
+        label: z.string(),
+        body: z.string(),
+        href: z.string(),
+      }),
+    )
+    .min(1),
+  actions: z
+    .array(
+      z.object({
+        label: z.string(),
+        href: z.string(),
+        variant: z.enum(["primary", "secondary"]).default("primary"),
+      }),
+    )
+    .default([]),
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default([]),
 });
 
 export const COLLECTIONS = {
