@@ -5,6 +5,7 @@ import { productCategoryGraph, shouldEmitSchema } from "@/lib/schema";
 import { Section } from "@/components/ui/Section";
 import { SpecTable } from "@/components/sections/SpecTable";
 import { MaterialCards } from "@/components/sections/MaterialCards";
+import { PartsGrid } from "@/components/sections/PartsGrid";
 import {
   AnswerBlock,
   CategoryHero,
@@ -105,6 +106,23 @@ export default async function ProductCategoryPage(
           className="bg-band"
         >
           <MaterialCards items={fm.materialSection.items} />
+        </Section>
+      )}
+
+      {/* Parts in this category.
+          Renders the `anchors:` data every category file already carries, and
+          gives the 301 map real fragment targets to land on. Eyebrow and
+          heading are set here rather than in content because this section is
+          an experiment on a branch; if it is kept, move them into the MDX like
+          every other section. */}
+      {fm.anchors.length > 0 && (
+        <Section
+          id="parts"
+          eyebrow="IN THIS CATEGORY"
+          heading={`${fm.anchors.length} parts we make to order`}
+          body="Each part below is manufactured to customer drawing or to our standard tooling. Full dimensional and compound data is issued with quotation."
+        >
+          <PartsGrid parts={fm.anchors} categoryLabel={fm.navLabel} />
         </Section>
       )}
 
