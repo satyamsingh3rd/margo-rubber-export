@@ -537,6 +537,14 @@ export const IMAGES = {
     alt: "Stack of heat-treated wooden export pallets",
     status: "placeholder",
   },
+
+  /* ── /case-studies ───────────────────────────────────────────────────── */
+  "case-studies.hero": {
+    src: "/images/case-studies/a28e53ff97d42482aa7288fa2f136df7c4921cbc.png",
+    w: 1200, h: 800,
+    alt: "Operators working a compression press on the Nashik production floor",
+    status: "placeholder",
+  },
 } as const satisfies Record<string, ImageEntry>;
 
 export type ImageKey = keyof typeof IMAGES;

@@ -1382,6 +1382,110 @@ export const exportPageSchema = baseSchema.extend({
     .default(["BreadcrumbList", "Organization"]),
 });
 
+/**
+ * /case-studies.
+ *
+ * The design is itself an honest empty state: it says plainly that Margo has
+ * no documented export case studies yet and explains what one will contain
+ * when it exists. Nothing here needed inventing, which is exactly what brief
+ * C4 asked for ("placeholder only, do not fabricate").
+ */
+export const caseStudiesPageSchema = baseSchema.extend({
+  hero: z.object({
+    eyebrow: z.string(),
+    h1Lines: z.array(z.string()).min(1),
+    paragraphs: z.array(z.string()).min(1),
+    image: imageRefSchema,
+    badge: z.object({ title: z.string(), note: z.string() }),
+    actions: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          variant: z.enum(["primary", "secondary"]).default("primary"),
+        }),
+      )
+      .min(1),
+  }),
+
+  methodology: z.object({
+    index: z.string(),
+    label: z.string(),
+    heading: z.string(),
+    body: z.string(),
+    items: z
+      .array(
+        z.object({
+          eyebrow: z.string(),
+          name: z.string(),
+          body: z.string(),
+          statValue: z.string(),
+          statNote: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  meantime: z.object({
+    index: z.string(),
+    label: z.string(),
+    heading: z.string(),
+    body: z.string(),
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["ribbon", "shield", "check", "doc"]),
+          eyebrow: z.string(),
+          name: z.string(),
+          body: z.string(),
+          cta: z.object({ label: z.string(), href: z.string() }),
+        }),
+      )
+      .min(1),
+  }),
+
+  invitation: z.object({
+    index: z.string(),
+    label: z.string(),
+    eyebrow: z.string(),
+    headingLines: z.array(z.string()).min(1),
+    paragraphs: z.array(z.string()).min(1),
+    cta: z.object({ label: z.string(), href: z.string() }),
+    listHeading: z.string(),
+    list: z.array(z.string()).min(1),
+    footnote: z.string(),
+  }),
+
+  closing: z.object({
+    eyebrow: z.string(),
+    headingLines: z.array(z.string()).min(1),
+    body: z.string(),
+    actions: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          variant: z.enum(["primary", "secondary"]).default("primary"),
+          icon: z.enum(["mail", "out"]).optional(),
+        }),
+      )
+      .min(1),
+  }),
+
+  schemaTypes: z
+    .array(
+      z.enum([
+        "Product",
+        "BreadcrumbList",
+        "FAQPage",
+        "HowTo",
+        "Organization",
+        "WebSite",
+      ]),
+    )
+    .default(["BreadcrumbList", "Organization"]),
+});
+
 export const COLLECTIONS = {
   products: productCategorySchema,
   industries: industrySchema,
