@@ -25,7 +25,6 @@ const SRC = "src";
 /** In the route map but not built yet. Not failures. */
 const PLANNED = new Set([
   "/resources",
-  "/case-studies",
   "/thank-you",
   "/legal/privacy-policy",
   "/legal/terms",
