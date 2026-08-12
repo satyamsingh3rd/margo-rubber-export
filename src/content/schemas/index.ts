@@ -1582,10 +1582,51 @@ export const utilityPageSchema = baseSchema.extend({
     .default([]),
 });
 
+/**
+ * SKU detail — /products/[category]/[product]
+ *
+ * Strategy D3 / Scenario 1 from §4.5: build the route and template now, ship
+ * noindex until real spec content exists. Structure complete, no thin-page
+ * penalty.
+ *
+ * The part LIST stays in the category file's `anchors:`, which remains the
+ * single source of truth and the 301 fragment map. This collection carries
+ * only the per-part DETAIL, keyed by the same id. A part with no file here
+ * still appears in the grid, just without a link — which is the per-part
+ * upgrade path as Margo's spec data arrives.
+ *
+ * Every spec field is optional on purpose. The template renders "On request"
+ * rather than a fabricated number, so a part can be published the moment its
+ * name is confirmed and filled in field by field afterwards.
+ */
+export const skuSchema = baseSchema.extend({
+  // Catalogue part names are legitimately short ("C Pad", "L Pad"). The 8-char
+  // h1 minimum on baseSchema is a guard for editorial page headings and is
+  // wrong here, so it is relaxed for this collection only.
+  h1: z.string().min(2),
+  navLabel: z.string().min(2),
+  /** Must match a category slug in src/content/products/. */
+  category: z.string().regex(/^[a-z0-9-]+$/),
+  intro: z.string().min(30),
+  /** Margo's internal part code, e.g. MRB-SBR-7040-HT. */
+  productCode: z.string().optional(),
+  /** Compound codes from SITE.COMPOUNDS that this part can be made in. */
+  compounds: z.array(z.string()).default([]),
+  specs: z
+    .array(z.object({ label: z.string(), value: z.string() }))
+    .default([]),
+  applications: z.array(z.string()).default([]),
+  related: relatedSchema,
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["BreadcrumbList"]),
+});
+
 export const COLLECTIONS = {
   products: productCategorySchema,
   industries: industrySchema,
   resources: resourceSchema,
+  skus: skuSchema,
   pages: productsHubSchema,
 } as const;
 

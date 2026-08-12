@@ -122,7 +122,11 @@ export default async function ProductCategoryPage(
           heading={`${fm.anchors.length} parts we make to order`}
           body="Each part below is manufactured to customer drawing or to our standard tooling. Full dimensional and compound data is issued with quotation."
         >
-          <PartsGrid parts={fm.anchors} categoryLabel={fm.navLabel} />
+          <PartsGrid
+            parts={fm.anchors}
+            categoryLabel={fm.navLabel}
+            categorySlug={category}
+          />
         </Section>
       )}
 

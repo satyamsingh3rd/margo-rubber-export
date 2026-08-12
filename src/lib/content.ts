@@ -25,6 +25,19 @@ function isContentFile(file: string) {
   return file.endsWith(".mdx") && !file.startsWith("_");
 }
 
+/**
+ * YAML turns a key with no value ("productCode:") into null, but Zod's
+ * `.optional()` means undefined, not null — so a field an author left blank as
+ * a placeholder fails validation and the whole page 404s. Dropping nulls before
+ * parsing makes "left blank" and "not present" mean the same thing, which is
+ * what a content author expects.
+ */
+function stripNulls(data: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(data).filter(([, v]) => v !== null),
+  );
+}
+
 export function getAllSlugs(collection: Collection): string[] {
   const dir = path.join(CONTENT_ROOT, collection);
   if (!fs.existsSync(dir)) return [];
@@ -49,7 +62,7 @@ export function getFrontmatter<C extends Collection>(
   }
 
   const { data } = matter(fs.readFileSync(file, "utf8"));
-  const parsed = COLLECTIONS[collection].safeParse({ slug, ...data });
+  const parsed = COLLECTIONS[collection].safeParse({ slug, ...stripNulls(data) });
 
   if (!parsed.success) {
     const issues = parsed.error.issues
@@ -141,6 +154,9 @@ export async function getContent<C extends Collection>(
       break;
     case "pages":
       mod = await import(`../content/pages/${slug}.mdx`);
+      break;
+    case "skus":
+      mod = await import(`../content/skus/${slug}.mdx`);
       break;
     default:
       throw new Error(`[content] Unknown collection "${collection}"`);

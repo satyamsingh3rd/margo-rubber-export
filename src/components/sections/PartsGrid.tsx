@@ -18,11 +18,10 @@ import Link from "next/link";
  * resolves and an inbound redirect lands on the named part rather than the top
  * of the page.
  *
- * Deliberately NOT a link to a SKU page. Per §4.5 SKUs are sections, not pages,
- * until real per-SKU spec data exists — right now each entry has a name and
- * nothing else, and 29 near-identical pages would compete with their own parent
- * category. When a part gets real data, its card becomes a link and nothing
- * else here changes.
+ * Each card links to its SKU page under /products/[category]/[product], built
+ * to strategy D3 / Scenario 1 in §4.5: route and template now, shipped noindex
+ * until real per-part spec data exists. The category page keeps the ranking
+ * intent; these are structure, not competing landing pages.
  */
 
 function Arrow({ className = "size-4" }: { className?: string }) {
@@ -45,9 +44,11 @@ function Arrow({ className = "size-4" }: { className?: string }) {
 export function PartsGrid({
   parts,
   categoryLabel,
+  categorySlug,
 }: {
   parts: readonly { id: string; label: string; legacyUrl?: string }[];
   categoryLabel: string;
+  categorySlug: string;
 }) {
   if (parts.length === 0) return null;
 
@@ -71,10 +72,10 @@ export function PartsGrid({
             {categoryLabel} · Made to order
           </p>
           <Link
-            href={`/contact?part=${encodeURIComponent(p.label)}`}
+            href={`/products/${categorySlug}/${p.id}`}
             className="text-accent-400 hover:text-accent-300 mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors"
           >
-            Enquire about this part
+            View part
             <Arrow />
           </Link>
         </li>
