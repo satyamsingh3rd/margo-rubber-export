@@ -33,13 +33,10 @@ const SRC = "src";
 
 /** In the route map but not built yet. Not failures. */
 const PLANNED = new Set([
-  "/resources",
   "/thank-you",
   "/legal/privacy-policy",
   "/legal/terms",
   "/legal/export-compliance",
-  // Build item 3 in the plan: the interactive O-ring size chart.
-  "/resources/o-ring-size-chart",
 ]);
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -69,6 +66,7 @@ const slugs = (dir: string) =>
 
 for (const s of slugs("products")) live.add(`/products/${s}`);
 for (const s of slugs("industries")) live.add(`/industries/${s}`);
+for (const s of slugs("resources")) live.add(`/resources/${s}`);
 
 /* ── What is linked? ────────────────────────────────────────────────────── */
 type Hit = { href: string; file: string };
