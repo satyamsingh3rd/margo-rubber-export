@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAllSlugs, getContent, getFrontmatter } from "@/lib/content";
+import { getAllSlugs, getContent } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { Container } from "@/components/ui/Section";
 
@@ -8,10 +8,16 @@ export function generateStaticParams() {
   return getAllSlugs("resources").map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/resources/[slug]">) {
-  const { slug } = await params;
-  const fm = getFrontmatter("resources", slug);
-  return buildMetadata(fm, `/resources/${slug}`);
+export async function generateMetadata(
+  props: PageProps<"/resources/[slug]">,
+) {
+  const { slug } = await props.params;
+  try {
+    const { frontmatter } = await getContent("resources", slug);
+    return buildMetadata(frontmatter, `/resources/${slug}`);
+  } catch {
+    return {};
+  }
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -33,13 +39,24 @@ const CATEGORY_LABEL: Record<string, string> = {
  * substance. The moment real prose lands in the MDX body, this page renders it
  * and the notice disappears with no code change.
  */
-export default async function ResourceGuidePage({
-  params,
-}: PageProps<"/resources/[slug]">) {
-  const { slug } = await params;
-  if (!getAllSlugs("resources").includes(slug)) notFound();
+export default async function ResourceGuidePage(
+  props: PageProps<"/resources/[slug]">,
+) {
+  const { slug } = await props.params;
 
-  const { frontmatter: fm, Content, hasBody } = await getContent("resources", slug);
+  // Unknown slugs are handled by letting getContent throw rather than by
+  // listing the directory here. Reading the filesystem inside the component is
+  // runtime data, which makes the route blocking under cacheComponents and
+  // stops the fallback shell prerendering. Same pattern as the products and
+  // industries routes.
+  let data;
+  try {
+    data = await getContent("resources", slug);
+  } catch {
+    notFound();
+  }
+
+  const { frontmatter: fm, Content, hasBody } = data;
   const related = fm.related;
 
   return (
