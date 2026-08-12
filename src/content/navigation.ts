@@ -20,6 +20,10 @@ export const HEADER_NAV = [
   // even though the blueprint spec in §5.6 lists only six.
   { label: "Export", href: "/export" },
   { label: "Why Margo", href: "/why-margo" },
+  // Same problem as /export: /case-studies had zero inbound links anywhere on
+  // the site. The homepage Figma header carries a Case Studies item, so this
+  // matches design intent.
+  { label: "Case Studies", href: "/case-studies" },
   { label: "Resources", href: "/resources" },
   { label: "Certifications", href: "/certifications" },
   { label: "About", href: "/about" },
@@ -53,6 +57,7 @@ export const FOOTER_COLUMNS = [
       { label: "Manufacturing", href: "/certifications#manufacturing" },
       { label: "Quality & Certs", href: "/certifications" },
       { label: "Export Markets", href: "/export" },
+      { label: "Case Studies", href: "/case-studies" },
     ],
   },
   {
