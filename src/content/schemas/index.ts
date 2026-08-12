@@ -1,0 +1,1396 @@
+import { z } from "zod";
+
+/**
+ * CONTENT SCHEMAS — every content file is validated against one of these at
+ * build time. A missing or malformed field fails the build loudly instead of
+ * shipping an empty <h1> or a half-populated spec table.
+ */
+
+/** Drives noindex + sitemap exclusion. Placeholder content never gets indexed. */
+export const statusSchema = z
+  .enum(["placeholder", "draft", "published"])
+  .default("placeholder");
+
+/** An image reference is a REGISTRY KEY, never a file path. See content/images.ts. */
+export const imageRefSchema = z.string().min(1);
+
+/** Meta lengths are enforced, not suggested — the briefs specify exact budgets. */
+const seoSchema = z.object({
+  title: z.string().min(10).max(60),
+  description: z.string().min(50).max(160),
+  keywords: z
+    .object({
+      primary: z.string().min(3),
+      secondary: z.array(z.string()).default([]),
+    })
+    .optional(),
+});
+
+/**
+ * Every numbered section on a page carries its own eyebrow + heading, so a
+ * section is never split between frontmatter data and an orphan heading in
+ * the MDX body.
+ */
+const sectionMeta = z.object({
+  /** e.g. "02 — SPECIFICATION REFERENCE" */
+  eyebrow: z.string().min(2),
+  heading: z.string().min(4),
+  /** Optional lede paragraph under the heading. */
+  body: z.string().optional(),
+});
+
+/** Reusable spec table. Every row must have the same arity as `columns`. */
+export const specTableSchema = z
+  .object({
+    caption: z.string().optional(),
+    columns: z.array(z.string()).min(2),
+    rows: z.array(z.array(z.string())).min(1),
+    footnote: z.string().optional(),
+  })
+  .refine((t) => t.rows.every((r) => r.length === t.columns.length), {
+    message: "Every spec-table row must have exactly as many cells as there are columns",
+  });
+
+/** Feeds both the on-page FAQ and the FAQPage JSON-LD. */
+export const faqSchema = z.object({
+  q: z.string().min(8),
+  /** 40–60 words is the AEO answer budget — long enough to be citable,
+   *  short enough to be extracted. Enforced as a soft character range. */
+  a: z.string().min(40).max(700),
+});
+
+/** The internal-linking model as data, not hardcoded JSX. */
+export const relatedSchema = z
+  .object({
+    products: z.array(z.string()).default([]),
+    industries: z.array(z.string()).default([]),
+    resources: z.array(z.string()).default([]),
+  })
+  .default({ products: [], industries: [], resources: [] });
+
+/** Named on-page section that a SKU anchor resolves to. */
+export const anchorSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/, "anchor ids are lowercase-kebab"),
+  label: z.string().min(2),
+  /** Legacy URL this anchor is the 301 target for, if any. */
+  legacyUrl: z.string().optional(),
+});
+
+const baseSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  status: statusSchema,
+  h1: z.string().min(8),
+  /**
+   * The trailing portion of the H1 rendered in accent colour on line 2
+   * ("Precision" / "O-Rings"). Defaults to the last word, which is wrong for
+   * headings ending in "& Something" — set it explicitly there.
+   */
+  h1Accent: z.string().optional(),
+  seo: seoSchema,
+  hero: z
+    .object({ image: imageRefSchema, alt: z.string().min(10) })
+    .optional(),
+  /** Marks values still awaiting Margo sign-off. Surfaced in the build report. */
+  confirmWithMargo: z.array(z.string()).default([]),
+});
+
+/* ------------------------------------------------------------------ */
+
+export const productCategorySchema = baseSchema.extend({
+  /** Short label for cards, nav and breadcrumbs. */
+  navLabel: z.string().min(2),
+  intro: z.string().min(40),
+  /** Hero stat row — the "AS568 · ISO · JIS · DIN / ±0.08 mm / …" strip. */
+  heroStats: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .default([]),
+  /**
+   * Every numbered section on the page is a self-describing block: it owns
+   * its own eyebrow and heading. Nothing is an orphan heading in the MDX
+   * body — the body is reserved for genuine long-form prose (which this
+   * page type has none of; the resource articles are where it earns its keep).
+   */
+  specSection: z
+    .object({
+      ...sectionMeta.shape,
+      caption: z.string().optional(),
+      columns: z.array(z.string()).min(2),
+      rows: z.array(z.array(z.string())).min(1),
+      footnote: z.string().optional(),
+    })
+    .refine((t) => t.rows.every((r) => r.length === t.columns.length), {
+      message: "Every spec-table row must have exactly as many cells as there are columns",
+    })
+    .optional(),
+
+  /** Section 03 — the expandable material cards. */
+  materialSection: z
+    .object({
+      ...sectionMeta.shape,
+      items: z
+        .array(
+          z.object({
+            code: z.string(),
+            name: z.string(),
+            tempRange: z.string(),
+            hardness: z.string(),
+            summary: z.string().min(20),
+            image: imageRefSchema.optional(),
+          }),
+        )
+        .min(1),
+    })
+    .optional(),
+
+  /** Section 04 — AEO answer block + the standards cards. */
+  standardsSection: z
+    .object({
+      ...sectionMeta.shape,
+      /** The 40–60 word direct answer rendered before elaboration. */
+      answer: z.string().min(40),
+      items: z
+        .array(z.object({ code: z.string(), name: z.string(), body: z.string().min(20) }))
+        .default([]),
+    })
+    .optional(),
+
+  /** Section 05 — commercial terms. */
+  commercialSection: z
+    .object({
+      ...sectionMeta.shape,
+      rows: z
+        .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
+        .min(1),
+    })
+    .optional(),
+
+  /** Section 06 — closing enquiry band. */
+  cta: z
+    .object({
+      ...sectionMeta.shape,
+      /** Required here — a CTA band with no supporting copy is never correct. */
+      body: z.string().min(20),
+      primary: z.object({ label: z.string(), href: z.string() }),
+      secondary: z.object({ label: z.string(), href: z.string() }).optional(),
+    })
+    .optional(),
+
+  anchors: z.array(anchorSchema).default([]),
+  faqs: z.array(faqSchema).default([]),
+  related: relatedSchema,
+  /** JSON-LD types emitted for this page. */
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["Product", "BreadcrumbList", "FAQPage"]),
+});
+
+export const industrySchema = baseSchema.extend({
+  navLabel: z.string().min(2),
+  intro: z.string().min(40),
+  tier: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  badge: z.string(),
+  /** True only where the hero source is already faded to black (the mining
+   *  crop lifted out of the design PNG). Normal photos must not be boosted. */
+  heroBoost: z.boolean().default(false),
+  actions: z
+    .array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") }))
+    .default([]),
+
+  /** Section 02: the products supplied to this sector, as switchable tabs. */
+  components: z
+    .object({
+      ...sectionMeta.shape,
+      items: z.array(
+        z.object({
+          key: z.string(),
+          name: z.string(),
+          body: z.string(),
+          bullets: z.array(z.string()).default([]),
+          image: imageRefSchema,
+          cta: z.object({ label: z.string(), href: z.string() }),
+        }),
+      ),
+    })
+    .optional(),
+
+  /** Section 03: where the components end up. */
+  applications: z
+    .object({
+      ...sectionMeta.shape,
+      items: z.array(z.object({ name: z.string(), body: z.string(), image: imageRefSchema.optional() })),
+    })
+    .optional(),
+
+  /** Section 04: why generic parts fail here. */
+  conditions: z
+    .object({
+      ...sectionMeta.shape,
+      items: z.array(
+        z.object({
+          icon: z.enum(["shield", "wave", "thermo", "dust"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      ),
+    })
+    .optional(),
+
+  /** Section 05: custom engineering split panel. */
+  custom: z
+    .object({
+      ...sectionMeta.shape,
+      bullets: z.array(z.string()).default([]),
+      cta: z.object({ label: z.string(), href: z.string() }),
+      image: imageRefSchema.optional(),
+      imageCaption: z.object({ title: z.string(), note: z.string() }).optional(),
+    })
+    .optional(),
+
+  /** Section 06: quality cards + document links. */
+  quality: z
+    .object({
+      ...sectionMeta.shape,
+      items: z.array(z.object({ chip: z.string(), name: z.string(), body: z.string() })),
+      links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
+    })
+    .optional(),
+
+  /** Section 07: export lane detail. */
+  exportLane: z
+    .object({
+      ...sectionMeta.shape,
+      paragraphs: z.array(z.string()).default([]),
+      rows: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+      card: z
+        .object({
+          title: z.string(),
+          subtitle: z.string(),
+          regions: z.array(z.string()).default([]),
+          footnote: z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+
+  faqSection: sectionMeta.partial().optional(),
+  faqs: z.array(faqSchema).default([]),
+
+  /** Section 09: closing CTA band. */
+  closing: z
+    .object({
+      eyebrow: z.string(),
+      lines: z.array(z.string()).min(1),
+      accentLines: z.array(z.number()).default([]),
+      body: z.string(),
+      actions: z.array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") })),
+      contacts: z.array(z.object({ icon: z.enum(["phone", "email", "cert"]), text: z.string() })).default([]),
+    })
+    .optional(),
+
+  /** Only the products actually used in this industry — never all nine. */
+  related: relatedSchema,
+  /** Mandatory verbatim non-claim sentences (e.g. NORSOK/API on oil-gas). */
+  nonClaims: z.array(z.string()).default([]),
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["BreadcrumbList", "FAQPage"]),
+});
+
+export const resourceSchema = baseSchema.extend({
+  navLabel: z.string().min(2),
+  category: z.enum(["material-comparison", "sizing-spec", "sourcing-buyer"]),
+  readingMinutes: z.number().int().positive(),
+  intro: z.string().min(40),
+  faqs: z.array(faqSchema).default([]),
+  related: relatedSchema,
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["FAQPage", "BreadcrumbList"]),
+});
+
+/* ------------------------------------------------------------------ */
+
+/** /products hub. Ten sections in the design; each is its own block. */
+export const productsHubSchema = baseSchema.extend({
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  intro: z.string().min(40),
+  badge: z.string(),
+  actions: z.array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") })).default([]),
+  heroStats: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+        sub: z.string().optional(),
+        icon: z.enum(["award", "globe", "chart", "shield"]).optional(),
+      }),
+    )
+    .default([]),
+  heroDivider: z.string().optional(),
+  marquee: z.array(z.string()).default([]),
+
+  range: z.object({
+    ...sectionMeta.shape,
+    watermark: z.string().optional(),
+    filters: z.array(z.string()).default([]),
+    cards: z.array(
+      z.object({
+        slug: z.string(),
+        title: z.string(),
+        kicker: z.string(),
+        tag: z.string(),
+        chips: z.array(z.string()).default([]),
+        image: imageRefSchema,
+        span: z.enum(["wide", "tall", "normal"]).default("normal"),
+      }),
+    ),
+    cta: z.object({ label: z.string(), href: z.string() }).optional(),
+  }),
+
+  excellence: z.object({
+    ...sectionMeta.shape,
+    image: imageRefSchema.optional(),
+    imageBadge: z.object({ label: z.string(), value: z.string() }).optional(),
+    stats: z.array(z.object({ value: z.string(), label: z.string(), sub: z.string().optional() })).default([]),
+  }).optional(),
+
+  process: z.object({
+    ...sectionMeta.shape,
+    steps: z.array(z.object({ n: z.string(), title: z.string(), body: z.string() })),
+    capabilities: z.object({
+      heading: z.string(),
+      items: z.array(z.string()),
+      cta: z.object({ heading: z.string(), body: z.string(), label: z.string(), href: z.string() }).optional(),
+    }).optional(),
+  }).optional(),
+
+  compounds: z.object({
+    ...sectionMeta.shape,
+    items: z.array(
+      z.object({
+        code: z.string(),
+        name: z.string(),
+        summary: z.string(),
+        dot: z.string(),
+        temp: z.string(),
+        hardness: z.string(),
+        bestFor: z.string(),
+        tags: z.array(z.string()).default([]),
+        applications: z.array(z.string()).default([]),
+      }),
+    ),
+  }).optional(),
+
+  sectors: z.object({
+    ...sectionMeta.shape,
+    items: z.array(
+      z.object({
+        name: z.string(),
+        body: z.string(),
+        image: imageRefSchema.optional(),
+        products: z.string(),
+        clients: z.string(),
+        href: z.string(),
+      }),
+    ),
+  }).optional(),
+
+  certifications: z.object({
+    ...sectionMeta.shape,
+    items: z.array(
+      z.object({
+        name: z.string(),
+        version: z.string(),
+        title: z.string(),
+        body: z.string(),
+        by: z.string(),
+        /** Each certification carries its own colour in the design. */
+        color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+        icon: z.enum(["shield", "award", "doc", "star"]),
+      }),
+    ),
+  }).optional(),
+
+  validation: z.object({
+    ...sectionMeta.shape,
+    items: z.array(z.string()),
+    cta: z.object({ label: z.string(), href: z.string() }).optional(),
+  }).optional(),
+
+  catalogue: z.object({
+    ...sectionMeta.shape,
+    bullets: z.array(z.string()).default([]),
+    formHeading: z.string(),
+    formBody: z.string(),
+    submitLabel: z.string(),
+    footnote: z.string().optional(),
+  }).optional(),
+
+  /** Closing "Request a Quote" band: contact panel + promise card + form. */
+  quote: z
+    .object({
+      ...sectionMeta.shape,
+      contactHeading: z.string(),
+      contacts: z.array(
+        z.object({
+          icon: z.enum(["phone", "email", "address"]),
+          label: z.string(),
+          value: z.string(),
+          note: z.string().optional(),
+        }),
+      ),
+      promiseHeading: z.string(),
+      promises: z.array(z.string()),
+      fields: z.array(
+        z.object({
+          label: z.string(),
+          placeholder: z.string(),
+          type: z.enum(["text", "email", "tel", "select", "textarea"]).default("text"),
+          full: z.boolean().default(false),
+        }),
+      ),
+      submitLabel: z.string(),
+    })
+    .optional(),
+
+  faqSection: z.object({ ...sectionMeta.shape, cta: z.object({ label: z.string(), href: z.string(), note: z.string() }).optional() }).optional(),
+  faqs: z.array(faqSchema).default([]),
+  schemaTypes: z.array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"])).default(["BreadcrumbList", "FAQPage"]),
+});
+
+/** /industries hub. Five sections in the design. */
+export const industriesHubSchema = baseSchema.extend({
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  badge: z.string(),
+  intro: z.string().min(40),
+  heroFacts: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+
+  filter: z.object({
+    placeholder: z.string(),
+    chips: z.array(z.string()),
+  }),
+
+  primary: z.object({
+    ...sectionMeta.shape,
+    countLabel: z.string(),
+    items: z.array(
+      z.object({
+        slug: z.string(),
+        name: z.string(),
+        chip: z.string(),
+        body: z.string(),
+        image: imageRefSchema,
+        tags: z.array(z.string()).default([]),
+      }),
+    ),
+  }),
+
+  additional: z.object({
+    ...sectionMeta.shape,
+    note: z.string(),
+    items: z.array(
+      z.object({
+        name: z.string(),
+        body: z.string(),
+        href: z.string(),
+        linkLabel: z.string().default("Browse product category"),
+      }),
+    ),
+  }),
+
+  enquiry: z.object({
+    heading: z.string(),
+    body: z.string(),
+    points: z.array(z.string()),
+    fields: z.array(
+      z.object({
+        label: z.string(),
+        placeholder: z.string(),
+        type: z.enum(["text", "email", "select", "textarea"]).default("text"),
+        full: z.boolean().default(false),
+      }),
+    ),
+    submitLabel: z.string(),
+    footnote: z.string(),
+  }),
+
+  schemaTypes: z.array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"])).default(["BreadcrumbList"]),
+});
+
+/**
+ * /contact — the primary conversion of the site.
+ *
+ * The form is deliberately 2-step / 8 fields: every competitor RFQ form in the
+ * teardown runs 4–8 fields, and single-page forms above 7 fields hit 67.8%
+ * abandonment. Step 1 captures enough to follow up if they drop; step 2 carries
+ * the qualifying fields a trader is least likely to answer confidently.
+ */
+export const contactPageSchema = baseSchema.extend({
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  badge: z.string(),
+  intro: z.string().min(40),
+  proof: z.array(z.string()).default([]),
+
+  quote: z.object({
+    ...sectionMeta.shape,
+    note: z.string(),
+    facility: z.object({ eyebrow: z.string(), body: z.string() }),
+    directHeading: z.string(),
+    contacts: z.array(
+      z.object({
+        icon: z.enum(["whatsapp", "phone", "email"]),
+        label: z.string(),
+        value: z.string(),
+        note: z.string().optional(),
+        href: z.string().optional(),
+      }),
+    ),
+    footnote: z.string(),
+    steps: z.array(z.string()).length(2),
+    step1: z.array(
+      z.object({
+        name: z.string(),
+        label: z.string(),
+        placeholder: z.string(),
+        type: z.enum(["text", "email", "tel"]).default("text"),
+        required: z.boolean().default(true),
+      }),
+    ),
+    step2: z.array(
+      z.object({
+        name: z.string(),
+        label: z.string(),
+        placeholder: z.string(),
+        type: z.enum(["text", "select", "textarea"]).default("text"),
+        options: z.array(z.string()).default([]),
+        required: z.boolean().default(true),
+        full: z.boolean().default(false),
+      }),
+    ),
+    continueLabel: z.string(),
+    backLabel: z.string(),
+    submitLabel: z.string(),
+    /** Stated directly under submit. No competitor states any response time. */
+    responsePromise: z.string(),
+  }),
+
+  schemaTypes: z.array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"])).default(["BreadcrumbList"]),
+});
+
+/**
+ * /certifications
+ *
+ * Brief A11. The "What It Does Not Mean" panel carries the single most
+ * important sentence on the site: an explicit statement that Margo holds
+ * ISO 9001:2015 and NOT IATF 16949. That reverses the competitor cert-row
+ * pattern rather than copying it, and it is the reason this page exists.
+ */
+export const certificationsPageSchema = baseSchema.extend({
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  badge: z.string(),
+  intro: z.string().min(40),
+  actions: z.array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") })).default([]),
+
+  scope: z.object({
+    ...sectionMeta.shape,
+    meansHeading: z.string(),
+    means: z.array(z.string()),
+    notHeading: z.string(),
+    /** Rendered in the red panel, first and boldest. */
+    notLead: z.string(),
+    notLeadBody: z.string(),
+    notItems: z.array(z.string()),
+    footnote: z.string(),
+  }),
+
+  certificate: z.object({
+    ...sectionMeta.shape,
+    card: z.object({
+      eyebrow: z.string(),
+      title: z.string(),
+      certifyLine: z.string(),
+      company: z.string(),
+      address: z.string(),
+      conformLine: z.string(),
+      standard: z.string(),
+      scopeLine: z.string(),
+      fields: z.array(z.object({ label: z.string(), value: z.string() })),
+      barTitle: z.string(),
+      barNote: z.string(),
+      downloadLabel: z.string(),
+    }),
+    meta: z.array(z.object({ label: z.string(), value: z.string() })),
+  }),
+
+  facility: z.object({
+    ...sectionMeta.shape,
+    caption: z.string(),
+    gallery: z.array(z.object({ image: imageRefSchema, alt: z.string() })).min(1),
+    capabilities: z.array(z.object({ name: z.string(), body: z.string() })),
+  }),
+
+  system: z.object({
+    ...sectionMeta.shape,
+    items: z.array(z.object({ icon: z.enum(["inbox", "gauge", "shield", "loop"]), name: z.string(), body: z.string() })),
+    auditNote: z.object({ lead: z.string(), body: z.string() }),
+  }),
+
+  docs: z.object({
+    heading: z.string(),
+    body: z.string(),
+    items: z.array(z.string()),
+    fields: z.array(z.object({ name: z.string(), label: z.string(), placeholder: z.string(), type: z.enum(["text", "email", "textarea"]).default("text") })),
+    submitLabel: z.string(),
+    footnote: z.string(),
+  }),
+
+  schemaTypes: z.array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"])).default(["BreadcrumbList", "Organization"]),
+});
+
+/**
+ * /about — brief A12, which marks this page BLOCKED on the founding year.
+ *
+ * The shell is safe to build; final copy is not, because the design carries
+ * fabricated attributions (named executives with stock portraits, a testimonial
+ * credited to a named person at Siemens Energy, eight uncorroborated client
+ * logos). Those are represented here as neutral placeholders so the layout is
+ * complete without asserting anything untrue.
+ */
+/** Every /about section head is a 1-2 line display heading with an accent line. */
+const aboutHead = z.object({
+  eyebrow: z.string().min(2),
+  lines: z.array(z.string()).min(1),
+  accentLines: z.array(z.number()).default([]),
+  body: z.string().optional(),
+  note: z.string().optional(),
+});
+
+export const aboutPageSchema = baseSchema.extend({
+  h1Lines: z.array(z.string()).min(1),
+  h1AccentLines: z.array(z.number()).default([]),
+  badge: z.string(),
+  intro: z.string().min(40),
+  heroImage: imageRefSchema,
+  watchLabel: z.string(),
+  scrollLabel: z.string(),
+  actions: z
+    .array(
+      z.object({
+        label: z.string(),
+        href: z.string(),
+        variant: z.enum(["primary", "secondary"]).default("primary"),
+      }),
+    )
+    .default([]),
+  heroStats: z.array(z.object({ value: z.string(), label: z.string() })).min(1),
+
+  story: aboutHead.extend({
+    paragraphs: z.array(z.string()).min(1),
+    checks: z.array(z.string()).default([]),
+    badge: z.object({ value: z.string(), label: z.string() }),
+    images: z.object({
+      main: imageRefSchema,
+      inset: imageRefSchema,
+      lower: imageRefSchema,
+    }),
+    cta: z.object({ label: z.string(), href: z.string() }),
+  }),
+
+  vision: aboutHead.extend({
+    watermark: z.string(),
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["target", "bolt"]),
+          eyebrow: z.string(),
+          title: z.string(),
+          body: z.string(),
+          footIcon: z.enum(["trend", "shield"]),
+          foot: z.string(),
+        }),
+      )
+      .length(2),
+  }),
+
+  values: aboutHead.extend({
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["shield", "bolt", "globe", "leaf", "users", "target"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  leadership: z.object({
+    eyebrow: z.string(),
+    image: imageRefSchema,
+    quoteLines: z.array(z.string()).min(1),
+    /** Index of the first accented WORD run, rendered from `quoteAccent`. */
+    quoteAccent: z.string(),
+    body: z.string(),
+    person: z.object({ initials: z.string(), name: z.string(), role: z.string() }),
+  }),
+
+  manufacturing: aboutHead.extend({
+    main: z.object({ image: imageRefSchema, caption: z.string() }),
+    side: z.array(imageRefSchema).min(1),
+    stats: z
+      .array(
+        z.object({
+          icon: z.enum(["area", "lab", "weight"]),
+          value: z.string(),
+          label: z.string(),
+        }),
+      )
+      .min(1),
+    portfolioLabel: z.string(),
+    portfolio: z.array(z.object({ label: z.string(), href: z.string() })).min(1),
+  }),
+
+  team: aboutHead.extend({
+    members: z
+      .array(
+        z.object({
+          name: z.string(),
+          role: z.string(),
+          image: imageRefSchema,
+        }),
+      )
+      .min(1),
+    stats: z.array(z.object({ value: z.string(), label: z.string() })).min(1),
+  }),
+
+  presence: aboutHead.extend({
+    image: imageRefSchema,
+    countries: z.array(z.object({ flag: z.string(), name: z.string() })).min(1),
+    stats: z
+      .array(
+        z.object({
+          icon: z.enum(["truck", "globe"]),
+          value: z.string(),
+          label: z.string(),
+          note: z.string().optional(),
+        }),
+      )
+      .min(1),
+  }),
+
+  awards: aboutHead.extend({
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["medal", "leaf", "flask", "check", "scope", "trophy"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+    auditedLabel: z.string(),
+    auditors: z.array(z.string()).min(1),
+    auditImage: imageRefSchema,
+  }),
+
+  green: aboutHead.extend({
+    image: imageRefSchema,
+    imageBadge: z.object({ title: z.string(), note: z.string() }),
+    bars: z
+      .array(
+        z.object({
+          label: z.string(),
+          note: z.string(),
+          pct: z.number().min(0).max(100),
+        }),
+      )
+      .min(1),
+  }),
+
+  numbers: aboutHead.extend({
+    stats: z
+      .array(
+        z.object({ value: z.string(), label: z.string(), note: z.string() }),
+      )
+      .min(1),
+    testimonial: z.object({
+      stars: z.number().min(1).max(5).default(5),
+      quote: z.string().min(40),
+      initials: z.string(),
+      name: z.string(),
+      role: z.string(),
+    }),
+  }),
+
+  timeline: aboutHead.extend({
+    items: z
+      .array(
+        z.object({
+          year: z.string(),
+          title: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  clients: z.object({ label: z.string(), items: z.array(z.string()).min(1) }),
+
+  closing: z.object({
+    eyebrow: z.string(),
+    lines: z.array(z.string()).min(1),
+    accentLines: z.array(z.number()).default([]),
+    body: z.string(),
+    image: imageRefSchema,
+    placeholder: z.string(),
+    submitLabel: z.string(),
+    assurances: z.array(z.string()).default([]),
+  }),
+
+  schemaTypes: z
+    .array(
+      z.enum([
+        "Product",
+        "BreadcrumbList",
+        "FAQPage",
+        "HowTo",
+        "Organization",
+        "WebSite",
+      ]),
+    )
+    .default(["BreadcrumbList", "Organization"]),
+});
+
+/**
+ * HOMEPAGE.
+ *
+ * Display headings carry inline accent via `*asterisks*` rather than a
+ * line-index list, because the homepage mixes whole-line accent ("*Meets*")
+ * with mid-line accent ("Two Decades of *Engineering* Precision").
+ */
+const homeHead = z.object({
+  eyebrow: z.string().min(2),
+  lines: z.array(z.string()).min(1),
+  body: z.string().optional(),
+});
+
+export const homePageSchema = baseSchema.extend({
+  // The hero's display copy is h1Lines; it has no secondary heading, so the
+  // shared `lines` field is dropped rather than carried as an empty array.
+  hero: homeHead.omit({ lines: true }).extend({
+    h1Lines: z.array(z.string()).min(1),
+    intro: z.string().min(40),
+    image: imageRefSchema,
+    actions: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          variant: z.enum(["primary", "secondary"]).default("primary"),
+        }),
+      )
+      .min(1),
+    chips: z.array(z.object({ label: z.string(), href: z.string() })).min(1),
+    cards: z
+      .array(
+        z.object({
+          value: z.string(),
+          label: z.string(),
+          icon: z.enum(["ribbon"]).optional(),
+        }),
+      )
+      .min(1),
+  }),
+
+  trustbar: z.object({ label: z.string(), items: z.array(z.string()).min(1) }),
+
+  story: homeHead.extend({
+    paragraphs: z.array(z.string()).min(1),
+    image: imageRefSchema,
+    imageBadge: z.string(),
+    floatCard: z.object({ title: z.string(), body: z.string() }),
+    stats: z.array(z.object({ value: z.string(), label: z.string() })).min(1),
+    cta: z.object({ label: z.string(), href: z.string() }),
+  }),
+
+  edge: homeHead.extend({
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["shield", "bolt", "gear", "globe", "layers", "ribbon"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  portfolio: homeHead.extend({
+    cta: z.object({ label: z.string(), href: z.string() }),
+    items: z
+      .array(
+        z.object({
+          tag: z.string(),
+          name: z.string(),
+          body: z.string(),
+          image: imageRefSchema,
+          href: z.string(),
+          ctaLabel: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  sectors: homeHead.extend({
+    items: z
+      .array(
+        z.object({
+          icon: z.enum([
+            "car",
+            "heart",
+            "chip",
+            "droplet",
+            "wrench",
+            "package",
+          ]),
+          name: z.string(),
+          body: z.string(),
+          href: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  process: homeHead.extend({
+    steps: z.array(z.object({ name: z.string(), body: z.string() })).min(1),
+  }),
+
+  facility: homeHead.extend({
+    image: imageRefSchema,
+    inset: imageRefSchema,
+    badge: z.string(),
+    checks: z.array(z.string()).min(1),
+  }),
+
+  exportMarkets: homeHead.extend({
+    hub: z.object({ label: z.string(), x: z.number(), y: z.number() }),
+    lanes: z
+      .array(
+        z.object({
+          code: z.string().length(2),
+          name: z.string(),
+          note: z.string(),
+          /** Percentage coordinates on the 100x100 map plate. */
+          x: z.number(),
+          y: z.number(),
+        }),
+      )
+      .min(1),
+    note: z.string(),
+  }),
+
+  /** Rows come from SITE.COMPOUNDS, so the table has one source of truth. */
+  materials: homeHead.extend({
+    axis: z.object({ min: z.number(), mid: z.number(), max: z.number() }),
+    footnote: z.string(),
+  }),
+
+  testimonials: homeHead.extend({
+    items: z
+      .array(
+        z.object({
+          stars: z.number().min(1).max(5).default(5),
+          quote: z.string().min(40),
+          name: z.string(),
+          role: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  cta: homeHead.extend({
+    panel: z.object({
+      badge: z.string(),
+      title: z.string(),
+      body: z.string(),
+      image: imageRefSchema,
+      stats: z.array(z.object({ value: z.string(), label: z.string() })).min(1),
+    }),
+    fields: z
+      .array(
+        z.object({
+          name: z.string(),
+          label: z.string(),
+          placeholder: z.string(),
+          type: z.string(),
+          options: z.array(z.string()).optional(),
+          required: z.boolean().optional(),
+          full: z.boolean().optional(),
+        }),
+      )
+      .min(1),
+    uploadLabel: z.string(),
+    uploadHint: z.string(),
+    submitLabel: z.string(),
+    footnote: z.string(),
+  }),
+
+  schemaTypes: z
+    .array(
+      z.enum([
+        "Product",
+        "BreadcrumbList",
+        "FAQPage",
+        "HowTo",
+        "Organization",
+        "WebSite",
+      ]),
+    )
+    .default(["Organization", "WebSite"]),
+});
+
+/** /why-margo. Same `*asterisk*` accent convention as the homepage. */
+const whyHead = z.object({
+  eyebrow: z.string().min(2),
+  lines: z.array(z.string()).min(1),
+  body: z.string().optional(),
+});
+
+const statSchema = z.object({ value: z.string(), label: z.string() });
+
+export const whyMargoPageSchema = baseSchema.extend({
+  hero: z.object({
+    eyebrow: z.string(),
+    h1Lines: z.array(z.string()).min(1),
+    intro: z.string().min(40),
+    image: imageRefSchema,
+    stats: z.array(statSchema).min(1),
+    actions: z
+      .array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          variant: z.enum(["primary", "secondary"]).default("primary"),
+          icon: z.enum(["download"]).optional(),
+        }),
+      )
+      .min(1),
+  }),
+
+  heritage: whyHead.extend({
+    image: imageRefSchema,
+    milestones: z.array(z.object({ year: z.string(), body: z.string() })).min(1),
+    stats: z.array(statSchema).min(1),
+    note: z.string(),
+  }),
+
+  difference: whyHead.extend({
+    items: z
+      .array(
+        z.object({
+          eyebrow: z.string(),
+          name: z.string(),
+          body: z.string(),
+          foot: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  capabilities: whyHead.extend({
+    banner: imageRefSchema,
+    bannerEyebrow: z.string(),
+    bannerLines: z.array(z.string()).min(1),
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["gear", "layers", "swap", "extrude", "robot", "tool"]),
+          name: z.string(),
+          body: z.string(),
+          foot: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  materials: whyHead.extend({
+    items: z
+      .array(
+        z.object({
+          code: z.string(),
+          name: z.string(),
+          temp: z.string(),
+          hardness: z.string(),
+          chemical: z.string(),
+          industries: z.string(),
+          applications: z.string(),
+        }),
+      )
+      .min(1),
+    customNote: z.string(),
+  }),
+
+  quality: whyHead.extend({
+    image: imageRefSchema,
+    imageCaption: z.string(),
+    stats: z.array(statSchema).min(1),
+    checks: z.array(z.string()).min(1),
+    note: z.string(),
+  }),
+
+  standards: whyHead.extend({
+    items: z
+      .array(
+        z.object({
+          code: z.string(),
+          suffix: z.string(),
+          name: z.string(),
+          auditor: z.string(),
+          scope: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  responsibility: whyHead.extend({
+    cards: z
+      .array(
+        z.object({
+          icon: z.enum(["leaf", "droplet", "recycle", "package"]),
+          value: z.string(),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+    initiativesHeading: z.string(),
+    initiatives: z.array(z.string()).min(1),
+  }),
+
+  globalExport: whyHead.extend({
+    image: imageRefSchema,
+    stats: z.array(statSchema).min(1),
+    regionsHeading: z.string(),
+    regions: z.array(z.object({ name: z.string(), list: z.string() })).min(1),
+    industriesHeading: z.string(),
+    industries: z.array(z.string()).min(1),
+    terms: z.string(),
+  }),
+
+  support: whyHead.extend({
+    image: imageRefSchema,
+    items: z.array(z.object({ name: z.string(), body: z.string() })).min(1),
+  }),
+
+  tenure: whyHead.extend({
+    columns: z.array(z.string()).length(3),
+    rows: z
+      .array(
+        z.object({
+          metric: z.string(),
+          value: z.string(),
+          context: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  feedback: whyHead.extend({
+    quote: z.string().min(40),
+    initials: z.string(),
+    name: z.string(),
+    role: z.string(),
+    stats: z.array(statSchema).min(1),
+  }),
+
+  faq: whyHead.extend({
+    items: z.array(faqSchema).min(1),
+  }),
+
+  enquiry: z.object({
+    eyebrow: z.string(),
+    lines: z.array(z.string()).min(1),
+    body: z.string(),
+    contacts: z
+      .array(
+        z.object({
+          icon: z.enum(["pin", "phone", "mail", "clock"]),
+          label: z.string(),
+          value: z.string(),
+        }),
+      )
+      .min(1),
+    note: z.string(),
+    fields: z
+      .array(
+        z.object({
+          name: z.string(),
+          label: z.string(),
+          placeholder: z.string(),
+          type: z.string(),
+          options: z.array(z.string()).optional(),
+          required: z.boolean().optional(),
+          full: z.boolean().optional(),
+        }),
+      )
+      .min(1),
+    submitLabel: z.string(),
+    footnote: z.string(),
+  }),
+
+  schemaTypes: z
+    .array(
+      z.enum([
+        "Product",
+        "BreadcrumbList",
+        "FAQPage",
+        "HowTo",
+        "Organization",
+        "WebSite",
+      ]),
+    )
+    .default(["BreadcrumbList", "FAQPage", "Organization"]),
+});
+
+/** /export. Eight anchored market sections plus process, docs and summary. */
+export const exportPageSchema = baseSchema.extend({
+  hero: z.object({
+    badge: z.string(),
+    h1Lines: z.array(z.string()).min(1),
+    intro: z.string().min(40),
+    image: imageRefSchema,
+    /** Hub marker on the 1000x500 map plate. */
+    hub: z.object({ label: z.string(), x: z.number(), y: z.number() }),
+  }),
+
+  markets: z
+    .array(
+      z.object({
+        slug: z.string().min(2),
+        eyebrow: z.string(),
+        chip: z.string(),
+        heading: z.string(),
+        body: z.string().min(40),
+        image: imageRefSchema,
+        pin: z.object({ x: z.number(), y: z.number() }),
+        points: z.array(z.string()).min(1),
+        /** Rendered italic and muted: duty/regulatory caveats. */
+        caveat: z.string().optional(),
+        links: z
+          .array(z.object({ label: z.string(), href: z.string() }))
+          .default([]),
+        /** Optional extra panel. Only US&EU and USA carry one in the comp. */
+        panel: z
+          .object({
+            heading: z.string(),
+            body: z.string().optional(),
+            terms: z
+              .array(
+                z.object({
+                  code: z.string(),
+                  name: z.string(),
+                  body: z.string(),
+                }),
+              )
+              .default([]),
+            facts: z
+              .array(z.object({ label: z.string(), value: z.string() }))
+              .default([]),
+            footnote: z.string().optional(),
+          })
+          .optional(),
+      }),
+    )
+    .min(1),
+
+  process: z.object({
+    eyebrow: z.string(),
+    heading: z.string(),
+    body: z.string(),
+    steps: z
+      .array(
+        z.object({
+          icon: z.enum(["doc", "clipboard", "box", "pallet", "ship", "truck"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  documents: z.object({
+    eyebrow: z.string(),
+    heading: z.string(),
+    body: z.string(),
+    items: z
+      .array(
+        z.object({
+          icon: z.enum(["doc", "clipboard", "shield", "check"]),
+          name: z.string(),
+          body: z.string(),
+        }),
+      )
+      .min(1),
+  }),
+
+  quote: z.object({
+    heading: z.string(),
+    body: z.string(),
+    checks: z.array(z.string()).min(1),
+    formHeading: z.string(),
+    fields: z
+      .array(
+        z.object({
+          name: z.string(),
+          label: z.string(),
+          placeholder: z.string(),
+          type: z.string(),
+          options: z.array(z.string()).optional(),
+          required: z.boolean().optional(),
+          full: z.boolean().optional(),
+        }),
+      )
+      .min(1),
+    submitLabel: z.string(),
+    footnote: z.string(),
+  }),
+
+  summary: z.object({
+    eyebrow: z.string(),
+    heading: z.string(),
+    body: z.string(),
+    facts: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
+  }),
+
+  schemaTypes: z
+    .array(
+      z.enum([
+        "Product",
+        "BreadcrumbList",
+        "FAQPage",
+        "HowTo",
+        "Organization",
+        "WebSite",
+      ]),
+    )
+    .default(["BreadcrumbList", "Organization"]),
+});
+
+export const COLLECTIONS = {
+  products: productCategorySchema,
+  industries: industrySchema,
+  resources: resourceSchema,
+  pages: productsHubSchema,
+} as const;
+
+export type Collection = keyof typeof COLLECTIONS;
+export type ProductCategory = z.infer<typeof productCategorySchema>;
+export type Industry = z.infer<typeof industrySchema>;
+export type Resource = z.infer<typeof resourceSchema>;
+export type Frontmatter<C extends Collection> = z.infer<(typeof COLLECTIONS)[C]>;

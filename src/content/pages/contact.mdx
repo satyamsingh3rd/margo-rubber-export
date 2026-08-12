@@ -1,0 +1,108 @@
+---
+status: placeholder
+h1: Let's Build Your Custom Rubber Solution
+h1Lines: ["Let's Build Your", "Custom Rubber", "Solution"]
+h1AccentLines: [1]
+
+seo:
+  title: "Request a Quote | Margo Rubber Products"
+  description: "Get a custom rubber component quote from Margo Rubber, Nashik. ISO 9001:2015, MOQ 500pcs. We respond within 1 business day (IST)."
+
+hero:
+  image: contact.hero
+  alt: Welder working on a component with sparks visible
+
+badge: Margo Rubber Products · Nashik, India
+intro: >-
+  Precision-engineered rubber components for critical industrial applications.
+  Tell us your requirement, our engineering team responds within 1 business day.
+
+proof:
+  - ISO 9001:2015
+  - MOQ 500 PCS
+  - EXPORT TO 30+ COUNTRIES
+
+# ── REQUEST A QUOTE ──────────────────────────────────────────────────────
+quote:
+  eyebrow: ENGINEERING INQUIRY
+  heading: Request a Quote
+  note: >-
+    Share your specification below, or reach us directly on WhatsApp, phone, or
+    email.
+
+  facility:
+    eyebrow: PRECISION TOOLING · NASHIK FACILITY
+    body: >-
+      Compression, transfer, and injection moulding with in-house toolroom and
+      QC laboratory.
+
+  directHeading: PREFER DIRECT CONTACT?
+  contacts:
+    - icon: whatsapp
+      label: WhatsApp
+      value: "+91 98765 43210"
+      note: Preferred for UAE, Saudi Arabia & India
+    - icon: phone
+      label: Phone
+      value: "+91 253 234 5678"
+      note: "Mon – Sat · 09:30 – 18:30 IST"
+    - icon: email
+      label: Email
+      value: rfq@margorubber.com
+      note: Attach drawings, datasheets, or CAD samples
+
+  footnote: >-
+    All RFQs are handled by our application engineering team in Nashik
+    (IST, UTC +5:30).
+
+  steps: [CONTACT, REQUIREMENT]
+
+  # Step 1 is deliberately short so a drop-off is still followable.
+  step1:
+    - { name: fullName, label: FULL NAME, placeholder: Priya Sharma, type: text, required: true }
+    - { name: company,  label: COMPANY,   placeholder: Company name, type: text, required: true }
+    - { name: email,    label: WORK EMAIL, placeholder: "you@company.com", type: email, required: true }
+    - { name: phone,    label: PHONE (OPTIONAL), placeholder: "+91 or +971 ...", type: tel, required: false }
+
+  # Step 2 carries the qualifying fields. Industry and order volume are the
+  # ones a trader is least likely to answer confidently.
+  step2:
+    - name: country
+      label: COUNTRY
+      placeholder: Select country
+      type: select
+      options: [Australia, United Arab Emirates, Saudi Arabia, United States, United Kingdom, Singapore, Malaysia, Kenya, Tanzania, India, Other]
+    - name: productCategory
+      label: PRODUCT CATEGORY
+      placeholder: Select product category
+      type: select
+      options: [O-Rings, Oil Seals, Gaskets, Bellows, Anti-Vibration Mounts, Grommets, Bushes, "Pads, Stoppers & Caps", Leak Test Rubber]
+    - name: industry
+      label: INDUSTRY / END USE
+      placeholder: Select industry
+      type: select
+      options: [Mining, Oil & Gas, Automotive, Pumps & Valves, HVAC, Electrical & Electronics, Agriculture, Medical Devices, Water & Fluid Management, Other]
+    - name: volume
+      label: ORDER VOLUME
+      placeholder: Select estimated volume
+      type: select
+      options: ["500 – 2,000 pcs (at MOQ)", "2,000 – 10,000 pcs", "10,000 – 50,000 pcs", "50,000+ pcs", Not sure yet]
+    - name: details
+      label: PROJECT DETAILS
+      placeholder: "Describe the application, operating temperature, media in contact, and any standard your drawing calls out..."
+      type: textarea
+      full: true
+
+  continueLabel: Continue to Requirement
+  backLabel: Back
+  submitLabel: Submit Quote Request
+  responsePromise: We respond within 1 business day (IST).
+
+schemaTypes: [BreadcrumbList]
+
+confirmWithMargo:
+  - "Hero chip says 'EXPORT TO 30+ COUNTRIES'; the locked figure is 9 active markets"
+  - "Phone, WhatsApp and email are design placeholders pending B6/B7"
+  - "rfq@margorubber.com uses .com and is a fifth email variant; B6 recommends info@margorubber.in"
+  - "Form posts nowhere yet: needs the Resend/Turnstile backend and GA4 rfq_submit wiring (B14)"
+---

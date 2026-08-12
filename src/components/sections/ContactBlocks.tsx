@@ -1,0 +1,385 @@
+"use client";
+
+import { useState } from "react";
+import { Img } from "@/components/ui/Img";
+import { Container } from "@/components/ui/Section";
+
+/* ── HERO ─────────────────────────────────────────────────────────────── */
+export function ContactHero({
+  badge,
+  lines,
+  accentLines,
+  intro,
+  proof,
+  image,
+}: {
+  badge: string;
+  lines: string[];
+  accentLines: number[];
+  intro: string;
+  proof: string[];
+  image?: string;
+}) {
+  return (
+    <header className="relative isolate overflow-hidden pt-32 pb-20 md:pt-48 md:pb-28">
+      {image && (
+        <>
+          <Img
+            k={image}
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover"
+          />
+          {/* Copy sits left over the darkest part of the frame. */}
+          <div className="from-canvas via-canvas/70 absolute inset-0 -z-10 bg-gradient-to-r from-5% via-45% to-transparent to-90%" />
+          <div className="from-canvas absolute inset-0 -z-10 bg-gradient-to-t from-0% to-transparent to-45%" />
+        </>
+      )}
+
+      <Container>
+        <p className="text-eyebrow text-accent-400 font-mono uppercase">
+          {badge}
+        </p>
+
+        <h1 className="text-display mt-6">
+          {lines.map((l, i) => (
+            <span
+              key={l}
+              className={`block ${accentLines.includes(i) ? "text-accent-400" : ""}`}
+            >
+              {l}
+            </span>
+          ))}
+        </h1>
+
+        <p className="text-ink-3 mt-6 max-w-[48ch] leading-relaxed">{intro}</p>
+
+        {proof.length > 0 && (
+          <ul className="mt-8 flex flex-wrap gap-3">
+            {proof.map((p) => (
+              <li
+                key={p}
+                className="text-eyebrow border-line-2 bg-canvas/50 text-ink-2 flex items-center gap-2 rounded-md border px-3 py-2 font-mono uppercase backdrop-blur"
+              >
+                <span aria-hidden className="bg-accent-400 size-1.5 rounded-full" />
+                {p}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Container>
+    </header>
+  );
+}
+
+/* ── DIRECT CONTACT PANEL ─────────────────────────────────────────────── */
+const CONTACT_ICON: Record<string, React.ReactNode> = {
+  whatsapp: (
+    <>
+      <path d="M21 11.5a8.5 8.5 0 0 1-12.7 7.4L3 21l2.2-5.1A8.5 8.5 0 1 1 21 11.5z" />
+      <path d="M8.5 9.5c0 3 2 5 5 5 .8 0 1.5-.6 1.5-1.2 0-.4-1.6-1.1-1.9-1-.3.1-.6.9-.9.8-.9-.3-2-1.4-2.3-2.3-.1-.3.7-.6.8-.9.1-.3-.6-1.9-1-1.9-.6 0-1.2.7-1.2 1.5z" />
+    </>
+  ),
+  phone: (
+    <path d="M4 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 3 5a1 1 0 0 1 1-1z" />
+  ),
+  email: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </>
+  ),
+};
+
+function DirectContact({
+  facility,
+  directHeading,
+  contacts,
+  footnote,
+}: {
+  facility: { eyebrow: string; body: string };
+  directHeading: string;
+  contacts: { icon: string; label: string; value: string; note?: string }[];
+  footnote: string;
+}) {
+  return (
+    <div className="rounded-card overflow-hidden border border-[#1B2026] bg-[#0F1317]">
+      <div className="border-accent-400 border-l-2 p-6">
+        <p className="text-eyebrow text-accent-400 font-mono uppercase">
+          {facility.eyebrow}
+        </p>
+        <p className="text-ink-3 mt-3 text-sm leading-relaxed">
+          {facility.body}
+        </p>
+      </div>
+
+      <div className="border-t border-[#1B2026] p-6">
+        <p className="text-eyebrow text-ink-4 font-mono uppercase">
+          {directHeading}
+        </p>
+
+        <ul className="divide-y divide-[#1B2026]">
+          {contacts.map((c) => (
+            <li key={c.label} className="flex gap-4 py-5 first:pt-5">
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-[#172A30]">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-accent-400 size-[18px]"
+                  aria-hidden
+                >
+                  {CONTACT_ICON[c.icon]}
+                </svg>
+              </span>
+              <div>
+                <p className="text-ink text-sm font-semibold">{c.label}</p>
+                <p className="text-ink-2 mt-1 text-sm">{c.value}</p>
+                {c.note && (
+                  <p className="text-ink-4 mt-1 text-xs">{c.note}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <p className="text-ink-4 mt-2 text-xs leading-relaxed">{footnote}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ── 2-STEP RFQ FORM ──────────────────────────────────────────────────── */
+type Field = {
+  name: string;
+  label: string;
+  placeholder: string;
+  type: string;
+  options?: string[];
+  required?: boolean;
+  full?: boolean;
+};
+
+const inputCls =
+  "mt-2 w-full rounded-lg border border-[#1F242A] bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 outline-none focus:border-accent-400";
+
+function FieldControl({ f }: { f: Field }) {
+  if (f.type === "textarea") {
+    return (
+      <textarea
+        name={f.name}
+        rows={5}
+        required={f.required}
+        placeholder={f.placeholder}
+        className={inputCls}
+      />
+    );
+  }
+  if (f.type === "select") {
+    return (
+      <select
+        name={f.name}
+        required={f.required}
+        defaultValue=""
+        className={`${inputCls} text-ink-4`}
+      >
+        <option value="" disabled>
+          {f.placeholder}
+        </option>
+        {f.options?.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    );
+  }
+  return (
+    <input
+      name={f.name}
+      type={f.type}
+      required={f.required}
+      placeholder={f.placeholder}
+      className={inputCls}
+    />
+  );
+}
+
+export function RfqForm({
+  steps,
+  step1,
+  step2,
+  continueLabel,
+  backLabel,
+  submitLabel,
+  responsePromise,
+}: {
+  steps: string[];
+  step1: Field[];
+  step2: Field[];
+  continueLabel: string;
+  backLabel: string;
+  submitLabel: string;
+  responsePromise: string;
+}) {
+  const [step, setStep] = useState(0);
+  const fields = step === 0 ? step1 : step2;
+
+  return (
+    <div className="rounded-card border border-[#1B2026] bg-[#15191D] p-6 md:p-8">
+      {/* Stepper */}
+      <ol className="mb-8 flex items-center gap-4">
+        {steps.map((label, i) => (
+          <li key={label} className="flex flex-1 items-center gap-4 last:flex-none">
+            <span className="flex items-center gap-3">
+              <span
+                className={`grid size-7 place-items-center rounded-full text-xs font-semibold ${
+                  i <= step
+                    ? "border-accent-400 text-accent-400 border"
+                    : "border-line text-ink-4 border"
+                }`}
+              >
+                {i + 1}
+              </span>
+              <span
+                className={`text-eyebrow font-mono uppercase ${i <= step ? "text-ink" : "text-ink-4"}`}
+              >
+                {label}
+              </span>
+            </span>
+            {i === 0 && (
+              <span
+                aria-hidden
+                className={`h-px flex-1 ${step > 0 ? "bg-accent-400" : "bg-line"}`}
+              />
+            )}
+          </li>
+        ))}
+      </ol>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (step === 0) setStep(1);
+        }}
+      >
+        {/* Honeypot: display:none rather than type=hidden, which some bots skip.
+            Silently discarded server-side once the backend is wired. */}
+        <div className="hidden" aria-hidden>
+          <label htmlFor="company_website">Company website</label>
+          <input
+            id="company_website"
+            name="company_website"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          {fields.map((f) => (
+            <label key={f.name} className={f.full ? "sm:col-span-2" : undefined}>
+              <span className="text-eyebrow text-ink-4 font-mono uppercase">
+                {f.label}
+              </span>
+              <FieldControl f={f} />
+            </label>
+          ))}
+        </div>
+
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          {step === 1 && (
+            <button
+              type="button"
+              onClick={() => setStep(0)}
+              className="border-line text-ink-2 hover:text-ink rounded-pill border px-5 py-3 text-sm font-medium transition-colors"
+            >
+              ← {backLabel}
+            </button>
+          )}
+          <button
+            type="submit"
+            className="bg-accent-400 text-canvas hover:bg-accent-300 flex-1 rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none sm:px-10"
+          >
+            {step === 0 ? continueLabel : submitLabel} <span aria-hidden>→</span>
+          </button>
+        </div>
+
+        {/* No competitor in the teardown states any response time. */}
+        <p className="text-ink-4 mt-4 text-xs">{responsePromise}</p>
+      </form>
+    </div>
+  );
+}
+
+/* ── SECTION WRAPPER ──────────────────────────────────────────────────── */
+export function QuoteSection({
+  eyebrow,
+  heading,
+  note,
+  facility,
+  directHeading,
+  contacts,
+  footnote,
+  steps,
+  step1,
+  step2,
+  continueLabel,
+  backLabel,
+  submitLabel,
+  responsePromise,
+}: {
+  eyebrow: string;
+  heading: string;
+  note: string;
+  facility: { eyebrow: string; body: string };
+  directHeading: string;
+  contacts: { icon: string; label: string; value: string; note?: string }[];
+  footnote: string;
+  steps: string[];
+  step1: Field[];
+  step2: Field[];
+  continueLabel: string;
+  backLabel: string;
+  submitLabel: string;
+  responsePromise: string;
+}) {
+  return (
+    <section className="py-16 md:py-24">
+      <Container>
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-eyebrow text-accent-400 font-mono uppercase">
+              {eyebrow}
+            </p>
+            <h2 className="text-h1 mt-3">{heading}</h2>
+          </div>
+          <p className="text-ink-4 max-w-[38ch] text-right text-sm leading-relaxed">
+            {note}
+          </p>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_1fr]">
+          <DirectContact
+            facility={facility}
+            directHeading={directHeading}
+            contacts={contacts}
+            footnote={footnote}
+          />
+          <RfqForm
+            steps={steps}
+            step1={step1}
+            step2={step2}
+            continueLabel={continueLabel}
+            backLabel={backLabel}
+            submitLabel={submitLabel}
+            responsePromise={responsePromise}
+          />
+        </div>
+      </Container>
+    </section>
+  );
+}

@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/* ============================================================
+   MARGO DESIGN TOKENS
+   Sampled from the Figma exports (Margo-UI/). Accent confirmed
+   as #2BBCC4 (hue 183) — every other saturated value in the
+   file is that same hue at a different lightness.
+   Single source of truth: change a value here, not in a page.
+   ============================================================ */
+
+@theme {
+  /* --- Brand accent ------------------------------------- */
+  --color-accent-50: #e6fafb;
+  --color-accent-100: #c2f2f5;
+  --color-accent-200: #8ae6eb;
+  --color-accent-300: #52d5dd;
+  --color-accent-400: #2bbcc4; /* ← primary accent, sampled */
+  --color-accent-500: #25a0a7;
+  --color-accent-600: #208d93;
+  --color-accent-700: #1b767b;
+  --color-accent-800: #155e62;
+  --color-accent-900: #0e4145;
+
+  /* --- Surfaces --------------------------------------------
+     TWO ramps exist in this design system, and they are not
+     interchangeable. Verified by pixel sampling:
+
+     A) Category/detail pages (O-Rings) sit on pure black.
+        canvas #000000 · band #030303 · card #080808
+     B) The hub pages (/products, homepage, contact) sit a few
+        points lighter and slightly blue.
+        surface-2 #0F1115 (primary) · surface #0A0C0F (alternate)
+        · surface-3 #13161B (cards) · surface-4 #15191D (panels)
+
+     Use ramp A on category pages, ramp B on hub pages. */
+  --color-canvas: #000000; /* ramp A: page base */
+  --color-surface: #0a0c0f; /* ramp B: alternating band */
+  --color-surface-2: #0f1115; /* ramp B: primary background */
+  --color-surface-3: #13161b; /* ramp B: card fill */
+  --color-surface-4: #15191d; /* ramp B: raised panel / input */
+  --color-band-2: #0c0e12; /* ramp B: darker alternating band, sampled from /about */
+  --color-surface-5: #171a1f; /* homepage: card on the lighter bands */
+
+  /* Pixel-sampled from the O-Rings design's material-card grid. These are
+     deliberately separate from the surface ramp above — that ramp came from
+     the homepage/contact screens, which sit a few points lighter. */
+  --color-band: #030303; /* alternating section band */
+  --color-card: #080808; /* card fill */
+  --color-hairline: #0d0d0d; /* 1px grid divider between cards */
+
+  /* --- Ink -----------------------------------------------
+     Pixel-sampled from the O-Rings design. NEUTRAL greys, not
+     blue-tinted: the earlier ramp read noticeably cool against
+     the design's flat greys. */
+  --color-ink: #ffffff; /* headings, card names */
+  --color-ink-2: #c0c1c1; /* body copy, answer block */
+  --color-ink-3: #818181; /* section ledes */
+  --color-ink-4: #6a6a6a; /* card body, labels, footnotes */
+
+  /* --- Lines --------------------------------------------- */
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-2: rgb(255 255 255 / 0.14);
+  --color-line-accent: rgb(43 188 196 / 0.35);
+
+  /* --- Status -------------------------------------------- */
+  --color-warn: #f5a623;
+  --color-danger: #e5484d;
+
+  /* --- Typography ---------------------------------------- */
+  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-code), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Display scale — Figma headings are tight-tracked geometric */
+  --text-display: 4.25rem;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 700;
+
+  /* Section display. The hero runs at --text-display; every section heading
+     below it is a step smaller, sampled at ~52px in the /about comp. At the
+     hero size these headings overflow the 564px grid columns and wrap to
+     four lines. */
+  --text-display-2: 3.25rem;
+  --text-display-2--line-height: 1.06;
+  --text-display-2--letter-spacing: -0.028em;
+  --text-display-2--font-weight: 700;
+
+  /* Column-constrained section headings. At --text-display-2 the longer ones
+     ("Industrial Responsibility", "Your Engineering Partner,") overflow a
+     564px grid column and wrap to three lines; the comp runs them at ~48px. */
+  --text-display-3: 3rem;
+  --text-display-3--line-height: 1.07;
+  --text-display-3--letter-spacing: -0.026em;
+  --text-display-3--font-weight: 700;
+
+  --text-h1: 3rem;
+  --text-h1--line-height: 1.06;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 2rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 600;
+
+  /* Eyebrow — mono, uppercase, wide-tracked (the "02 — SPECIFICATION
+     REFERENCE" pattern used on every section in the Figma) */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.18em;
+  --text-eyebrow--font-weight: 500;
+
+  /* --- Radii / layout ------------------------------------ */
+  --radius-card: 0.75rem;
+  --radius-pill: 999px;
+  --spacing-gutter: 1.5rem;
+  /* Design canvas is 1400px with a 1184px content column (x108 to x1292).
+     1232 = 1184 content + 2x24px padding, so at a 1400px viewport the gutter
+     lands on 108px exactly, matching the design. */
+  --container-site: 1232px;
+}
+
+/* Mobile display scale — no mobile frames exist in Figma, so this is
+   derived from the desktop grids. See §5.3 of the implementation plan.
+   Plain :root override, not a nested @theme (which Tailwind 4 only
+   supports at the top level). */
+@media (max-width: 767px) {
+  :root {
+    --text-display: 2.5rem;
+    --text-display-2: 2.125rem;
+    --text-display-3: 2rem;
+    --text-h1: 2rem;
+    --text-h2: 1.5rem;
+  }
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  /* Anchored SKU sections must clear the sticky header */
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink-2);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* MUST stay inside @layer base. Unlayered element rules outrank Tailwind's
+   layered utilities, so `h3 { color }` at the top level silently beat
+   `text-accent-400` and rendered accent headings white. */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Sector marquee: CSS animation only, no JS listeners. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 40s linear infinite; }
