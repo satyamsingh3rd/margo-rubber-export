@@ -1,3 +1,4 @@
+import { ExportLaneSequence } from "@/components/sections/ExportLaneSequence";
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { exportPageSchema } from "@/content/schemas";
@@ -39,6 +40,11 @@ export default async function ExportPage() {
         hub={fm.hero.hub}
         markets={fm.markets}
       />
+
+      {/* Pinned scroll sequence. Sits between the hero's static overview plate
+          and the per-market detail sections, so it reads as the transition
+          from "we export" to "here is each market". */}
+      <ExportLaneSequence hub={fm.hero.hub} markets={fm.markets} />
 
       {fm.markets.map((m, i) => (
         <MarketSection key={m.slug} market={m} flip={i % 2 === 1} />

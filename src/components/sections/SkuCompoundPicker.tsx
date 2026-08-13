@@ -67,7 +67,7 @@ export function SkuCompoundPicker({ items }: { items: readonly Compound[] }) {
             id={`compound-panel-${c.code}`}
             role="tabpanel"
             hidden={n !== i}
-            className="grid gap-8 md:grid-cols-3"
+            className="panel-in grid gap-8 md:grid-cols-3"
           >
             <div>
               <p className="text-eyebrow text-accent-400 font-mono uppercase">

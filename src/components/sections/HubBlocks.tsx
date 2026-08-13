@@ -93,7 +93,7 @@ export function HubHero({
           <div className="from-surface-2 absolute inset-0 -z-10 bg-gradient-to-t from-0% to-transparent to-28%" />
         </>
       )}
-      <Container>
+      <Container reveal={false}>
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_auto]">
           <div>
             <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">
@@ -175,7 +175,7 @@ function StatCard({ s }: { s: { value: string; label: string; icon?: string } })
 export function Marquee({ items }: { items: string[] }) {
   const doubled = [...items, ...items];
   return (
-    <div className="border-line overflow-hidden border-b py-4">
+    <div className="marquee-track border-line overflow-hidden border-b py-4">
       <div className="animate-marquee flex w-max gap-10 whitespace-nowrap motion-reduce:animate-none">
         {doubled.map((t, i) => (
           <span
@@ -242,7 +242,8 @@ export function ProductRange({
           <Link
             key={c.slug}
             href={`/products/${c.slug}`}
-            className={`group rounded-card focus-visible:outline-accent-400 relative isolate overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            data-lift=""
+            className={`group rounded-card relative isolate overflow-hidden ${
               c.span === "wide" ? "sm:col-span-2 sm:row-span-2" : ""
             }`}
           >
@@ -758,7 +759,7 @@ export function CatalogueBlock({
               <input
                 type={type}
                 placeholder={ph}
-                className="border-line bg-surface-3 text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm outline-none"
+                className="border-line bg-surface-3 text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm"
               />
             </label>
           ))}
@@ -954,12 +955,12 @@ export function QuoteBand({
                   <textarea
                     rows={4}
                     placeholder={f.placeholder}
-                    className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm outline-none"
+                    className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm"
                   />
                 ) : f.type === "select" ? (
                   <select
                     defaultValue=""
-                    className="border-line text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm outline-none"
+                    className="border-line text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm"
                   >
                     <option value="" disabled>
                       {f.placeholder}
@@ -969,7 +970,7 @@ export function QuoteBand({
                   <input
                     type={f.type}
                     placeholder={f.placeholder}
-                    className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm outline-none"
+                    className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0F1116] px-4 py-3 text-sm"
                   />
                 )}
               </label>

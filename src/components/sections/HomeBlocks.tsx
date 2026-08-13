@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
 import { COMPOUNDS } from "@/content/site";
+import { Bloom } from "@/components/ui/Bloom";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -130,15 +131,6 @@ function Photo({
         />
       )}
     </div>
-  );
-}
-
-function Bloom({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`bg-accent-400/10 pointer-events-none absolute -z-10 rounded-full blur-3xl ${className}`}
-    />
   );
 }
 
@@ -335,7 +327,7 @@ export function HomeHero({
         <circle cx="300" cy="300" r="164" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35" />
       </svg>
 
-      <Container>
+      <Container reveal={false}>
         <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div>
             <Rule>{eyebrow}</Rule>
@@ -681,7 +673,7 @@ export function Sectors({
             <li key={s.name}>
               <Link
                 href={s.href}
-                className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0F1115] p-6 transition-colors"
+                data-lift="" className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0F1115] p-6"
               >
                 <IconTile name={s.icon} />
                 <div>
@@ -1131,7 +1123,7 @@ type Field = {
 };
 
 const inputCls =
-  "mt-2 w-full rounded-lg border border-line-2 bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 outline-none focus:border-accent-400";
+  "mt-2 w-full rounded-lg border border-line-2 bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 focus:border-accent-400";
 
 function Control({ f }: { f: Field }) {
   if (f.type === "textarea") {

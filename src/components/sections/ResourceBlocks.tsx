@@ -124,7 +124,7 @@ function IconTile({ name }: { name: string }) {
 /* ── guide card ─────────────────────────────────────────────────────────── */
 function GuideCard({ g, label }: { g: Guide; label: string }) {
   return (
-    <li className="rounded-card border-line hover:border-accent-400/40 flex flex-col border bg-[#0B0D10] p-7 transition-colors">
+    <li data-lift="" className="rounded-card border-line hover:border-accent-400/40 flex flex-col border bg-[#0B0D10] p-7">
       <IconTile name={g.icon} />
       <p className="text-eyebrow text-accent-400 mt-6 flex items-center gap-2.5 font-mono uppercase">
         {label}
@@ -191,7 +191,7 @@ export function ResourceLibrary({
     <>
       {/* Filter bar */}
       <section className="bg-canvas border-line border-y py-6">
-        <Container>
+        <Container reveal={false}>
           <div className="flex flex-wrap items-center justify-between gap-5">
             <label className="relative w-full max-w-[20rem]">
               <span className="sr-only">{searchPlaceholder}</span>
@@ -203,7 +203,7 @@ export function ResourceLibrary({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="border-line-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-lg border bg-[#0D0F12] py-2.5 pr-4 pl-11 text-sm outline-none"
+                className="border-line-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-lg border bg-[#0D0F12] py-2.5 pr-4 pl-11 text-sm"
               />
             </label>
 

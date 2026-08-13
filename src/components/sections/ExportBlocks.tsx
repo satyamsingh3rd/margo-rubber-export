@@ -249,7 +249,7 @@ export function ExportHero({
       />
       <Bloom className="top-1/4 -left-32 size-[32rem]" />
 
-      <Container>
+      <Container reveal={false}>
         <span className="text-eyebrow border-accent-400/35 bg-accent-400/8 text-accent-400 inline-flex items-center gap-2.5 rounded-pill border px-3.5 py-1.5 font-mono uppercase backdrop-blur">
           <Icon name="globe" className="size-3.5" />
           {badge}
@@ -272,7 +272,7 @@ export function ExportHero({
             role="img"
             aria-label={`Margo export destinations from ${hub.label}: ${markets.map((m) => m.chip).join(", ")}`}
           >
-            <WorldMapArt />
+            <WorldMapArt markets={markets} />
           </svg>
 
           {/* Anchor hit-areas positioned over the drawn pins.
@@ -619,7 +619,7 @@ type Field = {
 };
 
 const inputCls =
-  "mt-2 w-full rounded-md border border-line-2 bg-[#111418] px-4 py-3 text-sm text-ink placeholder:text-ink-4 outline-none focus:border-accent-400";
+  "mt-2 w-full rounded-md border border-line-2 bg-[#111418] px-4 py-3 text-sm text-ink placeholder:text-ink-4 focus:border-accent-400";
 
 function Control({ f }: { f: Field }) {
   if (f.type === "textarea") {

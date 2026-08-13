@@ -3,12 +3,28 @@ import type { ReactNode } from "react";
 export function Container({
   children,
   className = "",
+  reveal = true,
 }: {
   children: ReactNode;
   className?: string;
+  /**
+   * Scroll-reveal on entering the viewport. On by default because almost
+   * every section's content passes through a Container, which makes this the
+   * one place the motion layer can be applied without touching 22 files.
+   *
+   * Pass `false` for anything in the first viewport — heroes, the header, the
+   * footer. Reveal is driven by an observer that runs after hydration, so an
+   * above-the-fold element would sit invisible until then, and if it happens
+   * to be the LCP element that is a measurable regression rather than a
+   * flourish. See globals.css → SCROLL REVEAL.
+   */
+  reveal?: boolean;
 }) {
   return (
-    <div className={`mx-auto w-full max-w-site px-6 ${className}`}>
+    <div
+      data-reveal={reveal ? "" : undefined}
+      className={`mx-auto w-full max-w-site px-6 ${className}`}
+    >
       {children}
     </div>
   );

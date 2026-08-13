@@ -1,8 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+// `active:scale-[0.97]` is the tactile press: the button gives under the
+// pointer instead of only changing colour. Transition covers transform as
+// well as colour so the release eases back rather than snapping.
 const base =
-  "inline-flex items-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400";
+  "inline-flex items-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-standard active:scale-[0.97]";
 
 const variants = {
   primary: "bg-accent-400 text-canvas hover:bg-accent-300",

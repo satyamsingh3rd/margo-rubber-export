@@ -80,7 +80,7 @@ export function SpecTable({ columns, rows, footnote }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter by ID or dimension…"
-            className="border-line bg-surface-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-pill border px-4 py-2 text-sm outline-none"
+            className="border-line bg-surface-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-pill border px-4 py-2 text-sm"
           />
         </label>
       </div>

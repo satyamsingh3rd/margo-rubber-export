@@ -315,7 +315,7 @@ export function SkuHero({
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-16 md:pt-40">
       <span aria-hidden className="bg-accent-400/10 pointer-events-none absolute -top-24 -left-32 -z-10 size-[30rem] rounded-full blur-3xl" />
-      <Container>
+      <Container reveal={false}>
         {/* Sentence-case sans, matching the comp. The eyebrow treatment used
             elsewhere (mono, uppercase, wide tracking) is far wider per
             character and overflowed on long category names such as
@@ -938,7 +938,7 @@ export function SkuRelated({
 
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.slice(0, 3).map((r) => (
-            <li key={r.slug} className="rounded-card border-line hover:border-accent-400/40 overflow-hidden border bg-[#0D0F12] transition-colors">
+            <li key={r.slug} data-lift="" className="rounded-card border-line hover:border-accent-400/40 overflow-hidden border bg-[#0D0F12]">
               <Link href={`/products/${categorySlug}/${r.slug}`}>
                 <Plate k={SAMPLE.gallery.main} ratio="aspect-[16/9]" label="" className="rounded-none border-0 border-b" sizes="(min-width:1024px) 32vw, 100vw" />
                 <span className="block p-6">

@@ -47,7 +47,7 @@ export function IndustriesHero({
           <div className="from-canvas absolute inset-0 -z-10 bg-gradient-to-t from-0% to-transparent to-40%" />
         </>
       )}
-      <Container>
+      <Container reveal={false}>
         <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">
           <span className="bg-accent-400 size-1.5 rounded-full" />
           {badge}
@@ -136,7 +136,7 @@ export function IndustryGrid({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholder}
-              className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-pill border py-2.5 pr-4 pl-9 text-sm outline-none"
+              className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-pill border py-2.5 pr-4 pl-9 text-sm"
             />
           </label>
 
@@ -179,7 +179,8 @@ export function IndustryGrid({
               <Link
                 key={i.slug}
                 href={`/industries/${i.slug}`}
-                className="border-line bg-surface rounded-card group focus-visible:outline-accent-400 block overflow-hidden border transition-colors hover:border-[color:var(--color-line-accent)] focus-visible:outline-2 focus-visible:outline-offset-2"
+                data-lift=""
+                className="border-line bg-surface rounded-card group block overflow-hidden border hover:border-[color:var(--color-line-accent)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <Img
@@ -361,12 +362,12 @@ export function EnquiryPanel({
                     <textarea
                       rows={3}
                       placeholder={f.placeholder}
-                      className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm outline-none"
+                      className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm"
                     />
                   ) : f.type === "select" ? (
                     <select
                       defaultValue=""
-                      className="border-line bg-surface text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm outline-none"
+                      className="border-line bg-surface text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm"
                     >
                       <option value="" disabled>
                         {f.placeholder}
@@ -376,7 +377,7 @@ export function EnquiryPanel({
                     <input
                       type={f.type}
                       placeholder={f.placeholder}
-                      className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm outline-none"
+                      className="border-line bg-surface text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm"
                     />
                   )}
                 </label>
