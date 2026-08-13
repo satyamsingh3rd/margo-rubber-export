@@ -228,19 +228,39 @@ export function ExportHero({
   markets: readonly Pin[];
 }) {
   return (
-    <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-20 md:pt-48 md:pb-24">
+    <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-12 md:pt-48 md:pb-14">
       <Img
         k={image}
         fill
         priority
         sizes="100vw"
-        className="-z-20 object-cover brightness-[0.45]"
+        className="-z-20 object-cover brightness-[1.08] contrast-[1.04]"
       />
+      {/* Two scrims, not one, so the port photograph can actually be seen.
+          It was previously dimmed twice over — brightness 0.45 AND a vertical
+          wash starting at 78% black — which left the cranes and containers as
+          barely-readable shapes. The image is now pushed slightly past 1 (the
+          rest of the site's heroes sit at 0.85, but this photograph is a dusk
+          shot and starts darker than any of them), and the work of protecting
+          the copy is done by a horizontal scrim over the left column rather
+          than by flattening the whole frame. The vertical wash keeps only the
+          one job it is needed for:
+          fading the bottom edge into the section below — and it does that in
+          the last 20% only. Ramping from 45% down, as it did before, turned
+          the entire lower half of the frame into a dead black band. */}
       <div
         className="absolute inset-0 -z-10"
         style={{
           background:
-            "linear-gradient(to bottom, color-mix(in srgb, var(--color-canvas) 78%, transparent), color-mix(in srgb, var(--color-canvas) 92%, transparent) 45%, var(--color-canvas))",
+            "linear-gradient(to bottom, color-mix(in srgb, var(--color-canvas) 34%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 22%, transparent) 45%, color-mix(in srgb, var(--color-canvas) 40%, transparent) 80%, var(--color-canvas) 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(to right, color-mix(in srgb, var(--color-canvas) 64%, transparent), color-mix(in srgb, var(--color-canvas) 28%, transparent) 46%, transparent 70%)",
         }}
       />
       <Bloom className="top-1/4 -left-32 size-[32rem]" />
@@ -253,7 +273,10 @@ export function ExportHero({
 
         <Marked as="h1" size="hero" lines={h1Lines} className="mt-6" />
 
-        <p className="text-ink-3 mt-6 max-w-[52ch] leading-relaxed">{intro}</p>
+        {/* ink-2 rather than the ink-3 used for ledes elsewhere: this one sits
+            directly on photography rather than on a flat surface, and the
+            brighter image behind it costs the dimmer grey its contrast. */}
+        <p className="text-ink-2 mt-6 max-w-[52ch] leading-relaxed">{intro}</p>
 
         {/* The map itself now lives in ExportLaneSequence directly below,
             where it pins and draws each trade lane in turn. Rendering the
