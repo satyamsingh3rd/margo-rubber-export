@@ -59,7 +59,7 @@ export function IndustryHero({
           )}
         </>
       )}
-      <Container>
+      <Container reveal={false}>
         <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">
           <span className="bg-accent-400 size-1.5 rounded-full" />
           {badge}

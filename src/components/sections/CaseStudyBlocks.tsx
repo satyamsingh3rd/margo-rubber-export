@@ -193,7 +193,7 @@ export function CaseHero({
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-20 md:pt-48 md:pb-28">
       <Bloom className="top-1/4 -left-40 size-[32rem]" />
-      <Container>
+      <Container reveal={false}>
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <div>
             <BarEyebrow>{eyebrow}</BarEyebrow>

@@ -191,7 +191,7 @@ export function ResourceLibrary({
     <>
       {/* Filter bar */}
       <section className="bg-canvas border-line border-y py-6">
-        <Container>
+        <Container reveal={false}>
           <div className="flex flex-wrap items-center justify-between gap-5">
             <label className="relative w-full max-w-[20rem]">
               <span className="sr-only">{searchPlaceholder}</span>

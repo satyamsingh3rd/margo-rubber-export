@@ -49,7 +49,7 @@ export default async function ResourcesPage() {
           aria-hidden
           className="bg-accent-400/10 pointer-events-none absolute -top-20 -left-32 -z-10 size-[32rem] rounded-full blur-3xl"
         />
-        <Container>
+        <Container reveal={false}>
           <nav aria-label="Breadcrumb">
             <ol className="text-eyebrow text-ink-4 flex flex-wrap items-center gap-2 font-mono uppercase">
               {fm.breadcrumb.map((b, i) => (

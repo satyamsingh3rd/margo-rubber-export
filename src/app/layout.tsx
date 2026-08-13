@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { SiteFooter, SiteHeader } from "@/components/nav/SiteHeader";
+import { RevealObserver } from "@/components/ui/Reveal";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           a hydration mismatch. This suppresses that on <body> only; it does not
           mask mismatches in our own components. */}
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
+        <RevealObserver />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

@@ -115,6 +115,22 @@
   --text-eyebrow--letter-spacing: 0.18em;
   --text-eyebrow--font-weight: 500;
 
+  /* --- Motion --------------------------------------------
+     Before this, every transition on the site ran on Tailwind's untouched
+     150ms default, which is the timing you get when nobody picked one. Two
+     curves, deliberately:
+
+       entrance — decelerating hard (expo-out). Things arriving should cover
+                  most of the distance immediately and settle. Used for
+                  reveals and anything appearing.
+       standard — symmetrical. Used for hover, focus and state changes, where
+                  a dramatic curve reads as sluggish.
+
+     Tailwind v4 turns `--ease-*` into `ease-*` utilities, so these are
+     available as `ease-entrance` / `ease-standard`. */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
   /* --- Radii / layout ------------------------------------ */
   --radius-card: 0.75rem;
   --radius-pill: 999px;
@@ -183,6 +199,52 @@ body {
   :focus-visible {
     outline: 2px solid var(--color-accent-400);
     outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   SCROLL REVEAL
+
+   Markup opts in with `data-reveal`. A single observer mounted once in the
+   root layout watches every such element and stamps `data-revealed` when it
+   enters the viewport, once. See components/ui/Reveal.tsx.
+
+   `data-reveal` ALONE HIDES NOTHING. The hidden state keys off
+   `data-reveal-armed`, which only the observer adds, one line before it takes
+   responsibility for revealing that element again. If the script never runs,
+   the attribute never appears and the page renders complete and static. A
+   stylesheet-only hide would leave the site blank below the hero on any
+   scripting failure, which is not a risk worth a fade.
+
+   NEVER put `data-reveal` on anything in the first viewport. The observer
+   runs after hydration, so above-the-fold content would visibly blink out and
+   back, and if it is the LCP element that directly damages the metric. Heroes
+   are visible on arrival and gain nothing from revealing anyway.
+   ============================================================ */
+[data-reveal] {
+  transition:
+    opacity 600ms var(--ease-entrance),
+    transform 600ms var(--ease-entrance);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal-armed]:not([data-revealed]) {
+  opacity: 0;
+  /* transform only — never `top`/`margin`. Compositor-only, so a long page of
+     these costs no layout work. */
+  transform: translateY(12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The observer already returns early under this preference, so nothing is
+     armed. This is the belt to that braces: if the preference changes after
+     load, anything mid-flight collapses to the static page. */
+  [data-reveal-armed]:not([data-revealed]) {
+    opacity: 1;
+    transform: none;
+  }
+  [data-reveal] {
+    transition: none;
   }
 }
 
