@@ -1582,11 +1582,167 @@ export const utilityPageSchema = baseSchema.extend({
     .default([]),
 });
 
+/**
+ * SKU detail — /products/[category]/[product]
+ *
+ * Strategy D3 / Scenario 1 from §4.5: build the route and template now, ship
+ * noindex until real spec content exists. Structure complete, no thin-page
+ * penalty.
+ *
+ * The part LIST stays in the category file's `anchors:`, which remains the
+ * single source of truth and the 301 fragment map. This collection carries
+ * only the per-part DETAIL, keyed by the same id. A part with no file here
+ * still appears in the grid, just without a link — which is the per-part
+ * upgrade path as Margo's spec data arrives.
+ *
+ * Every spec field is optional on purpose. The template renders "On request"
+ * rather than a fabricated number, so a part can be published the moment its
+ * name is confirmed and filled in field by field afterwards.
+ */
+export const skuSchema = baseSchema.extend({
+  // Catalogue part names are legitimately short ("C Pad", "L Pad"). The 8-char
+  // h1 minimum on baseSchema is a guard for editorial page headings and is
+  // wrong here, so it is relaxed for this collection only.
+  h1: z.string().min(2),
+  navLabel: z.string().min(2),
+  /** Must match a category slug in src/content/products/. */
+  category: z.string().regex(/^[a-z0-9-]+$/),
+  eyebrow: z.string().optional(),
+  intro: z.string().min(30),
+  productCode: z.string().optional(),
+  stockLabel: z.string().optional(),
+
+  /** Hero gallery. Empty renders styled placeholder plates, not broken images. */
+  gallery: z
+    .object({
+      main: imageRefSchema.optional(),
+      thumbs: z.array(imageRefSchema).default([]),
+      overlay: z
+        .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
+        .default([]),
+    })
+    .default({ thumbs: [], overlay: [] }),
+
+  /** The four tiles beside the H1. */
+  quickSpecs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+
+  /** Quantity stepper under the quick specs. */
+  order: z
+    .object({ unit: z.string(), defaultQty: z.string(), minNote: z.string() })
+    .optional(),
+
+  assurances: z.array(z.string()).default([]),
+
+  dimensional: z
+    .object({
+      caption: z.string(),
+      widthNote: z.string(),
+      thicknessNote: z.string(),
+      tiles: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+      footnote: z.string().optional(),
+    })
+    .optional(),
+
+  specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+
+  compounds: z.array(z.string()).default([]),
+  compoundProperties: z.record(z.string(), z.array(z.string())).default({}),
+
+  advantages: z
+    .array(z.object({ icon: z.string(), name: z.string(), body: z.string() }))
+    .default([]),
+
+  applications: z
+    .array(z.object({ icon: z.string(), name: z.string(), body: z.string() }))
+    .default([]),
+
+  process: z.array(z.object({ name: z.string(), body: z.string() })).default([]),
+
+  quality: z
+    .object({
+      heading: z.string(),
+      body: z.string(),
+      certificates: z
+        .array(z.object({ name: z.string(), issuer: z.string(), validity: z.string() }))
+        .default([]),
+      metrics: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+      tour: z.object({ title: z.string(), note: z.string() }).optional(),
+    })
+    .optional(),
+
+  downloads: z
+    .array(z.object({ name: z.string(), format: z.string(), size: z.string(), icon: z.string() }))
+    .default([]),
+
+  faqs: z.array(faqSchema).default([]),
+
+  related: relatedSchema,
+  schemaTypes: z
+    .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
+    .default(["BreadcrumbList"]),
+});
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * LEGAL PAGES — /legal/privacy-policy, /legal/terms, /legal/export-compliance.
+ *
+ * Body copy is structured data rather than MDX prose, for one reason: the
+ * design renders a table of contents beside the text, and every entry has to
+ * resolve to a real anchor. Driving both from one `sections` array makes a
+ * TOC entry with no matching section, or a section missing from the TOC,
+ * unrepresentable — the failure mode a hand-written MDX body invites.
+ */
+
+/** One paragraph, one subheading, one bullet list, or one callout. */
+const legalBlockSchema = z.union([
+  z.object({ p: z.string().min(1) }),
+  z.object({ h: z.string().min(2) }),
+  z.object({ ul: z.array(z.string().min(1)).min(1) }),
+  /** Emphasised single line — "We never sell your personal information." */
+  z.object({ note: z.string().min(1) }),
+]);
+
+export type LegalBlock = z.infer<typeof legalBlockSchema>;
+
+const legalSectionSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/, "section ids are lowercase-kebab"),
+  title: z.string().min(3),
+  /**
+   * Shorter label for the TOC card, which is a third the width of the content
+   * column. The comp does this itself: the heading reads "How We Use Your
+   * Information" while its contents entry reads "How We Use Information".
+   * Falls back to `title`.
+   */
+  navLabel: z.string().min(3).optional(),
+  /** Key into the icon set in LegalToc. Unknown keys render the fallback. */
+  icon: z.string().default("doc"),
+  blocks: z.array(legalBlockSchema).default([]),
+});
+
+export const legalSchema = baseSchema.extend({
+  /** Pill above the H1 — "LEGAL & COMPLIANCE" in the comp. */
+  badge: z.string().min(3).default("Legal & Compliance"),
+  intro: z.string().min(40),
+  /**
+   * Rendered verbatim, not parsed and reformatted. A legal document's stated
+   * revision date is a factual claim about when counsel last reviewed it;
+   * `null` means nobody has told us, and the chip is omitted rather than
+   * defaulting to the build date and inventing one.
+   */
+  lastUpdated: z.string().min(4).nullable().default(null),
+  sections: z.array(legalSectionSchema).min(1),
+});
+
+export type LegalPage = z.infer<typeof legalSchema>;
+
 export const COLLECTIONS = {
   products: productCategorySchema,
   industries: industrySchema,
   resources: resourceSchema,
+  skus: skuSchema,
   pages: productsHubSchema,
+  legal: legalSchema,
 } as const;
 
 export type Collection = keyof typeof COLLECTIONS;
