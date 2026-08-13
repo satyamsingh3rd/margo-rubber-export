@@ -1682,12 +1682,67 @@ export const skuSchema = baseSchema.extend({
     .default(["BreadcrumbList"]),
 });
 
+/* ------------------------------------------------------------------ */
+
+/**
+ * LEGAL PAGES — /legal/privacy-policy, /legal/terms, /legal/export-compliance.
+ *
+ * Body copy is structured data rather than MDX prose, for one reason: the
+ * design renders a table of contents beside the text, and every entry has to
+ * resolve to a real anchor. Driving both from one `sections` array makes a
+ * TOC entry with no matching section, or a section missing from the TOC,
+ * unrepresentable — the failure mode a hand-written MDX body invites.
+ */
+
+/** One paragraph, one subheading, one bullet list, or one callout. */
+const legalBlockSchema = z.union([
+  z.object({ p: z.string().min(1) }),
+  z.object({ h: z.string().min(2) }),
+  z.object({ ul: z.array(z.string().min(1)).min(1) }),
+  /** Emphasised single line — "We never sell your personal information." */
+  z.object({ note: z.string().min(1) }),
+]);
+
+export type LegalBlock = z.infer<typeof legalBlockSchema>;
+
+const legalSectionSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/, "section ids are lowercase-kebab"),
+  title: z.string().min(3),
+  /**
+   * Shorter label for the TOC card, which is a third the width of the content
+   * column. The comp does this itself: the heading reads "How We Use Your
+   * Information" while its contents entry reads "How We Use Information".
+   * Falls back to `title`.
+   */
+  navLabel: z.string().min(3).optional(),
+  /** Key into the icon set in LegalToc. Unknown keys render the fallback. */
+  icon: z.string().default("doc"),
+  blocks: z.array(legalBlockSchema).default([]),
+});
+
+export const legalSchema = baseSchema.extend({
+  /** Pill above the H1 — "LEGAL & COMPLIANCE" in the comp. */
+  badge: z.string().min(3).default("Legal & Compliance"),
+  intro: z.string().min(40),
+  /**
+   * Rendered verbatim, not parsed and reformatted. A legal document's stated
+   * revision date is a factual claim about when counsel last reviewed it;
+   * `null` means nobody has told us, and the chip is omitted rather than
+   * defaulting to the build date and inventing one.
+   */
+  lastUpdated: z.string().min(4).nullable().default(null),
+  sections: z.array(legalSectionSchema).min(1),
+});
+
+export type LegalPage = z.infer<typeof legalSchema>;
+
 export const COLLECTIONS = {
   products: productCategorySchema,
   industries: industrySchema,
   resources: resourceSchema,
   skus: skuSchema,
   pages: productsHubSchema,
+  legal: legalSchema,
 } as const;
 
 export type Collection = keyof typeof COLLECTIONS;

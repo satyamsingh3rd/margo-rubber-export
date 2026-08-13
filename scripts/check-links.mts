@@ -32,12 +32,7 @@ import matter from "gray-matter";
 const SRC = "src";
 
 /** In the route map but not built yet. Not failures. */
-const PLANNED = new Set([
-  "/thank-you",
-  "/legal/privacy-policy",
-  "/legal/terms",
-  "/legal/export-compliance",
-]);
+const PLANNED = new Set<string>([]);
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
@@ -67,6 +62,7 @@ const slugs = (dir: string) =>
 for (const s of slugs("products")) live.add(`/products/${s}`);
 for (const s of slugs("industries")) live.add(`/industries/${s}`);
 for (const s of slugs("resources")) live.add(`/resources/${s}`);
+for (const s of slugs("legal")) live.add(`/legal/${s}`);
 
 /* ── What is linked? ────────────────────────────────────────────────────── */
 type Hit = { href: string; file: string };

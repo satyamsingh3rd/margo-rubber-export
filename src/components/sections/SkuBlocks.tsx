@@ -382,7 +382,22 @@ export function SkuHero({
 
           {/* Detail */}
           <div>
-            <Eyebrow>{eyebrow ?? `${categoryLabel} · Made to order`}</Eyebrow>
+            <Eyebrow>
+              {eyebrow ?? (
+                // Wrapped in one span, not left as two flex children: Eyebrow
+                // is `flex gap-4`, so a bare sibling would gain a 16px gap and
+                // shift the desktop spacing. Nested inline keeps text flow.
+                <span>
+                  {categoryLabel}
+                  {/* Mono uppercase at wide tracking is ~1.6× the width of the
+                      body sans, so "· Made to order" pushes a long category
+                      onto a second line below ~400px. The category alone is
+                      what orients the reader here; the qualifier is repeated
+                      verbatim on every card in the parts grid. */}
+                  <span className="hidden sm:inline"> · Made to order</span>
+                </span>
+              )}
+            </Eyebrow>
 
             <h1 className="text-display-3 mt-5">{h1}</h1>
 

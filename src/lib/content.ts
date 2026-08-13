@@ -158,6 +158,9 @@ export async function getContent<C extends Collection>(
     case "skus":
       mod = await import(`../content/skus/${slug}.mdx`);
       break;
+    case "legal":
+      mod = await import(`../content/legal/${slug}.mdx`);
+      break;
     default:
       throw new Error(`[content] Unknown collection "${collection}"`);
   }
