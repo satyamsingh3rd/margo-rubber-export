@@ -67,7 +67,17 @@
   --color-danger: #e5484d;
 
   /* --- Typography ---------------------------------------- */
-  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* TWO FAMILIES, SPLIT BY ROLE.
+     Until now one face set the whole site. Poppins carries the headings;
+     Source Sans 3 carries everything else. `--font-sans` is the default, so
+     body copy, buttons, labels and form controls inherit Source without any
+     component knowing about it, and the h1-h4 rule in @layer base is the only
+     thing that reaches for the display face.
+
+     Use `font-display` deliberately on the rare non-heading that should read
+     as display type; do not sprinkle it. */
+  --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-code), ui-monospace, "SFMono-Regular", monospace;
 
   /* Display scale — Figma headings are tight-tracked geometric */
@@ -173,10 +183,14 @@ body {
    layered utilities, so `h3 { color }` at the top level silently beat
    `text-accent-400` and rendered accent headings white. */
 @layer base {
+  /* The ONLY place the display face is applied. Every heading on the site
+     picks it up from here, so no component carries a font utility and the
+     split can be changed in one line. */
   h1,
   h2,
   h3,
   h4 {
+    font-family: var(--font-display);
     color: var(--color-ink);
     text-wrap: balance;
   }
