@@ -323,15 +323,198 @@ body[data-js] [data-reveal]:not([data-revealed]) {
 
 /* Sector marquee: CSS animation only, no JS listeners. */
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
-.animate-marquee { animation: marquee 40s linear infinite; }
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
 
 /* Pause when the pointer is over the strip. The sector names are real
    navigation targets, and a label that slides away while it is being read is
    the one thing a marquee must not do. Scoped to hover on the parent so the
    whole track stops, not the half the cursor happens to be over. */
 @media (hover: hover) {
-  .marquee-track:hover .animate-marquee { animation-play-state: paused; }
+  .marquee-track:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+}
+
+/* ============================================================
+   TRADE LANE SEQUENCE  (/export)
+
+   A pinned, scroll-scrubbed sequence: the map holds still while each trade
+   lane draws itself from Nashik to its destination in turn.
+
+   Runs entirely on CSS scroll-driven animation. `view-timeline` on the tall
+   outer section, `position: sticky` for the pin, and `animation-range`
+   slicing the pinned scroll into one window per market. No JavaScript, no
+   library, no client boundary.
+
+   LONGHANDS ONLY, DELIBERATELY. The `animation` shorthand resets
+   `animation-timeline` and `animation-range` to their initial values, which
+   silently detaches every one of these from the scroll timeline and plays
+   them once on load instead. Do not collapse these into `animation:`.
+
+   THREE GATES, ALL OF WHICH FAIL OPEN. Absent scroll-timeline support,
+   under reduced motion, or below 768px, none of this applies and the section
+   renders as a static map with every lane drawn and the markets listed under
+   it. That is what the markup is on its own; nothing is hidden by default.
+   The 768px gate is a judgement, not a limitation: 440vh of pinned scrolling
+   on a phone is a hostage situation, and the map is too small there to read.
+   ============================================================ */
+
+/* Eight stacked labels that crossfade. Without a timeline to separate them
+   they would all render at once, so they are opt-in only. */
+.lane-seq__focus {
+  display: none;
+}
+
+@keyframes lane-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes lane-pin {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes lane-focus {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes lane-row {
+  from {
+    opacity: 0.32;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lane-bar {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    @media (min-width: 768px) {
+      .lane-seq {
+        height: 440vh;
+        view-timeline-name: --lane-seq;
+        view-timeline-axis: block;
+      }
+
+      .lane-seq__stage {
+        position: sticky;
+        top: 0;
+        height: 100dvh;
+      }
+
+      .lane-seq__focus {
+        display: block;
+      }
+
+      .lane-draw,
+      .lane-pin,
+      .lane-focus,
+      .lane-row,
+      .lane-row__bar {
+        /* MUST be `auto`, not a time. On a progress-based timeline `auto`
+           is what makes an animation span its whole `animation-range`; any
+           explicit duration collapses it to a fraction of the range and the
+           animation never reports progress at any scroll position. The
+           initial value is `0s`, so this cannot be omitted either. */
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --lane-seq;
+      }
+
+      .lane-draw {
+        stroke-dasharray: 1;
+        animation-name: lane-draw;
+      }
+
+      .lane-pin {
+        /* Without these the scale would originate at the SVG's 0,0 and fling
+           each pin across the map instead of growing it in place. */
+        transform-box: fill-box;
+        transform-origin: center;
+        animation-name: lane-pin;
+      }
+
+      .lane-focus {
+        animation-name: lane-focus;
+      }
+
+      .lane-row {
+        animation-name: lane-row;
+      }
+
+      .lane-row__bar {
+        animation-name: lane-bar;
+      }
+
+      .lane-seq [data-lane="0"] {
+        animation-range: contain 6% contain 19%;
+      }
+      .lane-seq [data-lane="1"] {
+        animation-range: contain 16.5% contain 29.5%;
+      }
+      .lane-seq [data-lane="2"] {
+        animation-range: contain 27% contain 40%;
+      }
+      .lane-seq [data-lane="3"] {
+        animation-range: contain 37.5% contain 50.5%;
+      }
+      .lane-seq [data-lane="4"] {
+        animation-range: contain 48% contain 61%;
+      }
+      .lane-seq [data-lane="5"] {
+        animation-range: contain 58.5% contain 71.5%;
+      }
+      .lane-seq [data-lane="6"] {
+        animation-range: contain 69% contain 82%;
+      }
+      .lane-seq [data-lane="7"] {
+        animation-range: contain 79.5% contain 92.5%;
+      }
+    }
+  }
 }

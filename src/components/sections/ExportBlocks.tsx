@@ -272,7 +272,7 @@ export function ExportHero({
             role="img"
             aria-label={`Margo export destinations from ${hub.label}: ${markets.map((m) => m.chip).join(", ")}`}
           >
-            <WorldMapArt />
+            <WorldMapArt markets={markets} />
           </svg>
 
           {/* Anchor hit-areas positioned over the drawn pins.
