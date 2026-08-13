@@ -316,15 +316,24 @@ export function SkuHero({
     <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-16 md:pt-40">
       <span aria-hidden className="bg-accent-400/10 pointer-events-none absolute -top-24 -left-32 -z-10 size-[30rem] rounded-full blur-3xl" />
       <Container>
+        {/* Sentence-case sans, matching the comp. The eyebrow treatment used
+            elsewhere (mono, uppercase, wide tracking) is far wider per
+            character and overflowed on long category names such as
+            "Pads, Stoppers & Caps". Wraps rather than truncating, so the part
+            name is never cut off. */}
         <nav aria-label="Breadcrumb" className="mb-10">
-          <ol className="text-eyebrow text-ink-4 flex flex-wrap items-center gap-2 font-mono uppercase">
+          <ol className="text-ink-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
             <li><Link href="/" className="hover:text-ink transition-colors">Home</Link></li>
-            <li aria-hidden>›</li>
+            <li aria-hidden className="text-ink-4/50">&rsaquo;</li>
             <li><Link href="/products" className="hover:text-ink transition-colors">Rubber Products</Link></li>
-            <li aria-hidden>›</li>
-            <li><Link href={`/products/${categorySlug}`} className="hover:text-ink transition-colors">{categoryLabel}</Link></li>
-            <li aria-hidden>›</li>
-            <li className="text-ink-2">{productCode || h1}</li>
+            <li aria-hidden className="text-ink-4/50">&rsaquo;</li>
+            <li>
+              <Link href={`/products/${categorySlug}`} className="hover:text-ink transition-colors">
+                {categoryLabel}
+              </Link>
+            </li>
+            <li aria-hidden className="text-ink-4/50">&rsaquo;</li>
+            <li className="text-ink font-medium">{productCode || h1}</li>
           </ol>
         </nav>
 
@@ -337,11 +346,13 @@ export function SkuHero({
                 {stockLabel ?? SAMPLE.stockLabel}
               </span>
               {/* Floating spec card over the lower-right of the plate. */}
-              <dl className="rounded-card border-line absolute right-4 bottom-4 border bg-[#0D0F12]/95 px-5 py-4 backdrop-blur">
+              {/* Overlay card. Sized down on small screens: at desktop scale it
+                  covered most of the plate on a 375px viewport. */}
+              <dl className="rounded-card border-line absolute right-3 bottom-3 max-w-[58%] border bg-[#0D0F12]/95 px-3.5 py-3 backdrop-blur sm:right-4 sm:bottom-4 sm:max-w-none sm:px-5 sm:py-4">
                 {overlay.map((o) => (
-                  <div key={o.label} className="not-first:mt-4 not-first:border-line not-first:border-t not-first:pt-4">
+                  <div key={o.label} className="not-first:mt-2.5 not-first:border-line not-first:border-t not-first:pt-2.5 sm:not-first:mt-4 sm:not-first:pt-4">
                     <dt className="text-eyebrow text-ink-4 font-mono uppercase">{o.label}</dt>
-                    <dd className="text-ink mt-1 text-2xl leading-none font-semibold">
+                    <dd className="text-ink mt-0.5 text-lg leading-none font-semibold sm:mt-1 sm:text-2xl">
                       {o.value}
                       {o.note && <span className="text-ink-4 ml-1.5 text-xs font-normal">{o.note}</span>}
                     </dd>
