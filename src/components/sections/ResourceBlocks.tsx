@@ -203,7 +203,7 @@ export function ResourceLibrary({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="border-line-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-lg border bg-[#0D0F12] py-2.5 pr-4 pl-11 text-sm outline-none"
+                className="border-line-2 text-ink placeholder:text-ink-4 focus:border-accent-400 w-full rounded-lg border bg-[#0D0F12] py-2.5 pr-4 pl-11 text-sm"
               />
             </label>
 

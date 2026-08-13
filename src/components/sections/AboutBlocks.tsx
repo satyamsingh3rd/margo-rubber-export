@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
 import { TimelineSlider } from "@/components/sections/TimelineSlider";
+import { Bloom } from "@/components/ui/Bloom";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -275,16 +276,6 @@ export function Icon({
     >
       {ICONS[name]}
     </svg>
-  );
-}
-
-/** Soft accent bloom. The design bleeds one of these behind most bands. */
-function Bloom({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`bg-accent-400/10 pointer-events-none absolute -z-10 rounded-full blur-3xl ${className}`}
-    />
   );
 }
 
@@ -1395,7 +1386,7 @@ export function Closing({
               type="email"
               required
               placeholder={placeholder}
-              className="text-ink placeholder:text-ink-4 focus:border-accent-400 rounded-pill min-w-0 flex-1 border border-line-2 bg-surface-4/85 px-6 py-3.5 text-sm outline-none backdrop-blur"
+              className="text-ink placeholder:text-ink-4 focus:border-accent-400 rounded-pill min-w-0 flex-1 border border-line-2 bg-surface-4/85 px-6 py-3.5 text-sm backdrop-blur"
             />
             <button
               type="submit"

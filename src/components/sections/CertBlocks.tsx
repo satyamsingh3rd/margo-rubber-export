@@ -550,14 +550,14 @@ export function DocsPanel({
                   name={f.name}
                   rows={4}
                   placeholder={f.placeholder}
-                  className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0D0D0D] px-4 py-3 text-sm outline-none"
+                  className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0D0D0D] px-4 py-3 text-sm"
                 />
               ) : (
                 <input
                   name={f.name}
                   type={f.type}
                   placeholder={f.placeholder}
-                  className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0D0D0D] px-4 py-3 text-sm outline-none"
+                  className="border-line text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border bg-[#0D0D0D] px-4 py-3 text-sm"
                 />
               )}
             </label>

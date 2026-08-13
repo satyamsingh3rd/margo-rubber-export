@@ -168,6 +168,22 @@ body {
   p {
     text-wrap: pretty;
   }
+
+  /* ONE focus ring for the whole site.
+     There are 112 interactive elements across 22 component files; five files
+     had a designed ring and the rest fell through to the browser default,
+     which varies by engine and was never drawn against this palette. Setting
+     it here means every current and future control inherits the same
+     indicator without anyone remembering a utility class.
+
+     `:focus-visible`, not `:focus` — the ring appears for keyboard and
+     programmatic focus and stays out of the way of mouse users. Modern
+     browsers clip `outline` to `border-radius`, so pills and cards get a
+     correctly rounded ring for free. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-400);
+    outline-offset: 2px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -188,3 +204,11 @@ body {
   to   { transform: translateX(-50%); }
 }
 .animate-marquee { animation: marquee 40s linear infinite; }
+
+/* Pause when the pointer is over the strip. The sector names are real
+   navigation targets, and a label that slides away while it is being read is
+   the one thing a marquee must not do. Scoped to hover on the parent so the
+   whole track stops, not the half the cursor happens to be over. */
+@media (hover: hover) {
+  .marquee-track:hover .animate-marquee { animation-play-state: paused; }
+}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
 import { COMPOUNDS } from "@/content/site";
+import { Bloom } from "@/components/ui/Bloom";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -130,15 +131,6 @@ function Photo({
         />
       )}
     </div>
-  );
-}
-
-function Bloom({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`bg-accent-400/10 pointer-events-none absolute -z-10 rounded-full blur-3xl ${className}`}
-    />
   );
 }
 
@@ -1131,7 +1123,7 @@ type Field = {
 };
 
 const inputCls =
-  "mt-2 w-full rounded-lg border border-line-2 bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 outline-none focus:border-accent-400";
+  "mt-2 w-full rounded-lg border border-line-2 bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 focus:border-accent-400";
 
 function Control({ f }: { f: Field }) {
   if (f.type === "textarea") {

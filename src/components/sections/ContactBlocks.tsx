@@ -165,7 +165,7 @@ type Field = {
 };
 
 const inputCls =
-  "mt-2 w-full rounded-lg border border-[#1F242A] bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 outline-none focus:border-accent-400";
+  "mt-2 w-full rounded-lg border border-[#1F242A] bg-[#16191E] px-4 py-3 text-sm text-ink placeholder:text-ink-4 focus:border-accent-400";
 
 function FieldControl({ f }: { f: Field }) {
   if (f.type === "textarea") {
