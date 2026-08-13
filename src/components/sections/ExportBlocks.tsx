@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
-import { MAP_VIEWBOX, WorldMapArt } from "@/components/sections/WorldMapArt";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -219,7 +218,6 @@ export function ExportHero({
   h1Lines,
   intro,
   image,
-  hub,
   markets,
 }: {
   badge: string;
@@ -229,8 +227,6 @@ export function ExportHero({
   hub: { label: string; x: number; y: number };
   markets: readonly Pin[];
 }) {
-  const [, , W, H] = MAP_VIEWBOX.split(" ").map(Number);
-
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-20 md:pt-48 md:pb-24">
       <Img
@@ -259,48 +255,12 @@ export function ExportHero({
 
         <p className="text-ink-3 mt-6 max-w-[52ch] leading-relaxed">{intro}</p>
 
-        {/* Map plate. The artwork is the designed SVG; the pins on top are
-            real in-page anchors, so the map works without JavaScript. */}
-        <div className="rounded-card border-line relative mt-12 overflow-hidden border">
-          <svg
-            viewBox={MAP_VIEWBOX}
-            // fill="none" is load-bearing: the source SVG sets it on its root,
-            // and the trade-lane arcs are unclosed paths. Without it they fill
-            // solid black instead of drawing as hairlines.
-            fill="none"
-            className="h-auto w-full"
-            role="img"
-            aria-label={`Margo export destinations from ${hub.label}: ${markets.map((m) => m.chip).join(", ")}`}
-          >
-            <WorldMapArt markets={markets} />
-          </svg>
-
-          {/* Anchor hit-areas positioned over the drawn pins.
-              Hidden below md: at phone width the plate is ~330px, so 36px hit
-              areas overlap each other (Singapore and Malaysia sit ~10px apart).
-              The chip row below is the mobile affordance and has real tap
-              targets. */}
-          {markets.map((m) => (
-            <Link
-              key={m.slug}
-              href={`#${m.slug}`}
-              aria-label={`Jump to ${m.heading}`}
-              className="group absolute hidden -translate-x-1/2 -translate-y-1/2 md:block"
-              style={{
-                left: `${(m.pin.x / W) * 100}%`,
-                top: `${(m.pin.y / H) * 100}%`,
-              }}
-            >
-              <span className="grid size-9 place-items-center rounded-full">
-                <span className="border-accent-400/0 group-hover:border-accent-400/70 group-focus-visible:border-accent-400 size-7 rounded-full border-2 transition-colors" />
-              </span>
-              <span className="text-eyebrow border-line bg-canvas/90 text-ink pointer-events-none absolute top-full left-1/2 mt-1 -translate-x-1/2 rounded border px-2 py-1 font-mono whitespace-nowrap opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-                {m.chip}
-              </span>
-            </Link>
-          ))}
-        </div>
-
+        {/* The map itself now lives in ExportLaneSequence directly below,
+            where it pins and draws each trade lane in turn. Rendering the
+            same artwork here as well meant the page showed two maps within a
+            screen of each other. The chip row survives because it is the real
+            navigation into the market sections, and it is what carries the
+            tap targets on phones where the sequence does not run. */}
         <ul className="mt-6 flex flex-wrap gap-2.5">
           {markets.map((m) => (
             <li key={m.slug}>
