@@ -545,6 +545,29 @@ export const IMAGES = {
     alt: "Operators working a compression press on the Nashik production floor",
     status: "placeholder",
   },
+
+  /* ── SKU detail pages ────────────────────────────────────────────────
+     The three plates supplied with `single category.png`. They stand in for
+     per-part photography across every SKU until Margo shoots the real parts,
+     which is why they are shared rather than keyed per product. */
+  "sku.product": {
+    src: "/images/skus/77c79999d2988d3c3a879a7b62dff88f5e778975.png",
+    w: 800, h: 600,
+    alt: "Moulded rubber components photographed against a neutral backdrop",
+    status: "placeholder",
+  },
+  "sku.machining": {
+    src: "/images/skus/c35420853d8134a2dfd995d00337f53a5bab2b21.png",
+    w: 500, h: 400,
+    alt: "Operator setting up a machining pass on the shop floor",
+    status: "placeholder",
+  },
+  "sku.finishing": {
+    src: "/images/skus/d155b80b89739452527187ec53e6ab7c35e952b3.png",
+    w: 800, h: 600,
+    alt: "Grinding and finishing work throwing sparks in the workshop",
+    status: "placeholder",
+  },
 } as const satisfies Record<string, ImageEntry>;
 
 export type ImageKey = keyof typeof IMAGES;

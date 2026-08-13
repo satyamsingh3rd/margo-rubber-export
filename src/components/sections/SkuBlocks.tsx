@@ -32,6 +32,15 @@ import {
    placeholder at a stroke. */
 const SAMPLE = {
   stockLabel: "IN STOCK",
+  /* The three plates supplied with the design. Shared across every SKU until
+     Margo shoots the real parts; a SKU file with its own `gallery` overrides. */
+  gallery: {
+    main: "sku.product",
+    thumbs: ["sku.product", "sku.finishing", "sku.machining", "sku.product"],
+  },
+  advantageImages: { main: "sku.finishing", inset: "sku.machining" },
+  qualityBadge: { value: "99.7%", label: "QUALITY RATE", note: "first-pass yield avg." },
+  faqImage: "sku.finishing",
   overlay: [
     { label: "SHORE A", value: "70", note: "±5 pts tolerance" },
     { label: "TENSILE", value: "18", note: "MPa" },
@@ -300,7 +309,8 @@ export function SkuHero({
   const specs = quickSpecs.length ? quickSpecs : SAMPLE.quickSpecs;
   const ord = order ?? SAMPLE.order;
   const trust = assurances.length ? assurances : SAMPLE.assurances;
-  const thumbs = gallery.thumbs.length ? gallery.thumbs : [undefined, undefined, undefined, undefined];
+  const main = gallery.main ?? SAMPLE.gallery.main;
+  const thumbs = gallery.thumbs.length ? gallery.thumbs : SAMPLE.gallery.thumbs;
 
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-16 md:pt-40">
@@ -322,7 +332,7 @@ export function SkuHero({
           {/* Gallery */}
           <div>
             <div className="relative">
-              <Plate k={gallery.main} ratio="aspect-[4/3]" sizes="(min-width:1024px) 46vw, 100vw" />
+              <Plate k={main} ratio="aspect-[4/3]" sizes="(min-width:1024px) 46vw, 100vw" />
               <span className="text-eyebrow bg-accent-400 text-canvas absolute top-4 right-4 rounded px-2.5 py-1 font-mono">
                 {stockLabel ?? SAMPLE.stockLabel}
               </span>
@@ -435,7 +445,8 @@ export function SkuGallery({
   };
 }) {
   const dim = dimensional ?? SAMPLE.dimensional;
-  const thumbs = gallery.thumbs.length ? gallery.thumbs : [undefined, undefined, undefined, undefined];
+  const main = gallery.main ?? SAMPLE.gallery.main;
+  const thumbs = gallery.thumbs.length ? gallery.thumbs : SAMPLE.gallery.thumbs;
 
   return (
     <section className="bg-band border-line border-t py-16 md:py-20">
@@ -454,7 +465,7 @@ export function SkuGallery({
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]">
-          <Plate k={gallery.main} ratio="aspect-[16/10]" sizes="(min-width:1024px) 58vw, 100vw" />
+          <Plate k={main} ratio="aspect-[16/10]" sizes="(min-width:1024px) 58vw, 100vw" />
 
           <div className="grid gap-5">
             <ul className="grid grid-cols-2 gap-4">
@@ -624,9 +635,29 @@ export function SkuAdvantages({
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div className="relative pb-14">
-            <Plate ratio="aspect-[4/3]" className="w-[86%]" sizes="(min-width:1024px) 40vw, 90vw" />
+            <Plate
+              k={SAMPLE.advantageImages.main}
+              ratio="aspect-[4/3]"
+              className="w-[86%]"
+              sizes="(min-width:1024px) 40vw, 90vw"
+            />
+            {/* Quality-rate badge sits over the lower-left of the main plate. */}
+            <div className="border-accent-400 absolute top-[58%] left-0 border-l-2 bg-[#0D0F12]/95 px-5 py-4 backdrop-blur">
+              <p className="text-eyebrow text-accent-400 font-mono uppercase">
+                {SAMPLE.qualityBadge.label}
+              </p>
+              <p className="text-ink mt-1.5 text-3xl leading-none font-semibold">
+                {SAMPLE.qualityBadge.value}
+              </p>
+              <p className="text-ink-4 mt-1 text-xs">{SAMPLE.qualityBadge.note}</p>
+            </div>
             <div className="absolute right-0 bottom-0 w-[52%]">
-              <Plate ratio="aspect-[4/3]" label="" sizes="(min-width:1024px) 22vw, 45vw" />
+              <Plate
+                k={SAMPLE.advantageImages.inset}
+                ratio="aspect-[4/3]"
+                label=""
+                sizes="(min-width:1024px) 22vw, 45vw"
+              />
             </div>
           </div>
 
@@ -831,7 +862,7 @@ export function SkuFaq({ items }: { items: readonly { q: string; a: string }[] }
               Answers to the most common questions from engineering teams and
               procurement managers worldwide.
             </p>
-            <Plate ratio="aspect-[4/3]" className="mt-8" label="" sizes="(min-width:1024px) 22vw, 100vw" />
+            <Plate k={SAMPLE.faqImage} ratio="aspect-[4/3]" className="mt-8" label="" sizes="(min-width:1024px) 22vw, 100vw" />
           </div>
 
           {/* Native <details>: answers are in the HTML whether open or not. */}
@@ -883,7 +914,7 @@ export function SkuRelated({
           {items.slice(0, 3).map((r) => (
             <li key={r.slug} className="rounded-card border-line hover:border-accent-400/40 overflow-hidden border bg-[#0D0F12] transition-colors">
               <Link href={`/products/${categorySlug}/${r.slug}`}>
-                <Plate ratio="aspect-[16/9]" label="" className="rounded-none border-0 border-b" sizes="(min-width:1024px) 32vw, 100vw" />
+                <Plate k={SAMPLE.gallery.main} ratio="aspect-[16/9]" label="" className="rounded-none border-0 border-b" sizes="(min-width:1024px) 32vw, 100vw" />
                 <span className="block p-6">
                   <span className="text-ink block text-base font-semibold">{r.label}</span>
                   <span className="text-accent-400 mt-3 inline-flex items-center gap-2 text-sm font-medium">
