@@ -209,16 +209,20 @@ body {
    root layout watches every such element and stamps `data-revealed` when it
    enters the viewport, once. See components/ui/Reveal.tsx.
 
-   `data-reveal` ALONE HIDES NOTHING. The hidden state keys off
-   `data-reveal-armed`, which only the observer adds, one line before it takes
-   responsibility for revealing that element again. If the script never runs,
-   the attribute never appears and the page renders complete and static. A
-   stylesheet-only hide would leave the site blank below the hero on any
-   scripting failure, which is not a risk worth a fade.
+   `data-reveal` ALONE HIDES NOTHING. The hide is gated on `body[data-js]`,
+   set by an inline script before React hydrates. No script, no attribute,
+   nothing hidden — the page renders complete and static. A stylesheet-only
+   hide would leave the site blank below the hero on any scripting failure,
+   which is not a risk worth a fade.
+
+   Gating on one attribute on <body> rather than stamping every element is
+   also what keeps hydration intact. `cacheComponents` streams the page, so
+   marking individual nodes from an effect touches elements React has not
+   hydrated yet and throws a mismatch it refuses to patch up.
 
    NEVER put `data-reveal` on anything in the first viewport. The observer
-   runs after hydration, so above-the-fold content would visibly blink out and
-   back, and if it is the LCP element that directly damages the metric. Heroes
+   runs after hydration, so above-the-fold content would sit hidden until
+   then, and if it is the LCP element that directly damages the metric. Heroes
    are visible on arrival and gain nothing from revealing anyway.
    ============================================================ */
 [data-reveal] {
@@ -228,7 +232,7 @@ body {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-[data-reveal-armed]:not([data-revealed]) {
+body[data-js] [data-reveal]:not([data-revealed]) {
   opacity: 0;
   /* transform only — never `top`/`margin`. Compositor-only, so a long page of
      these costs no layout work. */
@@ -236,10 +240,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* The observer already returns early under this preference, so nothing is
-     armed. This is the belt to that braces: if the preference changes after
-     load, anything mid-flight collapses to the static page. */
-  [data-reveal-armed]:not([data-revealed]) {
+  /* The observer returns early under this preference and reveals nothing, so
+     the hide must be lifted here or the page would stay blank. */
+  body[data-js] [data-reveal]:not([data-revealed]) {
     opacity: 1;
     transform: none;
   }

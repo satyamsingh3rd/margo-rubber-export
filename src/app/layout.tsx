@@ -44,7 +44,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       {/* Browser extensions (ColorZilla's cz-shortcut-listen, Grammarly, etc.)
           inject attributes onto <body> before React hydrates, which reports as
           a hydration mismatch. This suppresses that on <body> only; it does not
-          mask mismatches in our own components. */}
+          mask mismatches in our own components.
+
+          It also covers RevealObserver, which sets `data-js` here once an
+          observer exists to reveal what the rule hides. An attribute rather
+          than a class, so React neither manages it nor strips it. */}
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         <RevealObserver />
         <SiteHeader />

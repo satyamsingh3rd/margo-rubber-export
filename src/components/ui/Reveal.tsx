@@ -11,107 +11,85 @@ import { useEffect } from "react";
  * Server Components and no client boundary is created per section. This is
  * the entire client cost of the motion layer: one component, no library.
  *
- * WHY JAVASCRIPT APPLIES THE HIDDEN STATE, NOT CSS
+ * TWO CONSTRAINTS PULL IN OPPOSITE DIRECTIONS, AND BOTH HAVE DRAWN BLOOD.
  *
- * The obvious build is to hide `[data-reveal]` in the stylesheet and let the
- * observer un-hide it. That was the first attempt and it is quietly dangerous:
- * the content is hidden whether or not the observer ever runs. Anything that
- * stops the effect — a bundle that fails to load, a hydration mismatch, a
- * browser without IntersectionObserver — leaves every section below the hero
- * permanently invisible, on a site whose whole strategy is being readable by
- * machines.
+ * 1. Hiding in CSS alone is fail-closed. If the bundle never loads, the page
+ *    is blank below the hero — unacceptable on a site whose entire strategy is
+ *    being readable by machines.
  *
- * So the hidden state is applied HERE, one line before the element is
- * observed. An element can only be invisible if this code is running and has
- * taken responsibility for revealing it again. No JavaScript means no
- * `data-reveal-armed`, which means the page renders exactly as it would have
- * without any of this.
+ * 2. Hiding by stamping an attribute onto each element from an effect is
+ *    fail-open but hydration-unsafe. `cacheComponents` streams the page, so
+ *    parts of the tree hydrate AFTER this effect runs. Marking a node React
+ *    has not hydrated yet produces "a tree hydrated but some attributes of the
+ *    server rendered HTML didn't match", which React explicitly will not patch
+ *    up. That is what the previous version did, and it threw on every page.
  *
- * Arming after paint would normally cause a flash. It does not here, because
- * revealed elements are below the fold by policy — heroes and the header pass
- * `reveal={false}` — so the user cannot see the element at the moment it is
- * armed. See the Container docblock in ui/Section.tsx.
+ * The resolution is to mark ONE element instead of every element: `data-js` on
+ * <body>, set here, which is what arms the hide rule in CSS. <body> carries
+ * `suppressHydrationWarning`, and an attribute is used rather than a class
+ * because `className` is a prop React owns and re-renders, while `data-js` is
+ * not, so React neither warns about it nor strips it later.
  *
- * A hidden document (a background tab) never computes intersections, so
- * nothing reveals while it is hidden. That resolves itself: the moment the tab
- * is shown the browser computes intersections and the callback fires.
+ * It does not need to be set before paint, which is what lets it live in an
+ * effect rather than an inline script. Everything that reveals is below the
+ * fold by policy, so at the moment the rule starts applying there is nothing
+ * on screen for it to affect. (An inline `<script>` was the first attempt and
+ * React objects to those inside components anyway: it does not execute them
+ * on the client.)
+ *
+ * Every early return below therefore leaves the page untouched, because
+ * `data-js` is set last — after the guards, immediately before observing. No
+ * JavaScript, no attribute, nothing hidden, and the page renders exactly as it
+ * would have without any of this.
  */
 export function RevealObserver() {
   // App Router keeps this component mounted across client navigations, so the
   // effect has to re-run per route or the next page's elements are never
-  // armed and never animate.
+  // observed and never animate.
   const pathname = usePathname();
 
   useEffect(() => {
-    // Leave the page exactly as rendered. Nothing is armed, so nothing can be
-    // hidden, which is the correct reading of the preference and also the
-    // safest branch.
+    // The stylesheet already un-hides everything under this preference, so
+    // returning here leaves a complete, static page.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Guard rather than assume. Without support, skipping the arm step leaves
-    // the page static and complete.
+    // Without support nothing would ever reveal, so never arm the hide.
     if (typeof IntersectionObserver === "undefined") return;
 
-    let io: IntersectionObserver | null = null;
-    let armed: HTMLElement[] = [];
+    const nodes = document.querySelectorAll<HTMLElement>(
+      "[data-reveal]:not([data-revealed])",
+    );
+    if (nodes.length === 0) return;
 
-    /**
-     * Never arm a hidden document.
-     *
-     * A hidden document computes no intersections and runs no transitions, so
-     * arming one hides content with nothing able to bring it back until the
-     * tab is shown. In principle the browser resolves that on
-     * `visibilitychange` by itself; waiting for the event rather than relying
-     * on it removes the assumption entirely, and a page nobody is looking at
-     * loses nothing by staying static.
-     */
-    const arm = () => {
-      if (io) return;
-      const nodes = document.querySelectorAll<HTMLElement>(
-        "[data-reveal]:not([data-revealed])",
-      );
-      if (nodes.length === 0) return;
-      io = build();
-      armed = Array.from(nodes);
-      armed.forEach((n) => {
-        n.setAttribute("data-reveal-armed", "");
-        io!.observe(n);
-      });
-    };
+    const io = new IntersectionObserver(
+      (entries, observer) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-revealed", "");
+          // Reveal is one-way. Unobserving as we go means a long page stops
+          // costing anything once the reader has passed it, and scrolling
+          // back up never replays.
+          observer.unobserve(entry.target);
+        }
+      },
+      // Fires slightly before the element is fully on screen, so the motion
+      // reads as already arriving rather than starting late.
+      { rootMargin: "0px 0px -8% 0px", threshold: 0 },
+    );
 
-    const onVisible = () => {
-      if (document.visibilityState === "visible") arm();
-    };
-
-    const build = () =>
-      new IntersectionObserver(
-        (entries, observer) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            entry.target.setAttribute("data-revealed", "");
-            // Reveal is one-way. Unobserving as we go means a long page stops
-            // costing anything once the reader has passed it, and scrolling
-            // back up never replays.
-            observer.unobserve(entry.target);
-          }
-        },
-        // Fires slightly before the element is fully on screen, so the motion
-        // reads as already arriving rather than starting late.
-        { rootMargin: "0px 0px -8% 0px", threshold: 0 },
-      );
-
-    if (document.visibilityState === "visible") arm();
-    else document.addEventListener("visibilitychange", onVisible);
+    // Arm the CSS hide only now that an observer exists to undo it, then
+    // observe. Anything that returned above leaves the page fully visible.
+    document.body.setAttribute("data-js", "");
+    nodes.forEach((n) => io.observe(n));
 
     return () => {
-      document.removeEventListener("visibilitychange", onVisible);
-      io?.disconnect();
-      // Un-arm on teardown. If this component unmounts while elements are
-      // still armed, they would be stranded invisible with nothing left to
-      // reveal them.
-      armed.forEach((n) => n.removeAttribute("data-reveal-armed"));
+      io.disconnect();
+      // If this ever unmounts, nothing is left to reveal what is still
+      // hidden, so lift the rule with it.
+      document.body.removeAttribute("data-js");
     };
   }, [pathname]);
 
   return null;
 }
+
