@@ -1607,15 +1607,75 @@ export const skuSchema = baseSchema.extend({
   navLabel: z.string().min(2),
   /** Must match a category slug in src/content/products/. */
   category: z.string().regex(/^[a-z0-9-]+$/),
+  eyebrow: z.string().optional(),
   intro: z.string().min(30),
-  /** Margo's internal part code, e.g. MRB-SBR-7040-HT. */
   productCode: z.string().optional(),
-  /** Compound codes from SITE.COMPOUNDS that this part can be made in. */
+  stockLabel: z.string().optional(),
+
+  /** Hero gallery. Empty renders styled placeholder plates, not broken images. */
+  gallery: z
+    .object({
+      main: imageRefSchema.optional(),
+      thumbs: z.array(imageRefSchema).default([]),
+      overlay: z
+        .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
+        .default([]),
+    })
+    .default({ thumbs: [], overlay: [] }),
+
+  /** The four tiles beside the H1. */
+  quickSpecs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+
+  /** Quantity stepper under the quick specs. */
+  order: z
+    .object({ unit: z.string(), defaultQty: z.string(), minNote: z.string() })
+    .optional(),
+
+  assurances: z.array(z.string()).default([]),
+
+  dimensional: z
+    .object({
+      caption: z.string(),
+      widthNote: z.string(),
+      thicknessNote: z.string(),
+      tiles: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+      footnote: z.string().optional(),
+    })
+    .optional(),
+
+  specs: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+
   compounds: z.array(z.string()).default([]),
-  specs: z
-    .array(z.object({ label: z.string(), value: z.string() }))
+  compoundProperties: z.record(z.string(), z.array(z.string())).default({}),
+
+  advantages: z
+    .array(z.object({ icon: z.string(), name: z.string(), body: z.string() }))
     .default([]),
-  applications: z.array(z.string()).default([]),
+
+  applications: z
+    .array(z.object({ icon: z.string(), name: z.string(), body: z.string() }))
+    .default([]),
+
+  process: z.array(z.object({ name: z.string(), body: z.string() })).default([]),
+
+  quality: z
+    .object({
+      heading: z.string(),
+      body: z.string(),
+      certificates: z
+        .array(z.object({ name: z.string(), issuer: z.string(), validity: z.string() }))
+        .default([]),
+      metrics: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
+      tour: z.object({ title: z.string(), note: z.string() }).optional(),
+    })
+    .optional(),
+
+  downloads: z
+    .array(z.object({ name: z.string(), format: z.string(), size: z.string(), icon: z.string() }))
+    .default([]),
+
+  faqs: z.array(faqSchema).default([]),
+
   related: relatedSchema,
   schemaTypes: z
     .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
