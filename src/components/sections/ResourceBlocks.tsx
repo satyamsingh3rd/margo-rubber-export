@@ -124,7 +124,7 @@ function IconTile({ name }: { name: string }) {
 /* ── guide card ─────────────────────────────────────────────────────────── */
 function GuideCard({ g, label }: { g: Guide; label: string }) {
   return (
-    <li className="rounded-card border-line hover:border-accent-400/40 flex flex-col border bg-[#0B0D10] p-7 transition-colors">
+    <li data-lift="" className="rounded-card border-line hover:border-accent-400/40 flex flex-col border bg-[#0B0D10] p-7">
       <IconTile name={g.icon} />
       <p className="text-eyebrow text-accent-400 mt-6 flex items-center gap-2.5 font-mono uppercase">
         {label}

@@ -242,6 +242,7 @@ export function ProductRange({
           <Link
             key={c.slug}
             href={`/products/${c.slug}`}
+            data-lift=""
             className={`group rounded-card relative isolate overflow-hidden ${
               c.span === "wide" ? "sm:col-span-2 sm:row-span-2" : ""
             }`}

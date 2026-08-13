@@ -260,6 +260,64 @@ body {
   }
 }
 
+/* ============================================================
+   INTERACTION STATES
+   ============================================================ */
+
+/* Panel crossfade for tab groups and the mobile nav.
+   Deliberately an ANIMATION, not a transition. These panels switch with
+   `hidden`, which toggles `display` — a property transitions cannot animate,
+   which is why every tab on the site swapped in a single frame. An animation
+   on the element that is currently displayed restarts each time it returns
+   from `display: none`, so the incoming panel fades without the layout
+   changes that a stacked-grid crossfade would force on tab groups whose
+   panels are different heights. */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+.panel-in {
+  animation: panel-in 220ms var(--ease-entrance) both;
+}
+
+/* Card hover. The site's card grids changed a border tint and nothing else.
+   `data-lift` adds the small rise and the accent bloom the design uses
+   elsewhere, on the compositor only so a grid of them stays cheap. */
+[data-lift] {
+  transition:
+    transform 200ms var(--ease-standard),
+    box-shadow 200ms var(--ease-standard),
+    border-color 200ms var(--ease-standard);
+}
+@media (hover: hover) {
+  [data-lift]:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 0 rgb(43 188 196 / 0.14) inset,
+      0 12px 28px -12px rgb(43 188 196 / 0.22);
+  }
+}
+/* Keyboard parity: the same affordance on focus, so a keyboard user gets the
+   feedback a mouse user does rather than only the focus ring. */
+[data-lift]:focus-within {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-in {
+    animation: none;
+  }
+  [data-lift] {
+    transition: none;
+  }
+  [data-lift]:hover,
+  [data-lift]:focus-within {
+    transform: none;
+  }
+}
+
 /* Sector marquee: CSS animation only, no JS listeners. */
 @keyframes marquee {
   from { transform: translateX(0); }

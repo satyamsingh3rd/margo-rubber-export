@@ -363,9 +363,26 @@ export function IndustryFAQ({ items }: { items: { q: string; a: string }[] }) {
               ⌄
             </span>
           </button>
-          {open === i && (
-            <p className="text-ink-4 px-5 pb-5 text-sm leading-relaxed">{f.a}</p>
-          )}
+          {/* The chevron rotated but the panel it controls appeared in a
+              single frame, so the affordance animated and the content did not.
+              `grid-template-rows: 0fr -> 1fr` animates height without
+              measuring anything in JavaScript; the inner element needs
+              `min-h-0` or it refuses to shrink below its content. The answer
+              stays mounted, so it remains findable by in-page search and by
+              crawlers whether or not it is open. */}
+          <div
+            className="grid transition-[grid-template-rows] duration-300 ease-standard motion-reduce:transition-none"
+            style={{ gridTemplateRows: open === i ? "1fr" : "0fr" }}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <p
+                className="text-ink-4 px-5 pb-5 text-sm leading-relaxed"
+                aria-hidden={open !== i}
+              >
+                {f.a}
+              </p>
+            </div>
+          </div>
         </div>
       ))}
     </div>

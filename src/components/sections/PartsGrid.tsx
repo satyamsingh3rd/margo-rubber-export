@@ -60,7 +60,8 @@ export function PartsGrid({
           id={p.id}
           // Clears the sticky header when an inbound redirect targets this
           // fragment directly.
-          className="rounded-card border-line hover:border-accent-400/40 group scroll-mt-28 border bg-[#080808] p-6 transition-colors"
+          data-lift=""
+          className="rounded-card border-line hover:border-accent-400/40 group scroll-mt-28 border bg-[#080808] p-6"
         >
           <p className="text-eyebrow text-ink-4 font-mono">
             {String(i + 1).padStart(2, "0")}

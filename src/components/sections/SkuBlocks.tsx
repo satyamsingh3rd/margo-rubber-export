@@ -938,7 +938,7 @@ export function SkuRelated({
 
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.slice(0, 3).map((r) => (
-            <li key={r.slug} className="rounded-card border-line hover:border-accent-400/40 overflow-hidden border bg-[#0D0F12] transition-colors">
+            <li key={r.slug} data-lift="" className="rounded-card border-line hover:border-accent-400/40 overflow-hidden border bg-[#0D0F12]">
               <Link href={`/products/${categorySlug}/${r.slug}`}>
                 <Plate k={SAMPLE.gallery.main} ratio="aspect-[16/9]" label="" className="rounded-none border-0 border-b" sizes="(min-width:1024px) 32vw, 100vw" />
                 <span className="block p-6">

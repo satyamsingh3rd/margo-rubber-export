@@ -232,7 +232,7 @@ export function UtilityPage({
               <li key={l.label}>
                 <Link
                   href={l.href}
-                  className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0B0D10] p-6 transition-colors"
+                  data-lift="" className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0B0D10] p-6 transition-colors"
                 >
                   <span className="border-accent-400/20 bg-accent-400/10 text-accent-400 grid size-10 shrink-0 place-items-center rounded-lg border">
                     <Icon name={l.icon} />

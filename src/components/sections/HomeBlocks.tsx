@@ -673,7 +673,7 @@ export function Sectors({
             <li key={s.name}>
               <Link
                 href={s.href}
-                className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0F1115] p-6 transition-colors"
+                data-lift="" className="rounded-card border-line hover:border-accent-400/40 flex h-full gap-4 border bg-[#0F1115] p-6"
               >
                 <IconTile name={s.icon} />
                 <div>

@@ -179,7 +179,8 @@ export function IndustryGrid({
               <Link
                 key={i.slug}
                 href={`/industries/${i.slug}`}
-                className="border-line bg-surface rounded-card group block overflow-hidden border transition-colors hover:border-[color:var(--color-line-accent)]"
+                data-lift=""
+                className="border-line bg-surface rounded-card group block overflow-hidden border hover:border-[color:var(--color-line-accent)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <Img

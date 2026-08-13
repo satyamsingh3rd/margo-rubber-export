@@ -89,6 +89,7 @@ export function MaterialSelector({
             id={`compound-${m.code}`}
             role="tabpanel"
             hidden={n !== i}
+            className="panel-in"
           >
             <p className="flex items-baseline gap-3">
               <span className="text-accent-400 font-mono text-lg font-semibold">

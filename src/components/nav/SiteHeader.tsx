@@ -79,7 +79,7 @@ export function SiteHeader() {
       {open && (
         <nav
           id="mobile-nav"
-          className="border-line bg-canvas border-t lg:hidden"
+          className="panel-in border-line bg-canvas border-t lg:hidden"
         >
           <Container reveal={false} className="py-4">
             <ul className="divide-line divide-y">
