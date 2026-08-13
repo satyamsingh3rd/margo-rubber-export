@@ -142,7 +142,48 @@ export function CertHero({
   actions: { label: string; href: string; variant: "primary" | "secondary" }[];
 }) {
   return (
-    <header className="relative isolate overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28">
+    <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-20 md:pt-44 md:pb-28">
+      {/* QC inspection rather than a press or a plant exterior: this page is
+          about a quality management system, and the dimensional-inspection
+          bench is the part of the floor that ISO 9001 actually governs. */}
+      <Img
+        k="certifications.facility.inspection"
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover brightness-[0.95] contrast-[1.02]"
+      />
+      {/* Same two-scrim treatment as the export hero: a vertical wash that
+          only fades the bottom edge into the section below, and a horizontal
+          one carrying the work of protecting the copy. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in srgb, var(--color-canvas) 40%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 28%, transparent) 45%, color-mix(in srgb, var(--color-canvas) 46%, transparent) 80%, var(--color-canvas) 100%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(to right, color-mix(in srgb, var(--color-canvas) 78%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 46%, transparent) 42%, color-mix(in srgb, var(--color-canvas) 30%, transparent) 62%, color-mix(in srgb, var(--color-canvas) 72%, transparent) 100%)",
+        }}
+      />
+      {/* The medallion is thin teal linework on a transparent ground, which
+          photography destroys. This puts a soft dark disc under it so it
+          reads as it does on the flat background, without boxing it in. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 right-0 -z-10 hidden size-[34rem] -translate-y-1/2 translate-x-1/4 rounded-full lg:block"
+        style={{
+          background:
+            "radial-gradient(closest-side, var(--color-canvas) 58%, color-mix(in srgb, var(--color-canvas) 72%, transparent) 78%, transparent 100%)",
+        }}
+      />
+
       <Container reveal={false}>
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_auto]">
           <div>
@@ -162,7 +203,9 @@ export function CertHero({
               ))}
             </h1>
 
-            <p className="text-ink-3 mt-6 max-w-[46ch] leading-relaxed">
+            {/* ink-2, not the ink-3 used for ledes on flat surfaces: this one
+                now sits on photography and the dimmer grey loses contrast. */}
+            <p className="text-ink-2 mt-6 max-w-[46ch] leading-relaxed">
               {intro}
             </p>
 
