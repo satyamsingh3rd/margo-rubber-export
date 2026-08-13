@@ -1,13 +1,34 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Poppins, Source_Sans_3, JetBrains_Mono } from "next/font/google";
 import { SiteFooter, SiteHeader } from "@/components/nav/SiteHeader";
 import { RevealObserver } from "@/components/ui/Reveal";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 // Self-hosted via next/font — never a Google Fonts CDN <link>.
-const display = Plus_Jakarta_Sans({
-  variable: "--font-display",
+//
+// Two families, not one. Everything on the site previously rendered in a
+// single face; headings and body are now separate, wired in globals.css.
+//
+// Variables are named after the FACE, not its role. `--font-display` is the
+// name next/font would generate here and is also the Tailwind theme token for
+// the heading stack, and having both would leave two different values fighting
+// over one custom property.
+//
+// Poppins has no variable cut on Google Fonts, so weights are explicit. Only
+// the ones the type scale actually asks for: 600 for h2/h3, 700 for the
+// display sizes and h1.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+// "Source Sans Pro" was retired in 2021 and is no longer served; Source Sans 3
+// is the same typeface, continued under its current name.
+const source = Source_Sans_3({
+  variable: "--font-source",
   subsets: ["latin"],
   display: "swap",
 });
@@ -39,7 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${display.variable} ${mono.variable} antialiased`}
+      className={`${poppins.variable} ${source.variable} ${mono.variable} antialiased`}
     >
       {/* Browser extensions (ColorZilla's cz-shortcut-listen, Grammarly, etc.)
           inject attributes onto <body> before React hydrates, which reports as

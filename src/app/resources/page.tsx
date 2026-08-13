@@ -4,6 +4,7 @@ import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { resourcesHubSchema } from "@/content/schemas";
 import { Container } from "@/components/ui/Section";
+import { Img } from "@/components/ui/Img";
 import {
   ResourceCta,
   ResourceLibrary,
@@ -45,6 +46,38 @@ export default async function ResourcesPage() {
   return (
     <>
       <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-12 md:pt-48">
+        {/* No `resources.*` group exists in the registry, so this borrows the
+            closest subject: a caliper on a moulded part. These guides are
+            about specifying dimensions and materials, and dimensional
+            measurement is that in one frame. Worth its own photograph on the
+            shoot list rather than a borrowed one. */}
+        <Img
+          k="about.story.gauge"
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover brightness-[0.9] contrast-[1.02]"
+        />
+        {/* Same two-scrim treatment as the export and certifications heroes:
+            the vertical wash only fades the bottom edge into the section
+            below, and the horizontal one does the work of protecting the
+            copy, so the photograph is not flattened to do both jobs. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(to bottom, color-mix(in srgb, var(--color-canvas) 42%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 30%, transparent) 45%, color-mix(in srgb, var(--color-canvas) 48%, transparent) 80%, var(--color-canvas) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(to right, color-mix(in srgb, var(--color-canvas) 76%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 44%, transparent) 48%, transparent 78%)",
+          }}
+        />
         <span
           aria-hidden
           className="bg-accent-400/10 pointer-events-none absolute -top-20 -left-32 -z-10 size-[32rem] rounded-full blur-3xl"
@@ -83,7 +116,9 @@ export default async function ResourcesPage() {
             ))}
           </h1>
 
-          <p className="text-ink-3 mt-6 max-w-[52ch] leading-relaxed">
+          {/* ink-2, matching the other photographic heroes: the dimmer
+              grey used for ledes on flat surfaces loses contrast here. */}
+          <p className="text-ink-2 mt-6 max-w-[52ch] leading-relaxed">
             {fm.intro}
           </p>
 

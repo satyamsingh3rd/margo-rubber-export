@@ -67,11 +67,27 @@
   --color-danger: #e5484d;
 
   /* --- Typography ---------------------------------------- */
-  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* TWO FAMILIES, SPLIT BY ROLE.
+     Until now one face set the whole site. Poppins carries the headings;
+     Source Sans 3 carries everything else. `--font-sans` is the default, so
+     body copy, buttons, labels and form controls inherit Source without any
+     component knowing about it, and the h1-h4 rule in @layer base is the only
+     thing that reaches for the display face.
+
+     Use `font-display` deliberately on the rare non-heading that should read
+     as display type; do not sprinkle it. */
+  --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-code), ui-monospace, "SFMono-Regular", monospace;
 
-  /* Display scale — Figma headings are tight-tracked geometric */
-  --text-display: 4.25rem;
+  /* Display scale — Figma headings are tight-tracked geometric.
+     RE-TUNED FOR POPPINS. These sizes were measured against Plus Jakarta
+     Sans; Poppins sets roughly 9% wider at the same size, which pushed
+     authored heading lines back into wrapping. On /products the h1 column is
+     576px and "for Every Industry" needed 615px at 68px, so a line the
+     content had already broken deliberately broke a second time.
+     Every step below is scaled down ~9% to restore the previous set width. */
+  --text-display: 3.75rem;
   --text-display--line-height: 1.02;
   --text-display--letter-spacing: -0.03em;
   --text-display--font-weight: 700;
@@ -80,7 +96,7 @@
      below it is a step smaller, sampled at ~52px in the /about comp. At the
      hero size these headings overflow the 564px grid columns and wrap to
      four lines. */
-  --text-display-2: 3.25rem;
+  --text-display-2: 3rem;
   --text-display-2--line-height: 1.06;
   --text-display-2--letter-spacing: -0.028em;
   --text-display-2--font-weight: 700;
@@ -88,17 +104,17 @@
   /* Column-constrained section headings. At --text-display-2 the longer ones
      ("Industrial Responsibility", "Your Engineering Partner,") overflow a
      564px grid column and wrap to three lines; the comp runs them at ~48px. */
-  --text-display-3: 3rem;
+  --text-display-3: 2.75rem;
   --text-display-3--line-height: 1.07;
   --text-display-3--letter-spacing: -0.026em;
   --text-display-3--font-weight: 700;
 
-  --text-h1: 3rem;
+  --text-h1: 2.75rem;
   --text-h1--line-height: 1.06;
   --text-h1--letter-spacing: -0.025em;
   --text-h1--font-weight: 700;
 
-  --text-h2: 2rem;
+  --text-h2: 1.875rem;
   --text-h2--line-height: 1.15;
   --text-h2--letter-spacing: -0.02em;
   --text-h2--font-weight: 600;
@@ -147,11 +163,11 @@
    supports at the top level). */
 @media (max-width: 767px) {
   :root {
-    --text-display: 2.5rem;
-    --text-display-2: 2.125rem;
-    --text-display-3: 2rem;
-    --text-h1: 2rem;
-    --text-h2: 1.5rem;
+    --text-display: 2.25rem;
+    --text-display-2: 1.9375rem;
+    --text-display-3: 1.8125rem;
+    --text-h1: 1.8125rem;
+    --text-h2: 1.375rem;
   }
 }
 
@@ -173,10 +189,14 @@ body {
    layered utilities, so `h3 { color }` at the top level silently beat
    `text-accent-400` and rendered accent headings white. */
 @layer base {
+  /* The ONLY place the display face is applied. Every heading on the site
+     picks it up from here, so no component carries a font utility and the
+     split can be changed in one line. */
   h1,
   h2,
   h3,
   h4 {
+    font-family: var(--font-display);
     color: var(--color-ink);
     text-wrap: balance;
   }
