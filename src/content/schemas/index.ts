@@ -942,12 +942,14 @@ export const homePageSchema = baseSchema.extend({
     items: z
       .array(
         z.object({
-          tag: z.string(),
           name: z.string(),
-          body: z.string(),
+          /* The standards/type strip under each name, e.g.
+             "AS568 / BS1806 / Metric". Replaces the old marketing `tag` +
+             `body` + per-card CTA: the comp's tiles carry a name and a spec
+             line only. */
+          spec: z.string(),
           image: imageRefSchema,
           href: z.string(),
-          ctaLabel: z.string(),
         }),
       )
       .min(1),
@@ -1015,19 +1017,6 @@ export const homePageSchema = baseSchema.extend({
   materials: homeHead.extend({
     axis: z.object({ min: z.number(), mid: z.number(), max: z.number() }),
     footnote: z.string(),
-  }),
-
-  testimonials: homeHead.extend({
-    items: z
-      .array(
-        z.object({
-          stars: z.number().min(1).max(5).default(5),
-          quote: z.string().min(40),
-          name: z.string(),
-          role: z.string(),
-        }),
-      )
-      .min(1),
   }),
 
   cta: homeHead.extend({
