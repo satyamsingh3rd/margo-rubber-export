@@ -1684,6 +1684,63 @@ export const skuSchema = baseSchema.extend({
 /* ------------------------------------------------------------------ */
 
 /**
+ * SITE FOOTER — every string the footer renders, in one content file.
+ *
+ * Deliberately not in navigation.ts. The footer is almost entirely copy and
+ * links, which is exactly what a non-technical editor needs to change, and a
+ * CMS can be pointed at one validated content file far more easily than at a
+ * TypeScript module. Nothing below is hardcoded in the component.
+ */
+const footerLinkSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+});
+
+export const footerSchema = z.object({
+  slug: z.string(),
+  brand: z.object({
+    blurb: z.string().min(20),
+    phone: z.string().min(6),
+    email: z.string().min(5),
+    address: z.string().min(10),
+  }),
+  /**
+   * Rendered only where `href` is filled in. Margo's social accounts are not
+   * known, so the entries exist with empty hrefs and the component skips
+   * them: an editor fills the URL and the icon appears, and until then no
+   * dead link ships.
+   */
+  social: z
+    .array(
+      z.object({
+        label: z.string().min(2),
+        icon: z.enum(["linkedin", "twitter", "youtube"]),
+        href: z.string().default(""),
+      }),
+    )
+    .default([]),
+  columns: z
+    .array(
+      z.object({
+        heading: z.string().min(2),
+        links: z.array(footerLinkSchema).min(1),
+      }),
+    )
+    .min(1),
+  cta: z.object({
+    heading: z.string().min(10),
+    body: z.string().min(10),
+    action: footerLinkSchema,
+  }),
+  legal: z.array(footerLinkSchema).min(1),
+  copyright: z.string().min(10),
+  badge: z.string().min(4),
+  confirmWithMargo: z.array(z.string()).default([]),
+});
+
+/* ------------------------------------------------------------------ */
+
+/**
  * LEGAL PAGES — /legal/privacy-policy, /legal/terms, /legal/export-compliance.
  *
  * Body copy is structured data rather than MDX prose, for one reason: the

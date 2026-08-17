@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Source_Sans_3, JetBrains_Mono } from "next/font/google";
-import { SiteFooter, SiteHeader } from "@/components/nav/SiteHeader";
+import { SiteHeader } from "@/components/nav/SiteHeader";
+import { SiteFooter } from "@/components/nav/SiteFooter";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
