@@ -136,6 +136,44 @@ function Photo({
 
 /* ── icons: drawn paths, never Unicode glyphs ───────────────────────────── */
 const ICONS: Record<string, React.ReactNode> = {
+  /* Added for the nine-sector grid. The previous six cards reused car /
+     heart / chip / droplet / wrench / package; Mining, Oil & Gas, Pumps &
+     Valves, HVAC and Agriculture had no glyph of their own. */
+  pickaxe: (
+    <>
+      <path d="M3.5 20.5 12 12" />
+      <path d="M5.5 9.5a11 11 0 0 1 13 0" />
+      <path d="M9.5 5.5a11 11 0 0 1 9 9" />
+      <path d="m10.5 10.5 3 3" />
+    </>
+  ),
+  fuel: (
+    <>
+      <path d="M4 20.5V6a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v14.5M3 20.5h11" />
+      <path d="M4 11h9" />
+      <path d="M16 8.5 18.5 11v6a1.8 1.8 0 0 0 3.5 0v-7.6L19 6.5" />
+    </>
+  ),
+  gauge: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m12 12 4-3.2" />
+      <path d="M12 3.5v2M20.5 12h-2M12 20.5v-2M3.5 12h2" />
+    </>
+  ),
+  wind: (
+    <>
+      <path d="M3.5 8.5h9a2.8 2.8 0 1 0-2.8-2.8" />
+      <path d="M3.5 12.5h13a2.8 2.8 0 1 1-2.8 2.8" />
+      <path d="M3.5 16.5h6" />
+    </>
+  ),
+  leaf: (
+    <>
+      <path d="M4.5 19.5c0-8 5-13 15-13 0 10-5 14-11 14-2.2 0-4-1.6-4-1z" />
+      <path d="M9 15c2.5-3 5.5-5 9-6" />
+    </>
+  ),
   shield: <path d="M12 3.2 19 6v5.6c0 4-2.9 7.4-7 9.2-4.1-1.8-7-5.2-7-9.2V6z" />,
   bolt: <path d="M13.5 3 5.5 13.5H11l-.5 7.5 8-10.5H13z" />,
   gear: (

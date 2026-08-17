@@ -957,6 +957,11 @@ export const homePageSchema = baseSchema.extend({
     items: z
       .array(
         z.object({
+          /* Mirrors the ICONS map in HomeBlocks. Kept as an enum rather than a
+             free string so a typo fails the build instead of rendering a
+             blank tile. `wrench` and `package` are retained: they belonged to
+             the retired "Mechanical Engineering" and "Export & OEM" cards and
+             are still available if a sector needs them. */
           icon: z.enum([
             "car",
             "heart",
@@ -964,6 +969,11 @@ export const homePageSchema = baseSchema.extend({
             "droplet",
             "wrench",
             "package",
+            "pickaxe",
+            "fuel",
+            "gauge",
+            "wind",
+            "leaf",
           ]),
           name: z.string(),
           body: z.string(),
