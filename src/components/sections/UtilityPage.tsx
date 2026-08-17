@@ -137,7 +137,7 @@ export function UtilityPage({
         aria-hidden
         className="bg-accent-400/10 pointer-events-none absolute -top-24 left-1/2 -z-10 size-[34rem] -translate-x-1/2 rounded-full blur-3xl"
       />
-      <Container reveal={false}>
+      <Container>
         <div className="max-w-[46rem]">
           {showTick && <div className="mb-8">{<Tick />}</div>}
 

@@ -375,7 +375,7 @@ export function AboutHero({
         }}
       />
 
-      <Container reveal={false}>
+      <Container>
         <div className="relative">
           <div className="max-w-[46rem]">
             <Pill>{badge}</Pill>

@@ -184,7 +184,7 @@ export function CertHero({
         }}
       />
 
-      <Container reveal={false}>
+      <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_auto]">
           <div>
             <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">

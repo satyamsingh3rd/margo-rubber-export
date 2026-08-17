@@ -315,7 +315,7 @@ export function SkuHero({
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-16 md:pt-40">
       <span aria-hidden className="bg-accent-400/10 pointer-events-none absolute -top-24 -left-32 -z-10 size-[30rem] rounded-full blur-3xl" />
-      <Container reveal={false}>
+      <Container>
         {/* Sentence-case sans, matching the comp. The eyebrow treatment used
             elsewhere (mono, uppercase, wide tracking) is far wider per
             character and overflowed on long category names such as

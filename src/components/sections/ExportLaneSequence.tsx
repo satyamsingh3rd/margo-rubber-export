@@ -54,7 +54,7 @@ export function ExportLaneSequence({
   return (
     <section className="lane-seq bg-canvas relative">
       <div className="lane-seq__stage flex items-center py-16 md:py-0">
-        <Container reveal={false}>
+        <Container>
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-14">
             {/* ── Map ────────────────────────────────────────────────── */}
             <div className="rounded-card border-line relative overflow-hidden border">

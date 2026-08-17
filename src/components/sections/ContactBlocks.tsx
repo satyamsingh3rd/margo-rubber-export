@@ -37,7 +37,7 @@ export function ContactHero({
         </>
       )}
 
-      <Container reveal={false}>
+      <Container>
         <p className="text-eyebrow text-accent-400 font-mono uppercase">
           {badge}
         </p>

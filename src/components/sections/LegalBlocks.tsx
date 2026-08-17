@@ -71,7 +71,7 @@ export function LegalHero({
         className="to-surface-2 pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent"
       />
 
-      <Container reveal={false} className="relative">
+      <Container className="relative">
         <nav aria-label="Breadcrumb">
           <ol className="text-ink-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
             <li>

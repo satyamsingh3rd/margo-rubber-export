@@ -265,7 +265,7 @@ export function ExportHero({
       />
       <Bloom className="top-1/4 -left-32 size-[32rem]" />
 
-      <Container reveal={false}>
+      <Container>
         <span className="text-eyebrow border-accent-400/35 bg-accent-400/8 text-accent-400 inline-flex items-center gap-2.5 rounded-pill border px-3.5 py-1.5 font-mono uppercase backdrop-blur">
           <Icon name="globe" className="size-3.5" />
           {badge}

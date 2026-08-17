@@ -25,7 +25,7 @@ export function SiteHeader() {
 
   return (
     <header className="border-line bg-canvas/80 fixed inset-x-0 top-0 z-50 border-b backdrop-blur">
-      <Container reveal={false} className="flex h-20 items-center gap-8">
+      <Container className="flex h-20 items-center gap-8">
         <Link
           href="/"
           className="text-ink shrink-0 font-bold tracking-tight"
@@ -81,7 +81,7 @@ export function SiteHeader() {
           id="mobile-nav"
           className="panel-in border-line bg-canvas border-t lg:hidden"
         >
-          <Container reveal={false} className="py-4">
+          <Container className="py-4">
             <ul className="divide-line divide-y">
               {NAV.map((n) => (
                 <li key={n.label}>
@@ -108,7 +108,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="border-line bg-surface-2 border-t py-16">
-      <Container reveal={false}>
+      <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,260px)_1fr]">
           {/* Identity block */}
           <div>

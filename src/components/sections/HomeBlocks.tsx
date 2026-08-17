@@ -365,7 +365,7 @@ export function HomeHero({
         <circle cx="300" cy="300" r="164" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35" />
       </svg>
 
-      <Container reveal={false}>
+      <Container>
         <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div>
             <Rule>{eyebrow}</Rule>

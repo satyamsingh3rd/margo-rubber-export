@@ -66,7 +66,7 @@ export default async function ResourceGuidePage(
           aria-hidden
           className="bg-accent-400/10 pointer-events-none absolute -top-24 -left-32 -z-10 size-[30rem] rounded-full blur-3xl"
         />
-        <Container reveal={false}>
+        <Container>
           <nav aria-label="Breadcrumb">
             <ol className="text-eyebrow text-ink-4 flex flex-wrap items-center gap-2 font-mono uppercase">
               <li>
