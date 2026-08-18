@@ -388,6 +388,9 @@ export const productsHubSchema = baseSchema.extend({
         applications: z.array(z.string()).default([]),
       }),
     ),
+    /** Closing line under the grid, from the comp: a route out for anyone
+     *  whose material is not one of the six. */
+    cta: z.object({ label: z.string(), href: z.string() }).optional(),
   }).optional(),
 
   sectors: z.object({
