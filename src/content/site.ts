@@ -29,12 +29,17 @@ export const SITE = {
   postalCode: "422010", // confirmed in both catalogue and proposal
   country: "IN",
 
-  /** CONFIRMED. Three addresses existed across Margo's docs (admin@ /
-   *  rediffmail / info@) and the Figma contact page showed
-   *  rfq@margorubber.COM on the wrong TLD. admin@margorubber.in is the one
-   *  Margo confirmed, and it is what the homepage comp prints under the
-   *  enquiry form. Closes B6. */
-  email: "admin@margorubber.in" as string | null,
+  /** CONFIRMED as info@margorubber.in, 18 Aug 2026.
+   *
+   *  Four addresses had been in circulation: admin@, a rediffmail, info@, and
+   *  rfq@margorubber.COM on the wrong TLD in the Figma contact page. The
+   *  footer comp printed admin@, which is why it was briefly used here, but
+   *  info@ is the only one Margo can actually account for. B6's original
+   *  recommendation was info@ and that is where it has landed.
+   *
+   *  This is BOTH the published contact address and the recipient for
+   *  enquiries from the site. One address, not two to keep in step. */
+  email: "info@margorubber.in" as string | null,
 
   /** B7 — Mehboob Shaikh (Proprietor) vs Ayyaz Shaikh (Development Head).
    *  Proposal names Ayyaz as leading customer relations — default to Ayyaz. */
