@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { Container, Eyebrow, Section } from "@/components/ui/Section";
@@ -44,6 +45,7 @@ export default async function ProductsHubPage() {
 
       <Section
         id="range"
+        align="center"
         eyebrow={fm.range.eyebrow}
         eyebrowVariant="rule"
         accentLastWords={1}
@@ -128,6 +130,18 @@ export default async function ProductsHubPage() {
           body={fm.compounds.body}
         >
           <CompoundSelector items={fm.compounds.items} />
+
+          {fm.compounds.cta && (
+            <p className="mt-8 text-center">
+              <Link
+                href={fm.compounds.cta.href}
+                className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+              >
+                {fm.compounds.cta.label}
+                <span aria-hidden>&rarr;</span>
+              </Link>
+            </p>
+          )}
         </Section>
       )}
 

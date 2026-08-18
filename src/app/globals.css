@@ -152,9 +152,10 @@
   --radius-pill: 999px;
   --spacing-gutter: 1.5rem;
   /* Design canvas is 1400px with a 1184px content column (x108 to x1292).
-     1232 = 1184 content + 2x24px padding, so at a 1400px viewport the gutter
-     lands on 108px exactly, matching the design. */
-  --container-site: 1232px;
+     Section gutters are now 50px each side, so the max-width carries that:
+     1284 = 1184 content + 2x50px padding. Left at 1232 the content column
+     would have lost 52px and headings would have re-wrapped. */
+  --container-site: 1284px;
 }
 
 /* Mobile display scale — no mobile frames exist in Figma, so this is
@@ -219,55 +220,6 @@ body {
   :focus-visible {
     outline: 2px solid var(--color-accent-400);
     outline-offset: 2px;
-  }
-}
-
-/* ============================================================
-   SCROLL REVEAL
-
-   Markup opts in with `data-reveal`. A single observer mounted once in the
-   root layout watches every such element and stamps `data-revealed` when it
-   enters the viewport, once. See components/ui/Reveal.tsx.
-
-   `data-reveal` ALONE HIDES NOTHING. The hide is gated on `body[data-js]`,
-   set by an inline script before React hydrates. No script, no attribute,
-   nothing hidden — the page renders complete and static. A stylesheet-only
-   hide would leave the site blank below the hero on any scripting failure,
-   which is not a risk worth a fade.
-
-   Gating on one attribute on <body> rather than stamping every element is
-   also what keeps hydration intact. `cacheComponents` streams the page, so
-   marking individual nodes from an effect touches elements React has not
-   hydrated yet and throws a mismatch it refuses to patch up.
-
-   NEVER put `data-reveal` on anything in the first viewport. The observer
-   runs after hydration, so above-the-fold content would sit hidden until
-   then, and if it is the LCP element that directly damages the metric. Heroes
-   are visible on arrival and gain nothing from revealing anyway.
-   ============================================================ */
-[data-reveal] {
-  transition:
-    opacity 600ms var(--ease-entrance),
-    transform 600ms var(--ease-entrance);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-body[data-js] [data-reveal]:not([data-revealed]) {
-  opacity: 0;
-  /* transform only — never `top`/`margin`. Compositor-only, so a long page of
-     these costs no layout work. */
-  transform: translateY(12px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* The observer returns early under this preference and reveals nothing, so
-     the hide must be lifted here or the page would stay blank. */
-  body[data-js] [data-reveal]:not([data-revealed]) {
-    opacity: 1;
-    transform: none;
-  }
-  [data-reveal] {
-    transition: none;
   }
 }
 

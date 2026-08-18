@@ -3,28 +3,12 @@ import type { ReactNode } from "react";
 export function Container({
   children,
   className = "",
-  reveal = true,
 }: {
   children: ReactNode;
   className?: string;
-  /**
-   * Scroll-reveal on entering the viewport. On by default because almost
-   * every section's content passes through a Container, which makes this the
-   * one place the motion layer can be applied without touching 22 files.
-   *
-   * Pass `false` for anything in the first viewport — heroes, the header, the
-   * footer. Reveal is driven by an observer that runs after hydration, so an
-   * above-the-fold element would sit invisible until then, and if it happens
-   * to be the LCP element that is a measurable regression rather than a
-   * flourish. See globals.css → SCROLL REVEAL.
-   */
-  reveal?: boolean;
 }) {
   return (
-    <div
-      data-reveal={reveal ? "" : undefined}
-      className={`mx-auto w-full max-w-site px-6 ${className}`}
-    >
+    <div className={`mx-auto w-full max-w-site px-6 md:px-[50px] ${className}`}>
       {children}
     </div>
   );
@@ -38,16 +22,27 @@ export function Container({
 export function Eyebrow({
   children,
   variant = "plain",
+  center = false,
 }: {
   children: ReactNode;
   variant?: "plain" | "rule";
+  center?: boolean;
 }) {
   return (
-    <p className="text-eyebrow text-accent-400 flex items-center gap-3 font-mono uppercase">
+    <p
+      className={`text-eyebrow text-accent-400 flex items-center gap-3 font-mono uppercase ${
+        center ? "justify-center" : ""
+      }`}
+    >
       {variant === "rule" && (
         <span aria-hidden className="bg-accent-400 inline-block h-px w-8" />
       )}
       {children}
+      {/* Mirrored rule on centred headers, so the label sits between two
+          strokes rather than being pushed off-centre by one. */}
+      {variant === "rule" && center && (
+        <span aria-hidden className="bg-accent-400 inline-block h-px w-8" />
+      )}
     </p>
   );
 }
@@ -66,6 +61,7 @@ export function Section({
   headingLevel: H = "h2",
   eyebrowVariant = "plain",
   accentLastWords = 0,
+  align = "left",
 }: {
   eyebrow?: string;
   heading?: string;
@@ -77,25 +73,73 @@ export function Section({
   eyebrowVariant?: "plain" | "rule";
   /** Renders the last word of the heading in accent, as the hub pages do. */
   accentLastWords?: number;
+  /** Centres the eyebrow, heading and lede. The comps use this for section
+   *  headers that introduce a full-width grid below them. */
+  align?: "left" | "center";
 }) {
   const words = heading?.split(" ") ?? [];
   const accentCount = accentLastWords ?? 0;
   const lead = accentCount ? words.slice(0, -accentCount).join(" ") : heading;
   const accent = accentCount ? words.slice(-accentCount).join(" ") : "";
 
+  /**
+   * Inline `*accent*` marking, as the hub headings already use. Needed
+   * because `accentLastWords` can only reach the END of a heading, and the
+   * comps frequently accent words in the middle: "Rubber that performs where
+   * *generic parts* fail." Content controls which words, so nine industry
+   * pages sharing one template can each mark their own.
+   */
+  const marked = heading?.includes("*")
+    ? heading
+        .split("*")
+        .map((part, i) =>
+          i % 2 === 1 ? (
+            <span key={part} className="text-accent-400">
+              {part}
+            </span>
+          ) : (
+            part
+          ),
+        )
+    : null;
+
   return (
-    <section id={id} className={`scroll-mt-24 py-16 md:py-24 ${className}`}>
+    <section id={id} className={`scroll-mt-24 py-[70px] ${className}`}>
       <Container>
         {(eyebrow || heading || body) && (
-          <header className="mb-10 max-w-[62ch]">
-            {eyebrow && <Eyebrow variant={eyebrowVariant}>{eyebrow}</Eyebrow>}
+          <header
+            className={`mb-10 ${
+              align === "center"
+                ? "mx-auto max-w-[52rem] text-center"
+                : "max-w-[62ch]"
+            }`}
+          >
+            {eyebrow && (
+              <Eyebrow variant={eyebrowVariant} center={align === "center"}>
+                {eyebrow}
+              </Eyebrow>
+            )}
             {heading && (
               <H className="text-h2 mt-3">
-                {lead}
-                {accent && <span className="text-accent-400"> {accent}</span>}
+                {marked ?? (
+                  <>
+                    {lead}
+                    {accent && (
+                      <span className="text-accent-400"> {accent}</span>
+                    )}
+                  </>
+                )}
               </H>
             )}
-            {body && <p className="text-ink-3 mt-4 leading-relaxed">{body}</p>}
+            {body && (
+              <p
+                className={`text-ink-3 mt-4 leading-relaxed ${
+                  align === "center" ? "mx-auto max-w-[62ch]" : ""
+                }`}
+              >
+                {body}
+              </p>
+            )}
           </header>
         )}
         {children}

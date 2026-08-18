@@ -136,6 +136,44 @@ function Photo({
 
 /* ── icons: drawn paths, never Unicode glyphs ───────────────────────────── */
 const ICONS: Record<string, React.ReactNode> = {
+  /* Added for the nine-sector grid. The previous six cards reused car /
+     heart / chip / droplet / wrench / package; Mining, Oil & Gas, Pumps &
+     Valves, HVAC and Agriculture had no glyph of their own. */
+  pickaxe: (
+    <>
+      <path d="M3.5 20.5 12 12" />
+      <path d="M5.5 9.5a11 11 0 0 1 13 0" />
+      <path d="M9.5 5.5a11 11 0 0 1 9 9" />
+      <path d="m10.5 10.5 3 3" />
+    </>
+  ),
+  fuel: (
+    <>
+      <path d="M4 20.5V6a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v14.5M3 20.5h11" />
+      <path d="M4 11h9" />
+      <path d="M16 8.5 18.5 11v6a1.8 1.8 0 0 0 3.5 0v-7.6L19 6.5" />
+    </>
+  ),
+  gauge: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m12 12 4-3.2" />
+      <path d="M12 3.5v2M20.5 12h-2M12 20.5v-2M3.5 12h2" />
+    </>
+  ),
+  wind: (
+    <>
+      <path d="M3.5 8.5h9a2.8 2.8 0 1 0-2.8-2.8" />
+      <path d="M3.5 12.5h13a2.8 2.8 0 1 1-2.8 2.8" />
+      <path d="M3.5 16.5h6" />
+    </>
+  ),
+  leaf: (
+    <>
+      <path d="M4.5 19.5c0-8 5-13 15-13 0 10-5 14-11 14-2.2 0-4-1.6-4-1z" />
+      <path d="M9 15c2.5-3 5.5-5 9-6" />
+    </>
+  ),
   shield: <path d="M12 3.2 19 6v5.6c0 4-2.9 7.4-7 9.2-4.1-1.8-7-5.2-7-9.2V6z" />,
   bolt: <path d="M13.5 3 5.5 13.5H11l-.5 7.5 8-10.5H13z" />,
   gear: (
@@ -327,7 +365,7 @@ export function HomeHero({
         <circle cx="300" cy="300" r="164" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.35" />
       </svg>
 
-      <Container reveal={false}>
+      <Container>
         <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div>
             <Rule>{eyebrow}</Rule>
@@ -457,7 +495,7 @@ export function Story({
   cta: { label: string; href: string };
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="top-10 -left-40 size-[32rem]" />
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
@@ -529,7 +567,7 @@ export function Edge({
   items: readonly { icon: string; name: string; body: string }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />
@@ -565,16 +603,14 @@ export function Portfolio({
   lines: readonly string[];
   cta: { label: string; href: string };
   items: readonly {
-    tag: string;
     name: string;
-    body: string;
+    spec: string;
     image: string;
     href: string;
-    ctaLabel: string;
   }[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -601,45 +637,45 @@ export function Portfolio({
           </Link>
         </header>
 
-        <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {/* Edge-to-edge image tiles, per the comp: no card chrome, no gap.
+            The whole tile is the link, the name and spec sit on the art, and
+            the nine categories match /products exactly. Replaces six generic
+            marketing cards ("Rubber Sheets", "Custom Solutions") that did not
+            correspond to anything in the catalogue. */}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((p) => (
-            <li
-              key={p.name}
-              className="rounded-card overflow-hidden border border-[#25272C] bg-[#171A1F]"
-            >
-              <div className="relative isolate">
+            <li key={p.name} className="relative isolate">
+              <Link
+                href={p.href}
+                className="group block focus-visible:z-10"
+                aria-label={`${p.name} — ${p.spec}`}
+              >
                 <Photo
                   k={p.image}
-                  ratio="aspect-[16/9]"
+                  ratio="aspect-[4/3]"
                   dissolve={false}
-                  sizes="(min-width:1024px) 32vw, 100vw"
-                  brightness="brightness-[0.75]"
+                  sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                  brightness="brightness-[0.62] transition-[filter] duration-500 group-hover:brightness-[0.78]"
                 />
-                {/* The card art dissolves into the card fill below it. */}
-                <div
+                {/* Scrim only across the lower third, so the art stays legible
+                    while the caption keeps its contrast. */}
+                <span
+                  aria-hidden
                   className="pointer-events-none absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(to top, #171A1F, transparent 55%)",
+                      "linear-gradient(to top, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.35) 26%, transparent 52%)",
                   }}
                 />
-                <span className="text-eyebrow bg-accent-400 text-canvas absolute top-4 left-4 rounded-md px-2.5 py-1 font-mono">
-                  {p.tag}
+                <span className="absolute inset-x-0 bottom-0 p-6">
+                  <span className="text-ink block text-lg font-semibold">
+                    {p.name}
+                  </span>
+                  <span className="text-eyebrow text-accent-400 mt-1.5 block font-mono uppercase">
+                    {p.spec}
+                  </span>
                 </span>
-              </div>
-              <div className="p-6">
-                <h3 className="text-ink text-lg font-semibold">{p.name}</h3>
-                <p className="text-ink-4 mt-2.5 text-sm leading-relaxed">
-                  {p.body}
-                </p>
-                <Link
-                  href={p.href}
-                  className="text-accent-400 hover:text-accent-300 mt-5 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
-                >
-                  {p.ctaLabel}
-                  <Arrow />
-                </Link>
-              </div>
+              </Link>
             </li>
           ))}
         </ul>
@@ -664,7 +700,7 @@ export function Sectors({
   }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />
@@ -695,16 +731,18 @@ export function Sectors({
 export function Process({
   eyebrow,
   lines,
+  body,
   steps,
 }: {
   eyebrow: string;
   lines: readonly string[];
+  body?: string;
   steps: readonly { name: string; body: string }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#171A1F] py-20 md:py-28">
+    <section className="relative isolate overflow-hidden bg-[#171A1F] py-[70px]">
       <Container>
-        <CenterHead eyebrow={eyebrow} lines={lines} />
+        <CenterHead eyebrow={eyebrow} lines={lines} body={body} />
 
         <ol className="relative mt-16">
           {/* Spine. Sits behind the nodes and is hidden from assistive tech. */}
@@ -771,7 +809,7 @@ export function Facility({
   checks: readonly string[];
 }) {
   return (
-    <section className="bg-surface-2 py-20 md:py-28">
+    <section className="bg-surface-2 py-[70px]">
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <div className="relative pb-16">
@@ -863,7 +901,7 @@ export function ExportMarkets({
   const hy = r2((hub.y / 100) * H);
 
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12">
           <Rule>{eyebrow}</Rule>
@@ -978,7 +1016,7 @@ export function Materials({
   const pct = (v: number) => r2(((v - axis.min) / span) * 100);
 
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12">
           <Rule>{eyebrow}</Rule>
@@ -1039,73 +1077,6 @@ export function Materials({
             {footnote}
           </p>
         </div>
-      </Container>
-    </section>
-  );
-}
-
-/* ══ 11 · CLIENT VOICES ═══════════════════════════════════════════════════ */
-export function Testimonials({
-  eyebrow,
-  lines,
-  items,
-}: {
-  eyebrow: string;
-  lines: readonly string[];
-  items: readonly {
-    stars: number;
-    quote: string;
-    name: string;
-    role: string;
-  }[];
-}) {
-  return (
-    <section className="bg-surface-2 py-20 md:py-28">
-      <Container>
-        <CenterHead eyebrow={eyebrow} lines={lines} />
-        <ul className="mt-14 grid gap-5 md:grid-cols-3">
-          {items.map((t) => (
-            <li
-              key={t.quote.slice(0, 30)}
-              className="rounded-card border-line flex flex-col border bg-[#171A1F] p-7"
-            >
-              <div
-                className="text-accent-400 flex gap-1"
-                role="img"
-                aria-label={`${t.stars} out of 5`}
-              >
-                {Array.from({ length: t.stars }, (_, i) => (
-                  <svg
-                    key={i}
-                    viewBox="0 0 24 24"
-                    className="size-3.5 fill-current"
-                    aria-hidden
-                  >
-                    <path d="m12 3.5 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 17.2 6.7 20.1l1.1-6-4.4-4.2 6-.8z" />
-                  </svg>
-                ))}
-              </div>
-
-              <blockquote className="text-ink-2 mt-5 flex-1 text-sm leading-relaxed italic">
-                <p>{`"${t.quote}"`}</p>
-              </blockquote>
-
-              <figcaption className="border-line mt-6 flex items-center gap-3 border-t pt-5">
-                <span className="border-accent-400/25 bg-accent-400/10 text-accent-400 grid size-9 shrink-0 place-items-center rounded-full border">
-                  <Icon name="ribbon" className="size-4" />
-                </span>
-                <span className="min-w-0">
-                  <span className="text-ink block text-sm font-semibold">
-                    {t.name}
-                  </span>
-                  <span className="text-eyebrow text-ink-4 block font-mono">
-                    {t.role}
-                  </span>
-                </span>
-              </figcaption>
-            </li>
-          ))}
-        </ul>
       </Container>
     </section>
   );
@@ -1193,7 +1164,7 @@ export function HomeCta({
   footnote: string;
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-bottom-40 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />

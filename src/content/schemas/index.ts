@@ -388,6 +388,9 @@ export const productsHubSchema = baseSchema.extend({
         applications: z.array(z.string()).default([]),
       }),
     ),
+    /** Closing line under the grid, from the comp: a route out for anyone
+     *  whose material is not one of the six. */
+    cta: z.object({ label: z.string(), href: z.string() }).optional(),
   }).optional(),
 
   sectors: z.object({
@@ -942,12 +945,14 @@ export const homePageSchema = baseSchema.extend({
     items: z
       .array(
         z.object({
-          tag: z.string(),
           name: z.string(),
-          body: z.string(),
+          /* The standards/type strip under each name, e.g.
+             "AS568 / BS1806 / Metric". Replaces the old marketing `tag` +
+             `body` + per-card CTA: the comp's tiles carry a name and a spec
+             line only. */
+          spec: z.string(),
           image: imageRefSchema,
           href: z.string(),
-          ctaLabel: z.string(),
         }),
       )
       .min(1),
@@ -957,6 +962,11 @@ export const homePageSchema = baseSchema.extend({
     items: z
       .array(
         z.object({
+          /* Mirrors the ICONS map in HomeBlocks. Kept as an enum rather than a
+             free string so a typo fails the build instead of rendering a
+             blank tile. `wrench` and `package` are retained: they belonged to
+             the retired "Mechanical Engineering" and "Export & OEM" cards and
+             are still available if a sector needs them. */
           icon: z.enum([
             "car",
             "heart",
@@ -964,6 +974,11 @@ export const homePageSchema = baseSchema.extend({
             "droplet",
             "wrench",
             "package",
+            "pickaxe",
+            "fuel",
+            "gauge",
+            "wind",
+            "leaf",
           ]),
           name: z.string(),
           body: z.string(),
@@ -1005,19 +1020,6 @@ export const homePageSchema = baseSchema.extend({
   materials: homeHead.extend({
     axis: z.object({ min: z.number(), mid: z.number(), max: z.number() }),
     footnote: z.string(),
-  }),
-
-  testimonials: homeHead.extend({
-    items: z
-      .array(
-        z.object({
-          stars: z.number().min(1).max(5).default(5),
-          quote: z.string().min(40),
-          name: z.string(),
-          role: z.string(),
-        }),
-      )
-      .min(1),
   }),
 
   cta: homeHead.extend({
@@ -1680,6 +1682,63 @@ export const skuSchema = baseSchema.extend({
   schemaTypes: z
     .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
     .default(["BreadcrumbList"]),
+});
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * SITE FOOTER — every string the footer renders, in one content file.
+ *
+ * Deliberately not in navigation.ts. The footer is almost entirely copy and
+ * links, which is exactly what a non-technical editor needs to change, and a
+ * CMS can be pointed at one validated content file far more easily than at a
+ * TypeScript module. Nothing below is hardcoded in the component.
+ */
+const footerLinkSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+});
+
+export const footerSchema = z.object({
+  slug: z.string(),
+  brand: z.object({
+    blurb: z.string().min(20),
+    phone: z.string().min(6),
+    email: z.string().min(5),
+    address: z.string().min(10),
+  }),
+  /**
+   * Rendered only where `href` is filled in. Margo's social accounts are not
+   * known, so the entries exist with empty hrefs and the component skips
+   * them: an editor fills the URL and the icon appears, and until then no
+   * dead link ships.
+   */
+  social: z
+    .array(
+      z.object({
+        label: z.string().min(2),
+        icon: z.enum(["linkedin", "twitter", "youtube"]),
+        href: z.string().default(""),
+      }),
+    )
+    .default([]),
+  columns: z
+    .array(
+      z.object({
+        heading: z.string().min(2),
+        links: z.array(footerLinkSchema).min(1),
+      }),
+    )
+    .min(1),
+  cta: z.object({
+    heading: z.string().min(10),
+    body: z.string().min(10),
+    action: footerLinkSchema,
+  }),
+  legal: z.array(footerLinkSchema).min(1),
+  copyright: z.string().min(10),
+  badge: z.string().min(4),
+  confirmWithMargo: z.array(z.string()).default([]),
 });
 
 /* ------------------------------------------------------------------ */

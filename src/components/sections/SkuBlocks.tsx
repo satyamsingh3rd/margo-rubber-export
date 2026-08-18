@@ -315,7 +315,7 @@ export function SkuHero({
   return (
     <header className="bg-canvas relative isolate overflow-hidden pt-32 pb-16 md:pt-40">
       <span aria-hidden className="bg-accent-400/10 pointer-events-none absolute -top-24 -left-32 -z-10 size-[30rem] rounded-full blur-3xl" />
-      <Container reveal={false}>
+      <Container>
         {/* Sentence-case sans, matching the comp. The eyebrow treatment used
             elsewhere (mono, uppercase, wide tracking) is far wider per
             character and overflowed on long category names such as
@@ -475,7 +475,7 @@ export function SkuGallery({
   const thumbs = gallery.thumbs.length ? gallery.thumbs : SAMPLE.gallery.thumbs;
 
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -555,7 +555,7 @@ export function SkuSpecs({
   const tiles = dimensional?.tiles.length ? dimensional.tiles : SAMPLE.dimensional.tiles;
 
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-20">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <Eyebrow>Technical specifications</Eyebrow>
         <h2 className="text-h2 mt-3">Engineering Data</h2>
@@ -631,7 +631,7 @@ export function SkuCompounds({
   if (!items.length) return null;
 
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -657,7 +657,7 @@ export function SkuAdvantages({
 }) {
   const list = items.length ? items : SAMPLE.advantages;
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-20">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div className="relative pb-14">
@@ -718,7 +718,7 @@ export function SkuApplications({
 }) {
   const list = items.length ? items : SAMPLE.applications;
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <Eyebrow>Industries served</Eyebrow>
         <h2 className="text-h2 mt-3">Global Applications</h2>
@@ -742,7 +742,7 @@ export function SkuApplications({
 export function SkuProcess({ steps }: { steps: readonly { name: string; body: string }[] }) {
   const list = steps.length ? steps : SAMPLE.process;
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-20">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <div className="text-center">
           <p className="text-eyebrow text-accent-400 flex items-center justify-center gap-4 font-mono uppercase">
@@ -790,7 +790,7 @@ export function SkuQuality({
 }) {
   const q = quality ?? SAMPLE.quality;
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
@@ -851,7 +851,7 @@ export function SkuDownloads({
 }) {
   const list = items.length ? items : SAMPLE.downloads;
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-20">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <Eyebrow>Downloads</Eyebrow>
         <h2 className="text-h2 mt-3">Technical Documentation</h2>
@@ -878,7 +878,7 @@ export function SkuDownloads({
 export function SkuFaq({ items }: { items: readonly { q: string; a: string }[] }) {
   const list = items.length ? items : SAMPLE.faqs;
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_1fr]">
           <div>
@@ -923,7 +923,7 @@ export function SkuRelated({
 }) {
   if (!items.length) return null;
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-20">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -968,7 +968,7 @@ export function SkuCta({
   categoryLabel: string;
 }) {
   return (
-    <section className="bg-band border-line border-t py-16 md:py-20">
+    <section className="bg-band border-line border-t py-[70px]">
       <Container>
         <div className="rounded-card border-line border-l-accent-400 flex flex-wrap items-center justify-between gap-8 border border-l-2 bg-[#0D0F12] p-8 md:p-10">
           <div>

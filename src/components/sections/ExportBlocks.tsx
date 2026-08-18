@@ -265,7 +265,7 @@ export function ExportHero({
       />
       <Bloom className="top-1/4 -left-32 size-[32rem]" />
 
-      <Container reveal={false}>
+      <Container>
         <span className="text-eyebrow border-accent-400/35 bg-accent-400/8 text-accent-400 inline-flex items-center gap-2.5 rounded-pill border px-3.5 py-1.5 font-mono uppercase backdrop-blur">
           <Icon name="globe" className="size-3.5" />
           {badge}
@@ -360,7 +360,7 @@ export function MarketSection({
   return (
     <section
       id={market.slug}
-      className="border-line bg-canvas scroll-mt-24 border-t py-16 md:py-24"
+      className="border-line bg-canvas scroll-mt-24 border-t py-[70px]"
     >
       <Container>
         <div className="grid items-start gap-12 lg:grid-cols-2">
@@ -513,7 +513,7 @@ export function ExportProcess({
   steps: readonly { icon: string; name: string; body: string }[];
 }) {
   return (
-    <section className="border-line bg-canvas border-t py-20 md:py-28">
+    <section className="border-line bg-canvas border-t py-[70px]">
       <Container>
         <header className="max-w-[46rem]">
           <Eyebrow>{eyebrow}</Eyebrow>
@@ -561,7 +561,7 @@ export function ExportDocuments({
   items: readonly { icon: string; name: string; body: string }[];
 }) {
   return (
-    <section className="border-line bg-canvas border-t py-20 md:py-28">
+    <section className="border-line bg-canvas border-t py-[70px]">
       <Container>
         <header className="max-w-[46rem]">
           <Eyebrow>{eyebrow}</Eyebrow>
@@ -664,7 +664,7 @@ export function ExportQuote({
   footnote: string;
 }) {
   return (
-    <section className="border-line bg-canvas border-t py-20 md:py-28">
+    <section className="border-line bg-canvas border-t py-[70px]">
       <Container>
         <div className="rounded-card border-line divide-line grid divide-y overflow-hidden border bg-[#0B0D10] lg:grid-cols-2 lg:divide-x lg:divide-y-0">
           <div className="p-8 md:p-10">
@@ -731,7 +731,7 @@ export function ExportSummary({
   facts: readonly { label: string; value: string }[];
 }) {
   return (
-    <section className="border-line relative isolate overflow-hidden border-t bg-[#050505] py-20 md:py-28">
+    <section className="border-line relative isolate overflow-hidden border-t bg-[#050505] py-[70px]">
       <Bloom className="-bottom-32 right-0 size-[30rem]" />
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,28rem)_1fr]">

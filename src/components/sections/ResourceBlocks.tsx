@@ -191,7 +191,7 @@ export function ResourceLibrary({
     <>
       {/* Filter bar */}
       <section className="bg-canvas border-line border-y py-6">
-        <Container reveal={false}>
+        <Container>
           <div className="flex flex-wrap items-center justify-between gap-5">
             <label className="relative w-full max-w-[20rem]">
               <span className="sr-only">{searchPlaceholder}</span>
@@ -284,12 +284,15 @@ export function ResourceLibrary({
             if (!inGroup.length) return null;
             return (
               <div key={c.key} className="mb-16 last:mb-0">
-                <header className="border-line flex flex-wrap items-end justify-between gap-4 border-b pb-5">
-                  <div>
-                    <h2 className="text-ink text-xl font-semibold">{c.label}</h2>
-                    <p className="text-ink-4 mt-1.5 text-sm">{c.blurb}</p>
-                  </div>
-                  <p className="text-ink-4 text-sm">
+                {/* Centred, per the comp. The count moves under the blurb
+                    rather than floating on the opposite edge, where it read as
+                    an unrelated fragment across a wide row. */}
+                <header className="border-line mx-auto max-w-[52rem] border-b pb-6 text-center">
+                  <h2 className="text-h2">{c.label}</h2>
+                  <p className="text-ink-3 mx-auto mt-3 max-w-[62ch] text-sm leading-relaxed">
+                    {c.blurb}
+                  </p>
+                  <p className="text-ink-4 mt-3 text-sm">
                     {inGroup.length} guide{inGroup.length === 1 ? "" : "s"}
                   </p>
                 </header>

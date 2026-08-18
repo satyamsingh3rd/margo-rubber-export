@@ -37,7 +37,7 @@ export function ContactHero({
         </>
       )}
 
-      <Container reveal={false}>
+      <Container>
         <p className="text-eyebrow text-accent-400 font-mono uppercase">
           {badge}
         </p>
@@ -348,7 +348,7 @@ export function QuoteSection({
   responsePromise: string;
 }) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-[70px]">
       <Container>
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>

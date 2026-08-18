@@ -12,7 +12,6 @@ import {
   Process,
   Sectors,
   Story,
-  Testimonials,
   TrustBar,
 } from "@/components/sections/HomeBlocks";
 
@@ -83,6 +82,7 @@ export default async function HomePage() {
       <Process
         eyebrow={fm.process.eyebrow}
         lines={fm.process.lines}
+        body={fm.process.body}
         steps={fm.process.steps}
       />
 
@@ -110,12 +110,6 @@ export default async function HomePage() {
         body={fm.materials.body}
         axis={fm.materials.axis}
         footnote={fm.materials.footnote}
-      />
-
-      <Testimonials
-        eyebrow={fm.testimonials.eyebrow}
-        lines={fm.testimonials.lines}
-        items={fm.testimonials.items}
       />
 
       <HomeCta

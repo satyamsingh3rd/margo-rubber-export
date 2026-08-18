@@ -47,7 +47,7 @@ export function IndustriesHero({
           <div className="from-canvas absolute inset-0 -z-10 bg-gradient-to-t from-0% to-transparent to-40%" />
         </>
       )}
-      <Container reveal={false}>
+      <Container>
         <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">
           <span className="bg-accent-400 size-1.5 rounded-full" />
           {badge}
@@ -160,7 +160,7 @@ export function IndustryGrid({
         </Container>
       </div>
 
-      <section className="py-16 md:py-20">
+      <section className="py-[70px]">
         <Container>
           <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -254,7 +254,7 @@ export function SectorCards({
   items: { name: string; body: string; href: string; linkLabel: string }[];
 }) {
   return (
-    <section className="bg-[#050505] py-16 md:py-20">
+    <section className="bg-[#050505] py-[70px]">
       <Container>
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -321,7 +321,7 @@ export function EnquiryPanel({
   footnote: string;
 }) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-[70px]">
       <Container>
         <div className="border-line bg-surface rounded-card grid overflow-hidden border lg:grid-cols-2">
           <div className="p-8 md:p-10">

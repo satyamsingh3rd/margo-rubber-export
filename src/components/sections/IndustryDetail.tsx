@@ -59,7 +59,7 @@ export function IndustryHero({
           )}
         </>
       )}
-      <Container reveal={false}>
+      <Container>
         <span className="text-eyebrow border-accent-400/40 text-accent-400 inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-mono uppercase">
           <span className="bg-accent-400 size-1.5 rounded-full" />
           {badge}
@@ -408,7 +408,7 @@ export function ClosingBand({
   contacts: { icon: string; text: string }[];
 }) {
   return (
-    <section className="bg-[#050505] py-20 md:py-28">
+    <section className="bg-[#050505] py-[70px]">
       <Container>
         <div className="text-center">
           <div className="flex items-center justify-center gap-3">

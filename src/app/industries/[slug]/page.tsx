@@ -103,6 +103,7 @@ export default async function IndustryPage(props: PageProps<"/industries/[slug]"
 
       {fm.conditions && (
         <Section
+          align="center"
           eyebrow={fm.conditions.eyebrow}
           eyebrowVariant="rule"
           heading={fm.conditions.heading}

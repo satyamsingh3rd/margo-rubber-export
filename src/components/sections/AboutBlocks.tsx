@@ -375,7 +375,7 @@ export function AboutHero({
         }}
       />
 
-      <Container reveal={false}>
+      <Container>
         <div className="relative">
           <div className="max-w-[46rem]">
             <Pill>{badge}</Pill>
@@ -482,7 +482,7 @@ export function Story({
   return (
     <section
       id="story"
-      className="bg-surface-2 relative isolate scroll-mt-24 overflow-hidden py-16 md:py-24"
+      className="bg-surface-2 relative isolate scroll-mt-24 overflow-hidden py-[70px]"
     >
       <Bloom className="top-0 -left-32 size-[34rem]" />
       <Container>
@@ -574,7 +574,7 @@ export function Vision({
   }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-band-2 py-20 md:py-28">
+    <section className="relative isolate overflow-hidden bg-band-2 py-[70px]">
       <span
         aria-hidden
         className="text-ink pointer-events-none absolute -top-6 right-4 -z-10 text-[13rem] leading-none font-bold opacity-[0.03] select-none md:right-24 md:text-[17rem]"
@@ -627,7 +627,7 @@ export function Values({
   items: readonly { icon: string; name: string; body: string }[];
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-16 md:py-24">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-32 right-0 size-[34rem]" />
       <Container>
         <SplitHead head={head} />
@@ -696,7 +696,7 @@ export function Leadership({
         />
       </div>
 
-      <div className="flex items-center px-6 py-16 md:py-24 lg:pr-16 lg:pl-14">
+      <div className="flex items-center px-6 py-[70px] lg:pr-16 lg:pl-14">
         <div className="max-w-[52ch]">
           <Pill>{eyebrow}</Pill>
 
@@ -764,7 +764,7 @@ export function Manufacturing({
   return (
     <section
       id="manufacturing"
-      className="relative isolate scroll-mt-24 overflow-hidden bg-band-2 py-20 md:py-28"
+      className="relative isolate scroll-mt-24 overflow-hidden bg-band-2 py-[70px]"
     >
       <span
         aria-hidden
@@ -858,7 +858,7 @@ export function Team({
   stats: readonly { value: string; label: string }[];
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-16 md:py-24">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="top-1/4 -left-40 size-[32rem]" />
       <Container>
         <SplitHead head={head} />
@@ -931,7 +931,7 @@ export function Presence({
   }[];
 }) {
   return (
-    <section className="bg-band-2 py-20 md:py-28">
+    <section className="bg-band-2 py-[70px]">
       <Container>
         <div className="grid gap-14 lg:grid-cols-2">
           <div>
@@ -1024,7 +1024,7 @@ export function Awards({
   auditImage: string;
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-24 left-1/2 size-[38rem] -translate-x-1/2" />
       <Container>
         <CenterHead head={head} />
@@ -1112,7 +1112,7 @@ export function Green({
   bars: readonly { label: string; note: string; pct: number }[];
 }) {
   return (
-    <section className="bg-band-2 py-20 md:py-28">
+    <section className="bg-band-2 py-[70px]">
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <figure className="rounded-card border-line relative isolate overflow-hidden border">
@@ -1201,7 +1201,7 @@ export function Numbers({
   };
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead head={head} />
@@ -1281,7 +1281,7 @@ export function Timeline({
   items: readonly { year: string; title: string; body: string }[];
 }) {
   return (
-    <section className="bg-band-2 relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-band-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-24 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead head={head} />
@@ -1302,7 +1302,7 @@ export function Clients({
   items: readonly string[];
 }) {
   return (
-    <section className="bg-surface-2 py-16 md:py-20">
+    <section className="bg-surface-2 py-[70px]">
       <Container>
         <p className="text-eyebrow text-ink-4 text-center font-mono uppercase">
           {label}

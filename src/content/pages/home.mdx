@@ -102,77 +102,90 @@ portfolio:
   lines: ["Engineered for", "Every Application"]
   cta: { label: Full Product Catalog, href: /products }
   items:
-    - tag: Sealing Solutions
-      name: Rubber O-Rings
-      body: Precision-molded sealing rings in NBR, EPDM, Silicone & Viton for hydraulic, pneumatic, and fluid systems.
-      image: home.product.o-rings
+    - name: O-Rings
+      spec: AS568 / BS1806 / Metric
+      image: products.card.o-rings
       href: /products/o-rings
-      ctaLabel: Request Sample
-    - tag: Fluid Sealing
-      name: Rubber Gaskets
-      body: Custom-profiled gaskets engineered for extreme pressure and temperature differentials in industrial assemblies.
-      image: home.product.gaskets
+    - name: Oil Seals
+      spec: Rotary Shaft / Lip Type
+      image: products.card.oil-seals
+      href: /products/oil-seals
+    - name: Gaskets
+      spec: Flat / Spiral / Kammprofile
+      image: products.card.gaskets
       href: /products/gaskets
-      ctaLabel: Request Sample
-    - tag: Custom Engineering
-      name: Molded Components
-      body: Complex 3D rubber parts manufactured to client specifications, grommets, mounts, bushings, boots.
-      image: home.product.moulded
-      href: /products
-      ctaLabel: Request Sample
-    - tag: Surface Protection
-      name: Rubber Sheets
-      body: Industrial-grade sheets in various hardness grades for flooring, lining, and vibration dampening applications.
-      image: home.product.sheets
-      href: /products
-      ctaLabel: Request Sample
-    - tag: Linear Sealing
-      name: Extruded Profiles
-      body: Continuous-length profiles for door seals, edge trims, window glazing, and HVAC duct connections.
-      image: home.product.extruded
-      href: /products
-      ctaLabel: Request Sample
-    - tag: OEM Partnership
-      name: Custom Solutions
-      body: Full-cycle development from material specification through tooling, sampling, and volume production.
-      image: home.product.custom
-      href: /contact
-      ctaLabel: Request Sample
+    - name: Bellows
+      spec: Expansion / Protective
+      image: products.card.bellows
+      href: /products/bellows
+    - name: Anti-Vibration Mounts
+      spec: Bobbin / Buffer / Sandwich
+      image: products.card.anti-vibration-mounts
+      href: /products/anti-vibration-mounts
+    - name: Grommets
+      spec: Open / Closed / Blind
+      image: products.card.grommets
+      href: /products/grommets
+    - name: Bushes & Sleeves
+      spec: Suspension / Centre / Flanged
+      image: products.card.bushes
+      href: /products/bushes
+    - name: Pads, Stoppers & Caps
+      spec: Bumper / Dust / Protective
+      image: products.card.pads-stoppers-caps
+      href: /products/pads-stoppers-caps
+    - name: Leak Test Rubber
+      spec: Plug / Bladder / Diaphragm
+      image: products.card.leak-test-rubber
+      href: /products/leak-test-rubber
 
 # ── 06 · SECTORS ─────────────────────────────────────────────────────────
 sectors:
   eyebrow: SECTORS WE SERVE
   lines: ["Cross-Industry", "Expertise"]
   items:
+    - icon: pickaxe
+      name: Mining
+      body: Seals and wear components for abrasive, high-load extraction environments.
+      href: /industries/mining
+    - icon: fuel
+      name: Oil & Gas
+      body: Hydrocarbon-resistant rubber components for upstream and downstream applications.
+      href: /industries/oil-gas
     - icon: car
       name: Automotive
-      body: Engine seals, vibration mounts, weatherstripping, and fuel system components for global OEMs.
+      body: Moulded rubber parts for powertrain, chassis, and under-bonnet assemblies.
       href: /industries/automotive
-    - icon: heart
-      name: Medical & Pharma
-      body: FDA-compliant silicone and EPDM components for fluid handling and diagnostic equipment.
-      href: /industries/medical-devices
+    - icon: gauge
+      name: Pumps & Valves
+      body: Precision sealing components that keep fluid-handling systems leak-free.
+      href: /industries/pumps-valves
+    - icon: wind
+      name: HVAC
+      body: Gaskets, grommets, and vibration isolators for heating, cooling, and ventilation.
+      href: /industries/hvac
     - icon: chip
       name: Electrical & Electronics
-      body: Insulation grommets, cable seals, and protective boots for high-voltage and low-current applications.
+      body: Insulating and sealing rubber for enclosures, connectors, and cable management.
       href: /industries/electrical-electronics
+    - icon: leaf
+      name: Agriculture
+      body: Weather- and UV-resistant rubber for farm equipment and irrigation systems.
+      href: /industries/agriculture
+    - icon: heart
+      name: Medical Devices
+      body: Clean-room-compatible rubber components for diagnostic and laboratory equipment.
+      href: /industries/medical-devices
     - icon: droplet
-      name: Pumping Systems
-      body: Impeller seals, shaft seals, and valve diaphragms for industrial and municipal pump assemblies.
-      href: /industries/pumps-valves
-    - icon: wrench
-      name: Mechanical Engineering
-      body: Anti-vibration mounts, couplings, and expansion joints for heavy machinery and industrial plants.
-      href: /industries
-    - icon: package
-      name: Export & OEM
-      body: Dedicated export packaging, documentation, and compliance management for international buyers.
-      href: /export
+      name: Water & Fluid Management
+      body: Potable-water-compatible seals and linings for treatment and distribution.
+      href: /industries/water-fluid-management
 
 # ── 07 · HOW WE WORK ─────────────────────────────────────────────────────
 process:
   eyebrow: HOW WE WORK
   lines: ["From Brief to Delivery"]
+  body: From raw compound to finished part, every step of our process is engineered for consistency, traceability, and zero-defect delivery.
   steps:
     - name: Engineering Brief
       body: Understand application requirements, material specs, tolerances, and volume forecasts.
@@ -235,33 +248,6 @@ materials:
     to D395/D297 · aging to D573 · ISO 6502. Tolerances held to ±0.01mm.
 
 # ── 11 · CLIENT VOICES ───────────────────────────────────────────────────
-testimonials:
-  eyebrow: CLIENT VOICES
-  lines: ["What Our Clients Say"]
-  items:
-    - stars: 5
-      quote: >-
-        Margo Rubber has been our go-to supplier for pump seals for over a
-        decade. Their consistency in quality and on-time delivery has never
-        faltered, even during peak production cycles.
-      name: Attribution pending client sign-off
-      role: "Purchase Manager · Indian pump manufacturer"
-    - stars: 5
-      quote: >-
-        We switched to Margo for our compressor O-rings and haven't looked
-        back. The dimensional accuracy is exceptional and their technical team
-        understands exactly what high-pressure applications demand.
-      name: Attribution pending client sign-off
-      role: "Engineering Head · Compressor OEM"
-    - stars: 5
-      quote: >-
-        From prototyping to bulk production, Margo's responsiveness sets them
-        apart. The custom silicone gaskets they developed for our heat
-        exchangers exceeded every performance benchmark.
-      name: Attribution pending client sign-off
-      role: "Procurement Director · Process equipment manufacturer"
-
-# ── 12 · GET IN TOUCH ────────────────────────────────────────────────────
 cta:
   eyebrow: GET IN TOUCH
   lines: ["Request Engineering", "Consultation"]
@@ -288,12 +274,11 @@ cta:
   uploadLabel: "ATTACH DRAWING / SPEC (OPTIONAL)"
   uploadHint: "Upload PDF, DWG, or image (max 10MB)"
   submitLabel: Request Engineering Consultation
-  footnote: Response guaranteed within 24 hours
+  footnote: Response guaranteed within 24 hours · admin@margorubber.in
 
 schemaTypes: [Organization, WebSite]
 
 nonClaims:
-  - "The three testimonials keep the design's quote text but NOT its attributions. The comp credits them to named individuals at Kirloskar Brothers, Atlas Copco India and Thermax Limited; publishing those without signed references is a fabricated endorsement. Roles are generalised until Margo supplies permission."
 
 confirmWithMargo:
   - "COUNTRY COUNT CONFLICT: the homepage says 27+ countries in five places (hero card, hero intro, story stats, edge card, CTA panel). /about says 25+. The footer says 27+. One number has to win."

@@ -29,10 +29,12 @@ export const SITE = {
   postalCode: "422010", // confirmed in both catalogue and proposal
   country: "IN",
 
-  /** B6 — three exist across Margo's docs: admin@ / rediffmail / info@.
-   *  Recommendation: info@margorubber.in, retire rediffmail from public
-   *  surfaces. Note the Figma contact page shows rfq@margorubber.COM — wrong TLD. */
-  email: null as string | null,
+  /** CONFIRMED. Three addresses existed across Margo's docs (admin@ /
+   *  rediffmail / info@) and the Figma contact page showed
+   *  rfq@margorubber.COM on the wrong TLD. admin@margorubber.in is the one
+   *  Margo confirmed, and it is what the homepage comp prints under the
+   *  enquiry form. Closes B6. */
+  email: "admin@margorubber.in" as string | null,
 
   /** B7 — Mehboob Shaikh (Proprietor) vs Ayyaz Shaikh (Development Head).
    *  Proposal names Ayyaz as leading customer relations — default to Ayyaz. */
@@ -122,7 +124,7 @@ export const COMPOUNDS = [
   { code: "NBR", name: "Nitrile Butadiene", tempC: [-30, 120], note: "Oil & fuel resistant" },
   { code: "Neoprene", name: "Chloroprene (CR)", tempC: [-40, 120], note: "General purpose" },
   { code: "SBR", name: "Styrene Butadiene", tempC: [-30, 100], note: "Abrasion resistant" },
-  { code: "NR", name: "Natural Rubber", tempC: [-20, 90], note: "High resilience" },
+  { code: "Natural Rubber", name: "Natural Rubber (NR)", tempC: [-20, 90], note: "High resilience" },
 ] as const;
 
 /**

@@ -1,0 +1,125 @@
+---
+# ═══════════════════════════════════════════════════════════════════════════
+# SITE FOOTER
+#
+# Every string the footer shows is in this file. Change it here and it changes
+# on every page. Nothing below is written into the code.
+#
+# Content is transcribed verbatim from ui-changes/footer.pdf.
+#
+# Written in block style (one field per line) on purpose. The compact
+# `{ label: X, href: Y }` form splits on commas, so a label such as
+# "Pads, Stoppers & Caps" silently truncates to "Pads" and still passes
+# validation. One field per line cannot do that.
+#
+# THREE VALUES BELOW CONTRADICT FACTS MARGO HAS ALREADY CONFIRMED. They are
+# published exactly as drawn because that is what was asked for, and they are
+# listed in confirmWithMargo so the build report keeps surfacing them:
+#   · "across 50+ countries"           — site.ts locks 9 active markets, and
+#                                        the homepage says 27+
+#   · "Margo Rubber Industries Pvt. Ltd." — every other surface, and site.ts,
+#                                        use "Margo Rubber Products"
+#   · "© 2024"                          — the comp's year, not the current one
+# ═══════════════════════════════════════════════════════════════════════════
+
+brand:
+  blurb: A leading Indian manufacturer of precision rubber sealing and anti-vibration components, supplying OEMs and distributors across 50+ countries.
+  phone: "+91 96655 79276"
+  email: admin@margorubber.in
+  address: Margo Rubber Products, B-12, MIDC Ambad, Nashik, Maharashtra, Pin-422010
+
+# Add a URL and the icon appears. Left blank, it is skipped rather than
+# shipping a link that goes nowhere.
+social:
+  - label: LinkedIn
+    icon: linkedin
+    href: ""
+  - label: Twitter
+    icon: twitter
+    href: ""
+  - label: YouTube
+    icon: youtube
+    href: ""
+columns:
+  - heading: PRODUCTS
+    links:
+      - label: O-Rings
+        href: /products/o-rings
+      - label: Oil Seals
+        href: /products/oil-seals
+      - label: Gaskets
+        href: /products/gaskets
+      - label: Bellows
+        href: /products/bellows
+      - label: Anti-Vibration Mounts
+        href: /products/anti-vibration-mounts
+      - label: Grommets
+        href: /products/grommets
+      - label: Bushes / Bushings
+        href: /products/bushes
+      - label: "Pads, Stoppers & Caps"
+        href: /products/pads-stoppers-caps
+      - label: Leak Test Rubber
+        href: /products/leak-test-rubber
+
+  - heading: INDUSTRIES
+    links:
+      - label: Mining
+        href: /industries/mining
+      - label: "Oil & Gas"
+        href: /industries/oil-gas
+      - label: Automotive
+        href: /industries/automotive
+      - label: "Pumps & Valves"
+        href: /industries/pumps-valves
+      - label: HVAC
+        href: /industries/hvac
+      - label: "Electrical & Electronics"
+        href: /industries/electrical-electronics
+      - label: Agriculture
+        href: /industries/agriculture
+      - label: Medical Devices
+        href: /industries/medical-devices
+      - label: "Water & Fluid Management"
+        href: /industries/water-fluid-management
+
+  - heading: COMPANY
+    links:
+      - label: About Us
+        href: /about
+      - label: Why Choose Us
+        href: /why-margo
+      - label: Certifications
+        href: /certifications
+      - label: Resources
+        href: /resources
+      - label: Case Studies
+        href: /case-studies
+      - label: Contact Us
+        href: /contact
+
+cta:
+  heading: Ready to source precision rubber components?
+  body: Get a quote from our engineering team within 24 hours.
+  action:
+    label: Request Quote
+    href: /contact
+
+legal:
+  - label: Privacy Policy
+    href: /legal/privacy-policy
+  - label: "Terms & Conditions"
+    href: /legal/terms
+  - label: Disclaimer
+    href: /legal/disclaimer
+
+copyright: © 2024 Margo Rubber Industries Pvt. Ltd. All rights reserved.
+badge: ISO 9001:2015 Certified
+
+confirmWithMargo:
+  - "Footer blurb claims 'across 50+ countries'. site.ts locks the figure at 9 active markets and the homepage says 27+. Six different counts are now in circulation across the design set."
+  - "Copyright names 'Margo Rubber Industries Pvt. Ltd.'. Every other surface, and site.ts, use 'Margo Rubber Products'. These are different registered entities and only one can be right."
+  - "Copyright year is 2024, taken from the comp. Needs to be the current year at launch, or driven from SITE.copyrightYear."
+  - "Social icons for LinkedIn, Twitter and YouTube are drawn in the comp but no account URLs exist. They are skipped until someone supplies them."
+  - "The comp drops Export Compliance from the legal row and adds Disclaimer. /legal/export-compliance still exists as a page but is now linked from nowhere."
+---
