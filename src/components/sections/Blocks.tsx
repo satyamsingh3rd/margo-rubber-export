@@ -87,7 +87,7 @@ export function CTABand({
   secondary?: { label: string; href: string };
 }) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-[70px]">
       <Container>
         <div className="border-line bg-surface-2 rounded-card border p-10 md:p-14">
           <Eyebrow>{eyebrow}</Eyebrow>

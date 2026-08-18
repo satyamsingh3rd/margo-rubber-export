@@ -495,7 +495,7 @@ export function Story({
   cta: { label: string; href: string };
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="top-10 -left-40 size-[32rem]" />
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
@@ -567,7 +567,7 @@ export function Edge({
   items: readonly { icon: string; name: string; body: string }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />
@@ -610,7 +610,7 @@ export function Portfolio({
   }[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -700,7 +700,7 @@ export function Sectors({
   }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />
@@ -740,7 +740,7 @@ export function Process({
   steps: readonly { name: string; body: string }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#171A1F] py-20 md:py-28">
+    <section className="relative isolate overflow-hidden bg-[#171A1F] py-[70px]">
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} body={body} />
 
@@ -809,7 +809,7 @@ export function Facility({
   checks: readonly string[];
 }) {
   return (
-    <section className="bg-surface-2 py-20 md:py-28">
+    <section className="bg-surface-2 py-[70px]">
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <div className="relative pb-16">
@@ -901,7 +901,7 @@ export function ExportMarkets({
   const hy = r2((hub.y / 100) * H);
 
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12">
           <Rule>{eyebrow}</Rule>
@@ -1016,7 +1016,7 @@ export function Materials({
   const pct = (v: number) => r2(((v - axis.min) / span) * 100);
 
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <header className="mb-12">
           <Rule>{eyebrow}</Rule>
@@ -1164,7 +1164,7 @@ export function HomeCta({
   footnote: string;
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Bloom className="-bottom-40 left-1/2 size-[36rem] -translate-x-1/2" />
       <Container>
         <CenterHead eyebrow={eyebrow} lines={lines} />

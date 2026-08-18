@@ -430,7 +430,7 @@ export function Heritage({
   note: string;
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <div className="grid gap-14 lg:grid-cols-2">
           <div>
@@ -501,7 +501,7 @@ export function Difference({
   }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#050505] py-20 md:py-28">
+    <section className="relative isolate overflow-hidden bg-[#050505] py-[70px]">
       <Bloom className="-top-24 right-0 size-[32rem]" />
       <Container>
         <LeftHead head={head} className="max-w-[46rem]" />
@@ -578,7 +578,7 @@ export function Capabilities({
         </Container>
       </section>
 
-      <section className="bg-canvas py-20 md:py-28">
+      <section className="bg-canvas py-[70px]">
         <Container>
           <h2 className="sr-only">{head.lines.join(" ")}</h2>
           <ul className="divide-line border-line grid divide-y border-t md:grid-cols-3 md:divide-x">
@@ -619,7 +619,7 @@ export function Materials({
   customNote: string;
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <LeftHead head={head} className="mb-12" />
         <MaterialSelector items={items} customNote={customNote} />
@@ -645,7 +645,7 @@ export function Quality({
   note: string;
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <div className="grid gap-14 lg:grid-cols-2">
           <div>
@@ -718,7 +718,7 @@ export function Standards({
   }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#050505] py-20 md:py-28">
+    <section className="relative isolate overflow-hidden bg-[#050505] py-[70px]">
       <Bloom className="-top-20 left-1/2 size-[34rem] -translate-x-1/2" />
       <Container>
         <CenterHead head={head} />
@@ -768,7 +768,7 @@ export function Responsibility({
   initiatives: readonly string[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <div className="grid gap-14 lg:grid-cols-2">
           <div>
@@ -834,7 +834,7 @@ export function GlobalExport({
   terms: string;
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Img
         k={image}
         fill
@@ -922,7 +922,7 @@ export function Support({
   items: readonly { name: string; body: string }[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <div className="grid gap-14 lg:grid-cols-2">
           <div className="rounded-card border-line h-fit overflow-hidden border">
@@ -969,7 +969,7 @@ export function Tenure({
   rows: readonly { metric: string; value: string; context: string }[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <LeftHead head={head} className="mb-12" />
 
@@ -1028,7 +1028,7 @@ export function Feedback({
   stats: readonly { value: string; label: string }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-top-16 left-1/2 size-[32rem] -translate-x-1/2" />
       <Container>
         <CenterHead head={head} />
@@ -1083,7 +1083,7 @@ export function Faq({
   items: readonly { q: string; a: string }[];
 }) {
   return (
-    <section className="bg-canvas py-20 md:py-28">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <CenterHead head={head} />
 
@@ -1191,7 +1191,7 @@ export function Enquiry({
   footnote: string;
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-20 md:py-28">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="-bottom-32 right-0 size-[32rem]" />
       <Container>
         <div className="grid gap-14 lg:grid-cols-[minmax(0,26rem)_1fr]">

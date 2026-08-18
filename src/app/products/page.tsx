@@ -45,6 +45,7 @@ export default async function ProductsHubPage() {
 
       <Section
         id="range"
+        align="center"
         eyebrow={fm.range.eyebrow}
         eyebrowVariant="rule"
         accentLastWords={1}

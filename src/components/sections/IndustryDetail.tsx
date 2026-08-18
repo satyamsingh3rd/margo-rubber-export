@@ -408,7 +408,7 @@ export function ClosingBand({
   contacts: { icon: string; text: string }[];
 }) {
   return (
-    <section className="bg-[#050505] py-20 md:py-28">
+    <section className="bg-[#050505] py-[70px]">
       <Container>
         <div className="text-center">
           <div className="flex items-center justify-center gap-3">

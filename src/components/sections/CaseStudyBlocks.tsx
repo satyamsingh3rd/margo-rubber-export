@@ -18,9 +18,18 @@ function BarEyebrow({ children }: { children: React.ReactNode }) {
  * Numbered section rule: "02 · METHODOLOGY PREVIEW ─────────".
  * The index and label are muted; the hairline runs to the container edge.
  */
-function SectionRule({ index, label }: { index: string; label: string }) {
+function SectionRule({
+  index,
+  label,
+  center = false,
+}: {
+  index: string;
+  label: string;
+  center?: boolean;
+}) {
   return (
     <p className="text-eyebrow text-ink-4 mb-14 flex items-center gap-5 font-mono uppercase">
+      {center && <span aria-hidden className="bg-line h-px flex-1" />}
       <span className="shrink-0">
         {index} · {label}
       </span>
@@ -285,7 +294,7 @@ export function Methodology({
   }[];
 }) {
   return (
-    <section id="methodology" className="bg-canvas scroll-mt-24 py-16 md:py-24">
+    <section id="methodology" className="bg-canvas scroll-mt-24 py-[70px]">
       <Container>
         <SectionRule index={index} label={label} />
 
@@ -357,14 +366,19 @@ export function Meantime({
   }[];
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-16 md:py-24">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <Bloom className="top-0 right-0 size-[30rem]" />
       <Container>
-        <SectionRule index={index} label={label} />
+        <SectionRule index={index} label={label} center />
 
-        <div className="grid gap-10 lg:grid-cols-2">
+        {/* Centred, per the comp. This was a split header, heading left and
+            body floating in a right column, which reads as two unrelated
+            blocks rather than one introduction. */}
+        <div className="mx-auto max-w-[52rem] text-center">
           <Marked lines={[heading]} size="column" />
-          <p className="text-ink-3 leading-relaxed">{body}</p>
+          <p className="text-ink-3 mx-auto mt-6 max-w-[62ch] leading-relaxed">
+            {body}
+          </p>
         </div>
 
         <ul className="divide-line border-line mt-14 grid divide-y border-y md:grid-cols-2 md:divide-x">
@@ -419,7 +433,7 @@ export function Invitation({
   footnote: string;
 }) {
   return (
-    <section className="bg-canvas py-16 md:py-24">
+    <section className="bg-canvas py-[70px]">
       <Container>
         <SectionRule index={index} label={label} />
 
@@ -491,7 +505,7 @@ export function CaseClosing({
   }[];
 }) {
   return (
-    <section className="bg-canvas border-line border-t py-16 md:py-24">
+    <section className="bg-canvas border-line border-t py-[70px]">
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>

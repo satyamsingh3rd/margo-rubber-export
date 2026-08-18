@@ -160,7 +160,7 @@ export function IndustryGrid({
         </Container>
       </div>
 
-      <section className="py-16 md:py-20">
+      <section className="py-[70px]">
         <Container>
           <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -254,7 +254,7 @@ export function SectorCards({
   items: { name: string; body: string; href: string; linkLabel: string }[];
 }) {
   return (
-    <section className="bg-[#050505] py-16 md:py-20">
+    <section className="bg-[#050505] py-[70px]">
       <Container>
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -321,7 +321,7 @@ export function EnquiryPanel({
   footnote: string;
 }) {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-[70px]">
       <Container>
         <div className="border-line bg-surface rounded-card grid overflow-hidden border lg:grid-cols-2">
           <div className="p-8 md:p-10">

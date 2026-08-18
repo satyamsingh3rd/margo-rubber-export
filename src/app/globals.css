@@ -152,9 +152,10 @@
   --radius-pill: 999px;
   --spacing-gutter: 1.5rem;
   /* Design canvas is 1400px with a 1184px content column (x108 to x1292).
-     1232 = 1184 content + 2x24px padding, so at a 1400px viewport the gutter
-     lands on 108px exactly, matching the design. */
-  --container-site: 1232px;
+     Section gutters are now 50px each side, so the max-width carries that:
+     1284 = 1184 content + 2x50px padding. Left at 1232 the content column
+     would have lost 52px and headings would have re-wrapped. */
+  --container-site: 1284px;
 }
 
 /* Mobile display scale — no mobile frames exist in Figma, so this is
