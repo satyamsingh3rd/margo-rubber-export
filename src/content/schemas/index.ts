@@ -455,6 +455,9 @@ export const productsHubSchema = baseSchema.extend({
       promises: z.array(z.string()),
       fields: z.array(
         z.object({
+          /** Stable key. The label is display copy and changes; this is what
+           *  /api/enquiry maps to a database column, so it must not. */
+          name: z.string(),
           label: z.string(),
           placeholder: z.string(),
           type: z.enum(["text", "email", "tel", "select", "textarea"]).default("text"),
@@ -517,6 +520,8 @@ export const industriesHubSchema = baseSchema.extend({
     points: z.array(z.string()),
     fields: z.array(
       z.object({
+        /** Stable key. See the note on the products quote fields. */
+        name: z.string(),
         label: z.string(),
         placeholder: z.string(),
         type: z.enum(["text", "email", "select", "textarea"]).default("text"),
