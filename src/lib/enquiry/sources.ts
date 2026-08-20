@@ -28,7 +28,7 @@ export type Source = (typeof SOURCES)[number];
  * Canonical columns. A form field is mapped onto one of these, or falls
  * through to `raw` alone.
  */
-const CANONICAL = [
+export const CANONICAL = [
   "name",
   "company",
   "email",
