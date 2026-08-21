@@ -60,5 +60,62 @@ check("honeypot empty -> payload valid",
 check("unknown source rejected",
   !enquiryPayloadSchema.safeParse({ source: "nope", fields: { email: "a@b.com" }, meta }).success);
 
+// 10. THE GUARD THAT MATTERS: every field defined in content must be mapped,
+// or at least knowingly unmapped. A field renamed in an .mdx file would
+// otherwise silently stop reaching its column, with no error anywhere.
+import matter from "gray-matter";
+import { readFileSync, readdirSync } from "node:fs";
+
+const PAGE_TO_SOURCE: Record<string, string> = {
+  "contact.mdx": "contact", "export.mdx": "export", "products.mdx": "products",
+  "industries.mdx": "industries", "certifications.mdx": "certifications",
+  "why-margo.mdx": "why-margo", "home.mdx": "home",
+};
+// Fields deliberately kept out of the canonical columns; they still reach raw.
+const RAW_ONLY = new Set(["incoterm", "notes", "industry"]);
+
+// Any array of field-shaped objects, wherever it sits. Looking only for a key
+// literally called `fields` missed the /contact form entirely, which nests its
+// inputs under `quote.step1` and `quote.step2` — and its map was wrong as a
+// result, with no test failing.
+const isFieldSet = (v: any) =>
+  Array.isArray(v) &&
+  v.length > 0 &&
+  v.every(
+    (x) =>
+      x &&
+      typeof x === "object" &&
+      ("name" in x || "label" in x) &&
+      ("placeholder" in x || "type" in x),
+  );
+
+const collect = (o: any, out: any[] = []): any[] => {
+  if (o && typeof o === "object") {
+    for (const k of Object.keys(o)) {
+      const v = (o as any)[k];
+      if (isFieldSet(v)) out.push(v);
+      else collect(v, out);
+    }
+  }
+  return out;
+};
+
+for (const file of readdirSync("src/content/pages")) {
+  const source = PAGE_TO_SOURCE[file];
+  if (!source) continue;
+  const data = matter(readFileSync(`src/content/pages/${file}`, "utf8")).data;
+  const map = FIELD_MAP[source as keyof typeof FIELD_MAP];
+  for (const set of collect(data)) {
+    for (const f of set) {
+      const key = f.name;
+      // Field sets without a `name` are display-only (the certificate card),
+      // not submittable inputs.
+      if (!key) continue;
+      const known = key in map || RAW_ONLY.has(key);
+      check(`${source}: field "${key}" is mapped or knowingly raw-only`, known);
+    }
+  }
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

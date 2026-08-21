@@ -12,7 +12,7 @@
     "check:links": "node scripts/check-links.mts",
     "check:links:strict": "node scripts/check-links.mts --strict",
     "gen:blur": "node scripts/gen-blur.mts",
-    "check:enquiry": "npx tsx scripts/check-enquiry-map.mts"
+    "check:enquiry": "node scripts/check-enquiry-map.mts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

@@ -51,14 +51,17 @@ export type Canonical = (typeof CANONICAL)[number];
  */
 export const FIELD_MAP: Record<Source, Record<string, Canonical>> = {
   contact: {
-    name: "name",
+    // The two-step RFQ form. Field names come from contact.mdx `quote.step1`
+    // and `quote.step2`, not from the shorter names the other forms use.
+    fullName: "name",
     company: "company",
     email: "email",
     phone: "phone",
     country: "country",
-    product: "product",
+    productCategory: "product",
     volume: "quantity",
-    requirements: "message",
+    details: "message",
+    // `industry` has no column of its own and stays in raw.
   },
 
   export: {
