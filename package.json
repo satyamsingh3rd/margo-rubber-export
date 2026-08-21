@@ -17,6 +17,7 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@next/mdx": "^16.3.0",
     "@types/mdx": "^2.0.14",
     "gray-matter": "^4.0.3",
