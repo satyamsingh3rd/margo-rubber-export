@@ -78,21 +78,24 @@ const RAW_ONLY = new Set(["incoterm", "notes", "industry"]);
 // literally called `fields` missed the /contact form entirely, which nests its
 // inputs under `quote.step1` and `quote.step2` — and its map was wrong as a
 // result, with no test failing.
-const isFieldSet = (v: any) =>
+type FieldLike = { name?: string; label?: string; placeholder?: string; type?: string };
+type Unknown = Record<string, unknown>;
+
+const isFieldSet = (v: unknown): v is FieldLike[] =>
   Array.isArray(v) &&
   v.length > 0 &&
   v.every(
     (x) =>
-      x &&
+      !!x &&
       typeof x === "object" &&
       ("name" in x || "label" in x) &&
       ("placeholder" in x || "type" in x),
   );
 
-const collect = (o: any, out: any[] = []): any[] => {
+const collect = (o: unknown, out: FieldLike[][] = []): FieldLike[][] => {
   if (o && typeof o === "object") {
-    for (const k of Object.keys(o)) {
-      const v = (o as any)[k];
+    for (const k of Object.keys(o as Unknown)) {
+      const v = (o as Unknown)[k];
       if (isFieldSet(v)) out.push(v);
       else collect(v, out);
     }
@@ -103,7 +106,7 @@ const collect = (o: any, out: any[] = []): any[] => {
 for (const file of readdirSync("src/content/pages")) {
   const source = PAGE_TO_SOURCE[file];
   if (!source) continue;
-  const data = matter(readFileSync(`src/content/pages/${file}`, "utf8")).data;
+  const data: unknown = matter(readFileSync(`src/content/pages/${file}`, "utf8")).data;
   const map = FIELD_MAP[source as keyof typeof FIELD_MAP];
   for (const set of collect(data)) {
     for (const f of set) {
