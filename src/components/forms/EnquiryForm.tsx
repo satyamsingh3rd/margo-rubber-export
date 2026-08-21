@@ -1,0 +1,242 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+
+/**
+ * ENQUIRY FORM
+ *
+ * The submission behaviour for all nine forms on the site, in one place.
+ *
+ * Only the `<form>` element itself is a client component. Everything inside it
+ * is passed through as `children`, so the eight sections that render these keep
+ * their own markup, their own layout classes, and — for the four that are
+ * Server Components — stay server-rendered. Wrapping is the cheapest possible
+ * boundary: nothing about the fields crosses it.
+ *
+ * Fields are read from the DOM on submit rather than tracked in React state.
+ * With inputs living in `children` there is nothing to bind to, and a form
+ * this size gains nothing from controlled inputs. `FormData` already knows
+ * every named field.
+ */
+
+type Status = "idle" | "submitting" | "error" | "success";
+
+type Ctx = {
+  status: Status;
+  message: string | null;
+  errors: Record<string, string>;
+};
+
+const EnquiryContext = createContext<Ctx>({
+  status: "idle",
+  message: null,
+  errors: {},
+});
+
+export function useEnquiry() {
+  return useContext(EnquiryContext);
+}
+
+export function EnquiryForm({
+  source,
+  children,
+  className = "",
+  /** Where to send the visitor on success. */
+  redirectTo = "/thank-you",
+  /**
+   * Return false to cancel this submit. Exists for the multi-step RFQ form on
+   * /contact, where the same button advances a step before it ever submits.
+   */
+  onBeforeSubmit,
+}: {
+  source: string;
+  children: ReactNode;
+  className?: string;
+  redirectTo?: string;
+  onBeforeSubmit?: () => boolean;
+}) {
+  const router = useRouter();
+  const [status, setStatus] = useState<Status>("idle");
+  const [message, setMessage] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // When the form first rendered. The endpoint rejects submissions faster than
+  // a person can type, and this is how it knows. Set in an effect so it is the
+  // moment the visitor saw the form, not the moment the server rendered it.
+  const shownAt = useRef<number | null>(null);
+  useEffect(() => {
+    shownAt.current = Date.now();
+  }, []);
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (status === "submitting") return;
+    if (onBeforeSubmit && !onBeforeSubmit()) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    const fields: Record<string, string> = {};
+    let honeypot = "";
+
+    for (const [key, value] of data.entries()) {
+      if (typeof value !== "string") continue; // files are handled separately
+      if (key === "company_website") {
+        honeypot = value;
+        continue;
+      }
+      fields[key] = value;
+    }
+
+    setStatus("submitting");
+    setMessage(null);
+    setErrors({});
+
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source,
+          fields,
+          company_website: honeypot,
+          meta: {
+            page: window.location.pathname,
+            referrer: document.referrer || undefined,
+            elapsedMs: shownAt.current
+              ? Date.now() - shownAt.current
+              : undefined,
+          },
+        }),
+      });
+
+      const body = (await res.json()) as {
+        ok: boolean;
+        message?: string;
+        errors?: Record<string, string>;
+      };
+
+      if (body.ok) {
+        setStatus("success");
+        form.reset();
+        router.push(redirectTo);
+        return;
+      }
+
+      setStatus("error");
+      setErrors(body.errors ?? {});
+      setMessage(body.message ?? "Something went wrong. Please try again.");
+    } catch {
+      // Network failure, offline, or the request was blocked. The enquiry did
+      // not reach us, so say so plainly and give a route that does not depend
+      // on this working.
+      setStatus("error");
+      setMessage(
+        "We could not reach the server. Please check your connection, or email us at info@margorubber.in.",
+      );
+    }
+  }
+
+  return (
+    <EnquiryContext.Provider value={{ status, message, errors }}>
+      <form onSubmit={onSubmit} noValidate className={className}>
+        {/* Honeypot. Hidden from people, irresistible to bots. `display:none`
+            rather than `type="hidden"`, which better bots skip. Also removed
+            from the tab order and from autofill. */}
+        <div className="hidden" aria-hidden>
+          <label htmlFor={`cw-${source}`}>Company website</label>
+          <input
+            id={`cw-${source}`}
+            name="company_website"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
+        {children}
+      </form>
+    </EnquiryContext.Provider>
+  );
+}
+
+/**
+ * Submit button. Disabled while in flight so a slow connection cannot produce
+ * two identical enquiries from one impatient click.
+ */
+export function EnquirySubmit({
+  children,
+  className = "",
+  pendingLabel = "Sending…",
+}: {
+  children: ReactNode;
+  className?: string;
+  pendingLabel?: string;
+}) {
+  const { status } = useEnquiry();
+  const busy = status === "submitting";
+
+  return (
+    <button
+      type="submit"
+      disabled={busy}
+      aria-busy={busy}
+      className={`${className} disabled:cursor-not-allowed disabled:opacity-60`}
+    >
+      {busy ? pendingLabel : children}
+    </button>
+  );
+}
+
+/**
+ * Error output.
+ *
+ * A summary rather than per-field markers: the inputs live in `children` and
+ * belong to eight different components, so marking them individually would
+ * mean making all of them client components for a form that fails rarely. The
+ * summary names the fields, which is what a visitor needs in order to fix it.
+ *
+ * `role="alert"` so a screen reader announces it without the visitor having to
+ * go looking.
+ */
+export function EnquiryStatus({ className = "" }: { className?: string }) {
+  const { status, message, errors } = useEnquiry();
+  if (status !== "error" || !message) return null;
+
+  const fields = Object.entries(errors);
+
+  return (
+    <div
+      role="alert"
+      className={`border-danger/40 bg-danger/10 text-ink-2 mt-4 rounded-lg border px-4 py-3 text-sm ${className}`}
+    >
+      <p>{message}</p>
+      {fields.length > 0 && (
+        <ul className="mt-2 space-y-1">
+          {fields.map(([field, error]) => (
+            <li key={field} className="text-ink-3">
+              <span className="text-ink font-medium">{label(field)}</span>:{" "}
+              {error}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/** `productCategory` reads as "Product category" to someone who is not us. */
+function label(field: string) {
+  return field
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (c) => c.toUpperCase())
+    .trim();
+}

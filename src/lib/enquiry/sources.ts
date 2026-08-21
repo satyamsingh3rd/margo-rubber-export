@@ -20,6 +20,10 @@ export const SOURCES = [
   "certifications",
   "why-margo",
   "home",
+  /** Catalogue download on /products. Gated on an email, so still a lead. */
+  "catalogue",
+  /** Email-only capture in the /about closing band. */
+  "about",
 ] as const;
 
 export type Source = (typeof SOURCES)[number];
@@ -107,6 +111,16 @@ export const FIELD_MAP: Record<Source, Record<string, Canonical>> = {
     material: "product",
     application: "message",
     // `notes` stays in raw.
+  },
+
+  catalogue: {
+    name: "name",
+    email: "email",
+    company: "company",
+  },
+
+  about: {
+    email: "email",
   },
 
   home: {

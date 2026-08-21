@@ -5,6 +5,11 @@ import {
   MaterialSelector,
   type Material,
 } from "@/components/sections/MaterialSelector";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -1219,10 +1224,8 @@ export function Enquiry({
             </p>
           </div>
 
-          {/* Hands off to /contact, the site's single submission path. */}
-          <form
-            action="/contact"
-            method="get"
+          <EnquiryForm
+            source="why-margo"
             className="rounded-card border-line border bg-[#0D0D0D] p-7 md:p-9"
           >
             <div className="grid gap-5 sm:grid-cols-2">
@@ -1239,16 +1242,14 @@ export function Enquiry({
               ))}
             </div>
 
-            <button
-              type="submit"
-              className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow mt-7 flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-4 text-sm font-semibold tracking-wide transition-colors"
-            >
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow mt-7 flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-4 text-sm font-semibold tracking-wide transition-colors">
               <Icon name="send" className="size-4" />
               {submitLabel}
-            </button>
+            </EnquirySubmit>
+            <EnquiryStatus />
 
             <p className="text-ink-4 mt-4 text-center text-xs">{footnote}</p>
-          </form>
+          </EnquiryForm>
         </div>
       </Container>
     </section>

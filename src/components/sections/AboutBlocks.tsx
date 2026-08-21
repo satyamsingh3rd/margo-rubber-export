@@ -3,6 +3,11 @@ import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
 import { TimelineSlider } from "@/components/sections/TimelineSlider";
 import { Bloom } from "@/components/ui/Bloom";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -1370,11 +1375,8 @@ export function Closing({
             {body}
           </p>
 
-          {/* Prefills the RFQ form on /contact rather than posting from here,
-              so there is exactly one submission path on the site. */}
-          <form
-            action="/contact"
-            method="get"
+          <EnquiryForm
+            source="about"
             className="mx-auto mt-9 flex max-w-[34rem] flex-col gap-3 sm:flex-row"
           >
             <label htmlFor="cta-email" className="sr-only">
@@ -1388,14 +1390,12 @@ export function Closing({
               placeholder={placeholder}
               className="text-ink placeholder:text-ink-4 focus:border-accent-400 rounded-pill min-w-0 flex-1 border border-line-2 bg-surface-4/85 px-6 py-3.5 text-sm backdrop-blur"
             />
-            <button
-              type="submit"
-              className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold transition-colors"
-            >
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
-            </button>
-          </form>
+            </EnquirySubmit>
+            <EnquiryStatus />
+          </EnquiryForm>
 
           <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {assurances.map((a) => (

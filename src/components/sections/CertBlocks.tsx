@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Img } from "@/components/ui/Img";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Section";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /** Small inline icons. Text glyphs (⊘ ⛊ ✕) render inconsistently across
  *  platforms and did not match the design, which uses drawn marks. */
@@ -581,7 +586,10 @@ export function DocsPanel({
         </ul>
       </div>
 
-      <form className="border-line bg-[#050505] p-8 md:p-10 lg:border-l">
+      <EnquiryForm
+        source="certifications"
+        className="border-line bg-[#050505] p-8 md:p-10 lg:border-l"
+      >
         <div className="space-y-5">
           {fields.map((f) => (
             <label key={f.name} className="block">
@@ -607,14 +615,12 @@ export function DocsPanel({
           ))}
         </div>
 
-        <button
-          type="button"
-          className="bg-accent-400 text-canvas hover:bg-accent-300 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors"
-        >
+        <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
           {submitLabel} <span aria-hidden>→</span>
-        </button>
+        </EnquirySubmit>
+        <EnquiryStatus />
         <p className="text-ink-4 mt-3 text-[11px] leading-relaxed">{footnote}</p>
-      </form>
+      </EnquiryForm>
     </div>
   );
 }

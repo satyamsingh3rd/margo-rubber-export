@@ -5,6 +5,11 @@ import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Button } from "@/components/ui/Button";
 import { Container, Eyebrow } from "@/components/ui/Section";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ────────────────────────────────────────────────────────────────────────
    HUB HERO
@@ -746,30 +751,29 @@ export function CatalogueBlock({
       <div className="border-line bg-surface rounded-card border p-6">
         <p className="text-ink font-semibold">{formHeading}</p>
         <p className="text-ink-4 mt-1 text-sm">{formBody}</p>
-        <form className="mt-5 space-y-4">
+        <EnquiryForm source="catalogue" className="mt-5 space-y-4">
           {[
-            ["Full Name", "Your Name", "text"],
-            ["Work Email", "you@company.com", "email"],
-            ["Company", "Company Name", "text"],
-          ].map(([label, ph, type]) => (
+            ["name", "Full Name", "Your Name", "text"],
+            ["email", "Work Email", "you@company.com", "email"],
+            ["company", "Company", "Company Name", "text"],
+          ].map(([field, label, ph, type]) => (
             <label key={label} className="block">
               <span className="text-eyebrow text-ink-4 font-mono uppercase">
                 {label}
               </span>
               <input
+                name={field}
                 type={type}
                 placeholder={ph}
                 className="border-line bg-surface-3 text-ink placeholder:text-ink-4 focus:border-accent-400 mt-2 w-full rounded-lg border px-4 py-3 text-sm"
               />
             </label>
           ))}
-          <button
-            type="button"
-            className="bg-accent-400 text-canvas hover:bg-accent-300 w-full rounded-lg px-6 py-3 text-sm font-semibold transition-colors"
-          >
+          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 w-full rounded-lg px-6 py-3 text-sm font-semibold transition-colors">
             ↓ {submitLabel}
-          </button>
-        </form>
+          </EnquirySubmit>
+          <EnquiryStatus />
+        </EnquiryForm>
         {footnote && (
           <p className="text-ink-4 mt-3 text-center text-[11px]">{footnote}</p>
         )}
@@ -941,7 +945,10 @@ export function QuoteBand({
           </div>
         </div>
 
-        <form className="border-line rounded-card border bg-[#13171C] p-6 md:p-8">
+        <EnquiryForm
+          source="products"
+          className="border-line rounded-card border bg-[#13171C] p-6 md:p-8"
+        >
           <div className="grid gap-5 sm:grid-cols-2">
             {fields.map((f) => (
               <label
@@ -977,13 +984,11 @@ export function QuoteBand({
             ))}
           </div>
 
-          <button
-            type="button"
-            className="bg-accent-400 text-canvas hover:bg-accent-300 mt-7 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors"
-          >
+          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 mt-7 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
             ➤ {submitLabel}
-          </button>
-        </form>
+          </EnquirySubmit>
+          <EnquiryStatus />
+        </EnquiryForm>
       </div>
     </Container>
   );

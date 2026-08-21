@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ── HERO ─────────────────────────────────────────────────────────────── */
 export function ContactHero({
@@ -227,7 +232,12 @@ export function RfqForm({
   responsePromise: string;
 }) {
   const [step, setStep] = useState(0);
-  const fields = step === 0 ? step1 : step2;
+
+  // BOTH steps stay mounted, the inactive one hidden. Unmounting step one when
+  // step two appears would remove its inputs from the DOM, and FormData reads
+  // the DOM — so name, company, email and phone would silently never be
+  // submitted. `hidden` inputs still post their values.
+  const fieldSets = [step1, step2];
 
   return (
     <div className="rounded-card border border-[#1B2026] bg-[#15191D] p-6 md:p-8">
@@ -261,34 +271,37 @@ export function RfqForm({
         ))}
       </ol>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (step === 0) setStep(1);
+      <EnquiryForm
+        source="contact"
+        onBeforeSubmit={() => {
+          // Step one advances rather than submitting. Only step two posts.
+          if (step === 0) {
+            setStep(1);
+            return false;
+          }
+          return true;
         }}
       >
-        {/* Honeypot: display:none rather than type=hidden, which some bots skip.
-            Silently discarded server-side once the backend is wired. */}
-        <div className="hidden" aria-hidden>
-          <label htmlFor="company_website">Company website</label>
-          <input
-            id="company_website"
-            name="company_website"
-            tabIndex={-1}
-            autoComplete="off"
-          />
-        </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          {fields.map((f) => (
-            <label key={f.name} className={f.full ? "sm:col-span-2" : undefined}>
-              <span className="text-eyebrow text-ink-4 font-mono uppercase">
-                {f.label}
-              </span>
-              <FieldControl f={f} />
-            </label>
-          ))}
-        </div>
+        {fieldSets.map((set, i) => (
+          <div
+            key={i}
+            hidden={step !== i}
+            className="grid gap-5 sm:grid-cols-2"
+          >
+            {set.map((f) => (
+              <label
+                key={f.name}
+                className={f.full ? "sm:col-span-2" : undefined}
+              >
+                <span className="text-eyebrow text-ink-4 font-mono uppercase">
+                  {f.label}
+                </span>
+                <FieldControl f={f} />
+              </label>
+            ))}
+          </div>
+        ))}
 
         <div className="mt-7 flex flex-wrap items-center gap-3">
           {step === 1 && (
@@ -300,17 +313,16 @@ export function RfqForm({
               ← {backLabel}
             </button>
           )}
-          <button
-            type="submit"
-            className="bg-accent-400 text-canvas hover:bg-accent-300 flex-1 rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none sm:px-10"
-          >
+          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 flex-1 rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none sm:px-10">
             {step === 0 ? continueLabel : submitLabel} <span aria-hidden>→</span>
-          </button>
+          </EnquirySubmit>
         </div>
+
+        <EnquiryStatus />
 
         {/* No competitor in the teardown states any response time. */}
         <p className="text-ink-4 mt-4 text-xs">{responsePromise}</p>
-      </form>
+      </EnquiryForm>
     </div>
   );
 }

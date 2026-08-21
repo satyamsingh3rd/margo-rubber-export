@@ -3,6 +3,11 @@ import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
 import { COMPOUNDS } from "@/content/site";
 import { Bloom } from "@/components/ui/Bloom";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -1211,9 +1216,9 @@ export function HomeCta({
             </dl>
           </div>
 
-          {/* Form. Hands off to /contact, which is the site's single
-              submission path, rather than adding a second one here. */}
-          <form action="/contact" method="get" className="p-8 md:p-10">
+          {/* Posts to /api/enquiry. Only the <form> element is a client
+              component; everything inside stays server-rendered. */}
+          <EnquiryForm source="home" className="p-8 md:p-10">
             <div className="grid gap-5 sm:grid-cols-2">
               {fields.map((f) => (
                 <label
@@ -1241,16 +1246,14 @@ export function HomeCta({
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill mt-7 flex w-full items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition-colors"
-            >
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill mt-7 flex w-full items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
-            </button>
+            </EnquirySubmit>
+            <EnquiryStatus />
 
             <p className="text-ink-4 mt-4 text-center text-xs">{footnote}</p>
-          </form>
+          </EnquiryForm>
         </div>
       </Container>
     </section>

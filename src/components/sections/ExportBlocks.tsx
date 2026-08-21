@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 /* ══ SHARED ═══════════════════════════════════════════════════════════════ */
 
@@ -686,7 +691,7 @@ export function ExportQuote({
           </div>
 
           {/* Hands off to /contact, the site's single submission path. */}
-          <form action="/contact" method="get" className="p-8 md:p-10">
+          <EnquiryForm source="export" className="p-8 md:p-10">
             <p className="text-eyebrow text-ink-4 font-mono uppercase">
               {formHeading}
             </p>
@@ -703,15 +708,13 @@ export function ExportQuote({
                 </label>
               ))}
             </div>
-            <button
-              type="submit"
-              className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow mt-7 flex w-full items-center justify-center gap-2 rounded-md px-6 py-4 text-sm font-semibold transition-colors"
-            >
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow mt-7 flex w-full items-center justify-center gap-2 rounded-md px-6 py-4 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
-            </button>
+            </EnquirySubmit>
+            <EnquiryStatus />
             <p className="text-ink-4 mt-4 text-center text-xs">{footnote}</p>
-          </form>
+          </EnquiryForm>
         </div>
       </Container>
     </section>

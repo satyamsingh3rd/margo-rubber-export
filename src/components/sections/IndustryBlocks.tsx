@@ -4,6 +4,11 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
+import {
+  EnquiryForm,
+  EnquiryStatus,
+  EnquirySubmit,
+} from "@/components/forms/EnquiryForm";
 
 type Industry = {
   slug: string;
@@ -348,7 +353,10 @@ export function EnquiryPanel({
             </ul>
           </div>
 
-          <form className="border-line bg-[#050505] p-8 md:p-10 lg:border-l">
+          <EnquiryForm
+            source="industries"
+            className="border-line bg-[#050505] p-8 md:p-10 lg:border-l"
+          >
             <div className="grid gap-5 sm:grid-cols-2">
               {fields.map((f) => (
                 <label
@@ -384,16 +392,14 @@ export function EnquiryPanel({
               ))}
             </div>
 
-            <button
-              type="button"
-              className="bg-accent-400 text-canvas hover:bg-accent-300 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors"
-            >
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
               {submitLabel} <span aria-hidden>→</span>
-            </button>
+            </EnquirySubmit>
+            <EnquiryStatus />
             <p className="text-ink-4 mt-3 text-[11px] leading-relaxed">
               {footnote}
             </p>
-          </form>
+          </EnquiryForm>
         </div>
       </Container>
     </section>
