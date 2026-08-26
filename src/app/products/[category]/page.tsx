@@ -15,6 +15,13 @@ import {
   SpecifyCards,
 } from "@/components/sections/CategoryBlocks";
 import {
+  ApplicationCards,
+  ComparePanels,
+  CompoundGuide,
+  DensityBlock,
+  SubCategoryBlock,
+} from "@/components/sections/FoamBlocks";
+import {
   AnswerBlock,
   CategoryHero,
   CommercialTable,
@@ -90,6 +97,15 @@ export default async function ProductCategoryPage(
         image={fm.hero?.image}
         actions={fm.heroActions}
         eyebrowVariant={fm.heroActions.length > 0 ? "rule" : "badge"}
+        statsAlign={fm.heroStatsAlign}
+        breadcrumb={
+          fm.heroBreadcrumb
+            ? [
+                { label: "Products", href: "/products" },
+                { label: fm.navLabel, href: path },
+              ]
+            : undefined
+        }
       />
 
       {/* The catalogue of sections comes before the compound table: you pick
@@ -108,6 +124,33 @@ export default async function ProductCategoryPage(
         </Section>
       )}
 
+      {fm.compareSection && (
+        <Section
+          id="cell-structure"
+          eyebrow={fm.compareSection.eyebrow}
+          heading={fm.compareSection.heading}
+          body={fm.compareSection.body}
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <ComparePanels panels={fm.compareSection.panels} />
+        </Section>
+      )}
+
+      {fm.compoundSection && (
+        <Section
+          id="compounds"
+          eyebrow={fm.compoundSection.eyebrow}
+          heading={fm.compoundSection.heading}
+          body={fm.compoundSection.body}
+          className="bg-band"
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <CompoundGuide items={fm.compoundSection.items} />
+        </Section>
+      )}
+
       {fm.specSection && (
         <Section
           id="specifications"
@@ -122,6 +165,22 @@ export default async function ProductCategoryPage(
             rows={fm.specSection.rows}
             footnote={fm.specSection.footnote}
             controls={fm.specSection.controls}
+          />
+        </Section>
+      )}
+
+      {fm.densitySection && (
+        <Section
+          id="density"
+          eyebrow={fm.densitySection.eyebrow}
+          heading={fm.densitySection.heading}
+          body={fm.densitySection.body}
+          eyebrowVariant="rule"
+        >
+          <DensityBlock
+            scale={fm.densitySection.scale}
+            quote={fm.densitySection.quote}
+            bands={fm.densitySection.bands}
           />
         </Section>
       )}
@@ -170,6 +229,33 @@ export default async function ProductCategoryPage(
           eyebrowVariant="rule"
         >
           <ProcessTimeline steps={fm.processSection.steps} />
+        </Section>
+      )}
+
+      {fm.subCategorySection && (
+        <SubCategoryBlock
+          id={fm.subCategorySection.id}
+          eyebrow={fm.subCategorySection.eyebrow}
+          heading={fm.subCategorySection.heading}
+          body={fm.subCategorySection.body}
+          dividerLabel={fm.subCategorySection.dividerLabel}
+          buildUp={fm.subCategorySection.buildUp}
+          comparisons={fm.subCategorySection.comparisons}
+          note={fm.subCategorySection.note}
+        />
+      )}
+
+      {fm.applicationsSection && (
+        <Section
+          id="applications"
+          eyebrow={fm.applicationsSection.eyebrow}
+          heading={fm.applicationsSection.heading}
+          body={fm.applicationsSection.body}
+          className="bg-band"
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <ApplicationCards items={fm.applicationsSection.items} />
         </Section>
       )}
 

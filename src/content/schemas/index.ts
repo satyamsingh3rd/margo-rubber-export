@@ -142,6 +142,11 @@ export const productCategorySchema = baseSchema.extend({
    * belongs to the one category that has a size chart, so it lives here.
    */
   heroLink: z.object({ label: z.string(), href: z.string() }).optional(),
+  /** Breadcrumb above the H1 — "Products › Sponge & Foam Rubber". */
+  heroBreadcrumb: z.boolean().default(false),
+  /** The nine older pages centre nothing; Extrusion centres its stat panel,
+   *  Sponge & Foam sets the same panel left. */
+  heroStatsAlign: z.enum(["left", "center"]).default("center"),
   /** Hero buttons. Only the UI-changes2 comps open with these. */
   heroActions: z
     .array(
@@ -293,6 +298,134 @@ export const productCategorySchema = baseSchema.extend({
   /** Where these parts end up. Same card shape as `profileSection`. */
   sectorsSection: z
     .object({ ...sectionMeta.shape, ...cardGridSchema.shape })
+    .optional(),
+
+  /**
+   * Two structures set against each other, each with its own property list.
+   * The Sponge & Foam comp opens with closed cell vs open cell, which is the
+   * first decision a foam buyer makes.
+   */
+  compareSection: z
+    .object({
+      ...sectionMeta.shape,
+      panels: z
+        .array(
+          z.object({
+            label: z.string().min(2),
+            caption: z.string().min(3),
+            /** Which cell diagram to draw — see CellDiagram. */
+            diagram: z.enum(["closed", "open"]),
+            rows: z
+              .array(z.object({ label: z.string(), value: z.string() }))
+              .min(1),
+          }),
+        )
+        .length(2),
+    })
+    .optional(),
+
+  /**
+   * The compound selector: a tab per elastomer family, a detail panel for the
+   * selected one, and the full table beneath. The table repeats the panel
+   * content on purpose — the panel is for choosing, the table for comparing.
+   */
+  compoundSection: z
+    .object({
+      ...sectionMeta.shape,
+      items: z
+        .array(
+          z.object({
+            code: z.string().min(1),
+            fullName: z.string().min(4),
+            hardness: z.string().min(2),
+            tempRange: z.string().min(2),
+            applications: z.string().min(10),
+          }),
+        )
+        .min(2),
+    })
+    .optional(),
+
+  /** A single property presented as a range, with a pull quote beside it. */
+  densitySection: z
+    .object({
+      ...sectionMeta.shape,
+      scale: z.object({
+        min: z.string(),
+        max: z.string(),
+        unit: z.string(),
+        lowLabel: z.string(),
+        lowNote: z.string(),
+        highLabel: z.string(),
+        highNote: z.string(),
+      }),
+      quote: z.object({ text: z.string().min(20), author: z.string().min(2) }),
+      bands: z
+        .array(z.object({ range: z.string(), note: z.string() }))
+        .min(2),
+    })
+    .optional(),
+
+  /**
+   * A product that lives inside this category rather than beside it — the
+   * self-adhesive tape under Sponge & Foam. It gets its own heading block and
+   * its own comparisons, but not its own route.
+   */
+  subCategorySection: z
+    .object({
+      ...sectionMeta.shape,
+      /** Fragment target — the mega-dropdown links straight to this block. */
+      id: z.string().regex(/^[a-z0-9-]+$/).optional(),
+      dividerLabel: z.string().optional(),
+      buildUp: z
+        .object({ label: z.string(), layers: z.array(z.string()).min(2) })
+        .optional(),
+      comparisons: z
+        .array(
+          z.object({
+            label: z.string().min(3),
+            items: z
+              .array(
+                z.object({
+                  name: z.string().min(3),
+                  /** Shown as a pill beside the name. */
+                  tag: z.string().optional(),
+                  /** label/value pairs, or bare points when value is unset. */
+                  rows: z
+                    .array(
+                      z.object({
+                        label: z.string(),
+                        value: z.string().optional(),
+                        /** Renders as a caveat rather than a benefit. */
+                        caveat: z.boolean().default(false),
+                      }),
+                    )
+                    .min(1),
+                }),
+              )
+              .min(2),
+          }),
+        )
+        .default([]),
+      note: z.object({ title: z.string(), body: z.string().min(20) }).optional(),
+    })
+    .optional(),
+
+  /** Photographed applications, each tagged with the compound used. */
+  applicationsSection: z
+    .object({
+      ...sectionMeta.shape,
+      items: z
+        .array(
+          z.object({
+            tag: z.string().min(2),
+            name: z.string().min(3),
+            body: z.string().min(10),
+            image: imageRefSchema.optional(),
+          }),
+        )
+        .min(1),
+    })
     .optional(),
 
   /** Section 06 — closing enquiry band. */

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Container, Eyebrow } from "@/components/ui/Section";
 import { Img } from "@/components/ui/Img";
+import Link from "next/link";
 
 /**
  * The 40–60 word direct answer rendered BEFORE elaboration — the AEO pattern
@@ -118,6 +119,8 @@ export function CategoryHero({
   image,
   actions,
   eyebrowVariant = "badge",
+  breadcrumb,
+  statsAlign = "center",
 }: {
   badge: string;
   headingLead: string;
@@ -134,6 +137,10 @@ export function CategoryHero({
    * `badge`; the new comps use the site's rule-and-label `eyebrow`.
    */
   eyebrowVariant?: "badge" | "rule";
+  /** Trail above the eyebrow. Only the Sponge & Foam comp draws one. */
+  breadcrumb?: readonly { label: string; href: string }[];
+  /** Extrusion centres the stat panel; Sponge & Foam sets it left. */
+  statsAlign?: "left" | "center";
 }) {
   return (
     <header className="relative isolate overflow-hidden">
@@ -157,6 +164,21 @@ export function CategoryHero({
       )}
 
       <Container className="pt-32 pb-16 md:pt-48 md:pb-20">
+        {breadcrumb && breadcrumb.length > 0 && (
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <ol className="text-ink-4 flex flex-wrap items-center gap-2 font-mono text-[11px]">
+              {breadcrumb.map((b, i) => (
+                <li key={b.label} className="flex items-center gap-2">
+                  {i > 0 && <span aria-hidden>&rsaquo;</span>}
+                  <Link href={b.href} className="hover:text-ink transition-colors">
+                    {b.label}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         {eyebrowVariant === "rule" ? (
           <Eyebrow variant="rule">{badge}</Eyebrow>
         ) : (
@@ -200,7 +222,10 @@ export function CategoryHero({
                border-top row the nine older pages use. */
             <dl className="border-line bg-surface-2/60 rounded-card divide-line mt-12 grid divide-y border backdrop-blur sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
               {stats.map((s) => (
-                <div key={s.label} className="px-6 py-7 text-center">
+                <div
+                  key={s.label}
+                  className={`px-6 py-7 ${statsAlign === "center" ? "text-center" : ""}`}
+                >
                   <dd className="text-ink order-1 text-2xl font-bold">
                     {s.value}
                   </dd>
