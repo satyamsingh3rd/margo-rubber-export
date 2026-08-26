@@ -7,6 +7,11 @@ import { SpecTable } from "@/components/sections/SpecTable";
 import { MaterialCards } from "@/components/sections/MaterialCards";
 import { PartsGrid } from "@/components/sections/PartsGrid";
 import {
+  CardGrid,
+  ProcessSteps,
+  SpecifyGrid,
+} from "@/components/sections/CategoryBlocks";
+import {
   AnswerBlock,
   CategoryHero,
   CommercialTable,
@@ -77,10 +82,24 @@ export default async function ProductCategoryPage(
         headingLead={headingLead}
         headingAccent={headingAccent}
         intro={fm.intro}
-        link={{ label: "View O-Ring Size Chart", href: "/resources/o-ring-size-chart" }}
+        link={fm.heroLink}
         stats={fm.heroStats}
         image={fm.hero?.image}
       />
+
+      {/* The catalogue of sections comes before the compound table: you pick
+          the shape you need, then the compound it is made in. That is the
+          order the comp draws and the order a buyer actually decides in. */}
+      {fm.profileSection && (
+        <Section
+          id="profiles"
+          eyebrow={fm.profileSection.eyebrow}
+          heading={fm.profileSection.heading}
+          body={fm.profileSection.body}
+        >
+          <CardGrid items={fm.profileSection.items} />
+        </Section>
+      )}
 
       {fm.specSection && (
         <Section
@@ -130,6 +149,31 @@ export default async function ProductCategoryPage(
         </Section>
       )}
 
+      {fm.processSection && (
+        <Section
+          id="process"
+          eyebrow={fm.processSection.eyebrow}
+          heading={fm.processSection.heading}
+          body={fm.processSection.body}
+          className="bg-band"
+        >
+          <ProcessSteps steps={fm.processSection.steps} />
+        </Section>
+      )}
+
+      {fm.specifySection && (
+        <Section
+          id="specify"
+          eyebrow={fm.specifySection.eyebrow}
+          heading={fm.specifySection.heading}
+          body={fm.specifySection.body}
+        >
+          <NarrowBlock>
+            <SpecifyGrid items={fm.specifySection.items} />
+          </NarrowBlock>
+        </Section>
+      )}
+
       {fm.standardsSection && (
         <Section
           id="standards"
@@ -142,6 +186,17 @@ export default async function ProductCategoryPage(
               <StandardsGrid items={fm.standardsSection.items} />
             </div>
           </NarrowBlock>
+        </Section>
+      )}
+
+      {fm.sectorsSection && (
+        <Section
+          id="sectors"
+          eyebrow={fm.sectorsSection.eyebrow}
+          heading={fm.sectorsSection.heading}
+          body={fm.sectorsSection.body}
+        >
+          <CardGrid items={fm.sectorsSection.items} />
         </Section>
       )}
 
@@ -172,6 +227,7 @@ export default async function ProductCategoryPage(
           body={fm.cta.body}
           primary={fm.cta.primary}
           secondary={fm.cta.secondary}
+          chips={fm.cta.chips}
         />
       )}
     </>

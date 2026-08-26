@@ -94,6 +94,32 @@ const baseSchema = z.object({
   confirmWithMargo: z.array(z.string()).default([]),
 });
 
+/**
+ * A grid of cards, each a short code or label with a one-line explanation.
+ *
+ * Introduced by the two category comps in UI-changes2/, which both use this
+ * same shape twice: once for a catalogue of sections or variants, and once
+ * for the sectors those parts are specified into. `code` is optional because
+ * the sectors grid has no part numbers.
+ */
+export const cardGridSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        /** Fragment target. The mega-dropdown deep-links to these, so an id
+         *  here must match the href in navigation.ts. */
+        id: z
+          .string()
+          .regex(/^[a-z0-9-]+$/, "card ids are lowercase-kebab")
+          .optional(),
+        code: z.string().optional(),
+        name: z.string().min(2),
+        body: z.string().min(10),
+      }),
+    )
+    .min(1),
+});
+
 /* ------------------------------------------------------------------ */
 
 export const productCategorySchema = baseSchema.extend({
@@ -104,6 +130,14 @@ export const productCategorySchema = baseSchema.extend({
   heroStats: z
     .array(z.object({ value: z.string(), label: z.string() }))
     .default([]),
+  /**
+   * Optional deep link in the hero, beneath the intro.
+   *
+   * This used to be hardcoded in the route as "View O-Ring Size Chart", which
+   * meant every category page carried it — Bellows and Gaskets included. It
+   * belongs to the one category that has a size chart, so it lives here.
+   */
+  heroLink: z.object({ label: z.string(), href: z.string() }).optional(),
   /**
    * Every numbered section on the page is a self-describing block: it owns
    * its own eyebrow and heading. Nothing is an orphan heading in the MDX
@@ -164,6 +198,50 @@ export const productCategorySchema = baseSchema.extend({
     })
     .optional(),
 
+  /**
+   * Catalogue of the sections, profiles or variants this category is made in.
+   * The extrusion comp's profile library; the nine tiles with EXT- codes.
+   */
+  profileSection: z
+    .object({ ...sectionMeta.shape, ...cardGridSchema.shape })
+    .optional(),
+
+  /** How the part is made, in ordered stages. Numbered in the render, so the
+   *  order of `steps` is the order shown — this is a real sequence. */
+  processSection: z
+    .object({
+      ...sectionMeta.shape,
+      steps: z
+        .array(z.object({ name: z.string().min(3), body: z.string().min(20) }))
+        .min(2),
+    })
+    .optional(),
+
+  /**
+   * The "specify in four lines" block: the handful of parameters that fully
+   * define a part, each with the value format expected.
+   */
+  specifySection: z
+    .object({
+      ...sectionMeta.shape,
+      items: z
+        .array(
+          z.object({
+            label: z.string().min(3),
+            /** The example or range, set beside the label. */
+            value: z.string().min(1),
+            body: z.string().min(20),
+          }),
+        )
+        .min(2),
+    })
+    .optional(),
+
+  /** Where these parts end up. Same card shape as `profileSection`. */
+  sectorsSection: z
+    .object({ ...sectionMeta.shape, ...cardGridSchema.shape })
+    .optional(),
+
   /** Section 06 — closing enquiry band. */
   cta: z
     .object({
@@ -172,6 +250,8 @@ export const productCategorySchema = baseSchema.extend({
       body: z.string().min(20),
       primary: z.object({ label: z.string(), href: z.string() }),
       secondary: z.object({ label: z.string(), href: z.string() }).optional(),
+      /** Small facts set above the buttons — MOQ, sample qty, turnaround. */
+      chips: z.array(z.string()).default([]),
     })
     .optional(),
 

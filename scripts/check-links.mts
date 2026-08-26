@@ -36,10 +36,7 @@ const SRC = "src";
  *  Both entries below are the two new product categories drawn in
  *  UI-changes2/. The mega-dropdown links to them now; their category pages
  *  are the next two pieces of work. Delete each the moment its page ships. */
-const PLANNED = new Set<string>([
-  "/products/extrusion",
-  "/products/sponge-foam-rubber",
-]);
+const PLANNED = new Set<string>(["/products/sponge-foam-rubber"]);
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {

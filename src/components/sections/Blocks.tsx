@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Container, Eyebrow } from "@/components/ui/Section";
 import { Img } from "@/components/ui/Img";
+import { CtaChips } from "@/components/sections/CategoryBlocks";
 
 /**
  * The 40–60 word direct answer rendered BEFORE elaboration — the AEO pattern
@@ -79,12 +80,15 @@ export function CTABand({
   body,
   primary,
   secondary,
+  chips,
 }: {
   eyebrow: string;
   heading: string;
   body: string;
   primary: { label: string; href: string };
   secondary?: { label: string; href: string };
+  /** Optional facts above the buttons — MOQ, sample quantity, turnaround. */
+  chips?: readonly string[];
 }) {
   return (
     <section className="py-[70px]">
@@ -93,6 +97,7 @@ export function CTABand({
           <Eyebrow>{eyebrow}</Eyebrow>
           <h2 className="text-h1 mt-3">{heading}</h2>
           <p className="text-ink-3 mt-4 max-w-[60ch] leading-relaxed">{body}</p>
+          {chips && chips.length > 0 && <CtaChips chips={chips} />}
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href={primary.href}>{primary.label}</Button>
             {secondary && (
