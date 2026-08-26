@@ -17,14 +17,25 @@ export function Button({
   variant = "primary",
   children,
   className = "",
+  onClick,
 }: {
   href: string;
   variant?: keyof typeof variants;
   children: ReactNode;
   className?: string;
+  /**
+   * Optional, and only usable from a client component. The mobile nav needs
+   * it: the header lives in the layout, so it survives the route change and
+   * the menu would otherwise still be open on the page you just landed on.
+   */
+  onClick?: () => void;
 }) {
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`${base} ${variants[variant]} ${className}`}
+    >
       {children}
     </Link>
   );
