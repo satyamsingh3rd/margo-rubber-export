@@ -17,10 +17,10 @@ import {
 import {
   ApplicationCards,
   ComparePanels,
-  CompoundGuide,
   DensityBlock,
   SubCategoryBlock,
 } from "@/components/sections/FoamBlocks";
+import { CompoundGuide } from "@/components/sections/CompoundGuide";
 import {
   AnswerBlock,
   CategoryHero,
