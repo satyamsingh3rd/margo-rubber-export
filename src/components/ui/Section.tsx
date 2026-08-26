@@ -48,6 +48,20 @@ export function Eyebrow({
 }
 
 /**
+ * The accent bloom used at band changes. `overflow-hidden` on the section
+ * keeps it from bleeding into the neighbour above, and the Container above
+ * it is `relative` so the copy sits in front without needing a z-index.
+ */
+export function SectionGlow() {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_100%_at_50%_0%,rgb(43_188_196/0.10),transparent_72%)]"
+    />
+  );
+}
+
+/**
  * A numbered page section. Heading and eyebrow come from the section's own
  * content block — never an orphan heading in the MDX body.
  */
@@ -62,6 +76,7 @@ export function Section({
   eyebrowVariant = "plain",
   accentLastWords = 0,
   align = "left",
+  glow = false,
 }: {
   eyebrow?: string;
   heading?: string;
@@ -76,6 +91,14 @@ export function Section({
   /** Centres the eyebrow, heading and lede. The comps use this for section
    *  headers that introduce a full-width grid below them. */
   align?: "left" | "center";
+  /**
+   * Soft accent bloom at the top edge, fading down over ~16rem.
+   *
+   * The UI-changes2 comps use it at every band change: it is what stops two
+   * adjacent dark sections reading as one undifferentiated block. Kept off
+   * by default — the nine older category pages have flat bands by design.
+   */
+  glow?: boolean;
 }) {
   const words = heading?.split(" ") ?? [];
   const accentCount = accentLastWords ?? 0;
@@ -104,8 +127,16 @@ export function Section({
     : null;
 
   return (
-    <section id={id} className={`scroll-mt-24 py-[70px] ${className}`}>
-      <Container>
+    // `relative overflow-hidden` only when there is a glow to clip. Applying
+    // it unconditionally would put an `overflow` ancestor above every section
+    // on the site — which breaks `position: sticky`, and the pinned trade-lane
+    // sequence on /export depends on it.
+    <section
+      id={id}
+      className={`scroll-mt-24 py-[70px] ${glow ? "relative overflow-hidden" : ""} ${className}`}
+    >
+      {glow && <SectionGlow />}
+      <Container className={glow ? "relative" : ""}>
         {(eyebrow || heading || body) && (
           <header
             className={`mb-10 ${

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Container, Eyebrow } from "@/components/ui/Section";
+import { Container, Eyebrow, SectionGlow } from "@/components/ui/Section";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 /**
@@ -377,8 +377,10 @@ export function SubCategoryBlock({
   buildUp,
   comparisons,
   note,
+  className = "",
 }: {
   id?: string;
+  className?: string;
   eyebrow: string;
   heading: string;
   body?: string;
@@ -405,8 +407,12 @@ export function SubCategoryBlock({
   );
 
   return (
-    <section id={id} className="scroll-mt-24 py-[70px]">
-      <Container>
+    <section
+      id={id}
+      className={`relative scroll-mt-24 overflow-hidden py-[70px] ${className}`}
+    >
+      <SectionGlow />
+      <Container className="relative">
         {dividerLabel && (
           <p className="text-ink-4 flex items-center gap-5 font-mono text-[10px] tracking-[0.16em] uppercase">
             <span aria-hidden className="bg-line-2 h-px flex-1" />

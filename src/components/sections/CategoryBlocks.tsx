@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { Container, Eyebrow } from "@/components/ui/Section";
+import { Container, Eyebrow, SectionGlow } from "@/components/ui/Section";
 import { Icon, ProfileDrawing, type IconName, type ProfileShape } from "@/components/ui/Icon";
 
 /**
@@ -200,6 +200,7 @@ export function QualityPanel({
   badges,
   standards,
   docPackage,
+  className = "",
 }: {
   eyebrow: string;
   heading: string;
@@ -208,6 +209,7 @@ export function QualityPanel({
   badges?: readonly { label: string; icon?: string }[];
   standards: readonly { name: string; code: string }[];
   docPackage?: { title: string; body: string };
+  className?: string;
 }) {
   const marked = heading.split("*").map((part, i) =>
     i % 2 === 1 ? (
@@ -220,8 +222,9 @@ export function QualityPanel({
   );
 
   return (
-    <section className="bg-band py-[70px]">
-      <Container>
+    <section className={`relative overflow-hidden py-[70px] ${className}`}>
+      <SectionGlow />
+      <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <Eyebrow variant="rule">{eyebrow}</Eyebrow>
@@ -341,10 +344,12 @@ export function CtaPanel({
   chips,
   primary,
   secondary,
+  className = "",
 }: {
   eyebrow: string;
   heading: string;
   body: string;
+  className?: string;
   chips?: readonly { label: string; icon?: string }[];
   primary: { label: string; href: string };
   secondary?: { label: string; href: string };
@@ -360,8 +365,9 @@ export function CtaPanel({
   );
 
   return (
-    <section className="py-[70px]">
-      <Container>
+    <section className={`relative overflow-hidden py-[70px] ${className}`}>
+      <SectionGlow />
+      <Container className="relative">
         <div className="relative px-4 py-4">
           {[
             "top-0 left-0 border-t border-l",

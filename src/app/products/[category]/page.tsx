@@ -76,6 +76,23 @@ export default async function ProductCategoryPage(
   const headingAccent = accentFromFm ?? fm.h1.split(" ").slice(-1)[0];
   const headingLead = fm.h1.slice(0, fm.h1.length - headingAccent.length).trim();
 
+  /**
+   * The UI-changes2 comps alternate a near-black band with a lighter one and
+   * bloom the accent at each change. `bg-band` is #030303 against a #000000
+   * canvas — invisible — so those pages use `bg-surface-2` instead.
+   *
+   * Sections are conditional, so alternation is counted as they render rather
+   * than hard-coded: JSX evaluates top to bottom, so calling `band()` in each
+   * section's className alternates over whichever sections this page actually
+   * has. The nine older pages keep their existing flat treatment.
+   */
+  const comp2 = fm.heroActions.length > 0;
+  let bandIndex = 0;
+  const band = () => {
+    if (!comp2) return "";
+    return bandIndex++ % 2 === 1 ? "bg-surface-2" : "";
+  };
+
   return (
     <>
       {shouldEmitSchema(fm.status) && (
@@ -119,6 +136,8 @@ export default async function ProductCategoryPage(
           body={fm.profileSection.body}
           align="center"
           eyebrowVariant="rule"
+          className={band()}
+          glow
         >
           <ProfileGrid items={fm.profileSection.items} />
         </Section>
@@ -132,6 +151,8 @@ export default async function ProductCategoryPage(
           body={fm.compareSection.body}
           align="center"
           eyebrowVariant="rule"
+          className={band()}
+          glow
         >
           <ComparePanels panels={fm.compareSection.panels} />
         </Section>
@@ -143,7 +164,8 @@ export default async function ProductCategoryPage(
           eyebrow={fm.compoundSection.eyebrow}
           heading={fm.compoundSection.heading}
           body={fm.compoundSection.body}
-          className="bg-band"
+          className={band()}
+          glow
           align="center"
           eyebrowVariant="rule"
         >
@@ -157,8 +179,10 @@ export default async function ProductCategoryPage(
           eyebrow={fm.specSection.eyebrow}
           heading={fm.specSection.heading}
           body={fm.specSection.body}
-          align={fm.profileSection ? "center" : "left"}
-          eyebrowVariant={fm.profileSection ? "rule" : "plain"}
+          align={comp2 ? "center" : "left"}
+          eyebrowVariant={comp2 ? "rule" : "plain"}
+          className={band()}
+          glow={comp2}
         >
           <SpecTable
             columns={fm.specSection.columns}
@@ -176,6 +200,8 @@ export default async function ProductCategoryPage(
           heading={fm.densitySection.heading}
           body={fm.densitySection.body}
           eyebrowVariant="rule"
+          className={band()}
+          glow
         >
           <DensityBlock
             scale={fm.densitySection.scale}
@@ -224,7 +250,8 @@ export default async function ProductCategoryPage(
           eyebrow={fm.processSection.eyebrow}
           heading={fm.processSection.heading}
           body={fm.processSection.body}
-          className="bg-band"
+          className={band()}
+          glow
           align="center"
           eyebrowVariant="rule"
         >
@@ -242,6 +269,7 @@ export default async function ProductCategoryPage(
           buildUp={fm.subCategorySection.buildUp}
           comparisons={fm.subCategorySection.comparisons}
           note={fm.subCategorySection.note}
+          className={band()}
         />
       )}
 
@@ -251,7 +279,8 @@ export default async function ProductCategoryPage(
           eyebrow={fm.applicationsSection.eyebrow}
           heading={fm.applicationsSection.heading}
           body={fm.applicationsSection.body}
-          className="bg-band"
+          className={band()}
+          glow
           align="center"
           eyebrowVariant="rule"
         >
@@ -267,6 +296,8 @@ export default async function ProductCategoryPage(
           body={fm.specifySection.body}
           align="center"
           eyebrowVariant="rule"
+          className={band()}
+          glow
         >
           <SpecifyCards items={fm.specifySection.items} />
         </Section>
@@ -296,6 +327,7 @@ export default async function ProductCategoryPage(
           badges={fm.qualitySection.badges}
           standards={fm.qualitySection.standards}
           docPackage={fm.qualitySection.docPackage}
+          className={band()}
         />
       )}
 
@@ -307,6 +339,8 @@ export default async function ProductCategoryPage(
           body={fm.sectorsSection.body}
           align="center"
           eyebrowVariant="rule"
+          className={band()}
+          glow
         >
           <SectorCards items={fm.sectorsSection.items} />
         </Section>
@@ -345,6 +379,7 @@ export default async function ProductCategoryPage(
             chips={fm.cta.chips}
             primary={fm.cta.primary}
             secondary={fm.cta.secondary}
+            className={band()}
           />
         ) : (
           <CTABand
