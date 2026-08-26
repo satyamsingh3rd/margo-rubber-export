@@ -72,6 +72,16 @@ export const IMAGES = {
     alt: "Sweeping folds of dark moulded rubber",
     status: "placeholder",
   },
+  /* --- Products: Extrusion Profiles category -------------------------- */
+  "products.extrusion.hero": {
+    src: "/images/products-category/9bb7539abd559eb1e8be67cf319646c7bb4c2b78.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAHBAAAgICAwAAAAAAAAAAAAAAAQIAAxFBEyRi/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwT/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8AhfjHVQIh3szPLoxJsawt6bMRKLBv/9k=",
+    w: 1800,
+    h: 1000,
+    alt: "Extrusion line inside a rubber components plant, profiles running through inline tooling stations",
+    status: "placeholder",
+  },
+
   "products.material.fkm": {
     src: "/images/products-category/e7261bcef11d425da03cc396a9380a40a734352d.png",
     blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAeEAEAAgIBBQAAAAAAAAAAAAABAgMAESEEIkFCof/EABQBAQAAAAAAAAAAAAAAAAAAAAL/xAAWEQADAAAAAAAAAAAAAAAAAAAAASH/2gAMAwEAAhEDEQA/AJdnQwFaby42hbE4knjWLarKkrGLKJ3xPSTyx+4xiUA6f//Z",

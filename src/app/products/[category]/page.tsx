@@ -7,9 +7,12 @@ import { SpecTable } from "@/components/sections/SpecTable";
 import { MaterialCards } from "@/components/sections/MaterialCards";
 import { PartsGrid } from "@/components/sections/PartsGrid";
 import {
-  CardGrid,
-  ProcessSteps,
-  SpecifyGrid,
+  CtaPanel,
+  ProcessTimeline,
+  ProfileGrid,
+  QualityPanel,
+  SectorCards,
+  SpecifyCards,
 } from "@/components/sections/CategoryBlocks";
 import {
   AnswerBlock,
@@ -85,6 +88,8 @@ export default async function ProductCategoryPage(
         link={fm.heroLink}
         stats={fm.heroStats}
         image={fm.hero?.image}
+        actions={fm.heroActions}
+        eyebrowVariant={fm.heroActions.length > 0 ? "rule" : "badge"}
       />
 
       {/* The catalogue of sections comes before the compound table: you pick
@@ -96,8 +101,10 @@ export default async function ProductCategoryPage(
           eyebrow={fm.profileSection.eyebrow}
           heading={fm.profileSection.heading}
           body={fm.profileSection.body}
+          align="center"
+          eyebrowVariant="rule"
         >
-          <CardGrid items={fm.profileSection.items} />
+          <ProfileGrid items={fm.profileSection.items} />
         </Section>
       )}
 
@@ -107,11 +114,14 @@ export default async function ProductCategoryPage(
           eyebrow={fm.specSection.eyebrow}
           heading={fm.specSection.heading}
           body={fm.specSection.body}
+          align={fm.profileSection ? "center" : "left"}
+          eyebrowVariant={fm.profileSection ? "rule" : "plain"}
         >
           <SpecTable
             columns={fm.specSection.columns}
             rows={fm.specSection.rows}
             footnote={fm.specSection.footnote}
+            controls={fm.specSection.controls}
           />
         </Section>
       )}
@@ -156,8 +166,10 @@ export default async function ProductCategoryPage(
           heading={fm.processSection.heading}
           body={fm.processSection.body}
           className="bg-band"
+          align="center"
+          eyebrowVariant="rule"
         >
-          <ProcessSteps steps={fm.processSection.steps} />
+          <ProcessTimeline steps={fm.processSection.steps} />
         </Section>
       )}
 
@@ -167,10 +179,10 @@ export default async function ProductCategoryPage(
           eyebrow={fm.specifySection.eyebrow}
           heading={fm.specifySection.heading}
           body={fm.specifySection.body}
+          align="center"
+          eyebrowVariant="rule"
         >
-          <NarrowBlock>
-            <SpecifyGrid items={fm.specifySection.items} />
-          </NarrowBlock>
+          <SpecifyCards items={fm.specifySection.items} />
         </Section>
       )}
 
@@ -189,14 +201,28 @@ export default async function ProductCategoryPage(
         </Section>
       )}
 
+      {fm.qualitySection && (
+        <QualityPanel
+          eyebrow={fm.qualitySection.eyebrow}
+          heading={fm.qualitySection.heading}
+          body={fm.qualitySection.body}
+          quote={fm.qualitySection.quote}
+          badges={fm.qualitySection.badges}
+          standards={fm.qualitySection.standards}
+          docPackage={fm.qualitySection.docPackage}
+        />
+      )}
+
       {fm.sectorsSection && (
         <Section
           id="sectors"
           eyebrow={fm.sectorsSection.eyebrow}
           heading={fm.sectorsSection.heading}
           body={fm.sectorsSection.body}
+          align="center"
+          eyebrowVariant="rule"
         >
-          <CardGrid items={fm.sectorsSection.items} />
+          <SectorCards items={fm.sectorsSection.items} />
         </Section>
       )}
 
@@ -220,16 +246,29 @@ export default async function ProductCategoryPage(
         </Section>
       )}
 
-      {fm.cta && (
-        <CTABand
-          eyebrow={fm.cta.eyebrow}
-          heading={fm.cta.heading}
-          body={fm.cta.body}
-          primary={fm.cta.primary}
-          secondary={fm.cta.secondary}
-          chips={fm.cta.chips}
-        />
-      )}
+      {/* Two closing bands. The nine older pages use the left-aligned
+          CTABand; the new comps use a centred panel with corner brackets and
+          a row of fact chips. Chips are what distinguishes them, so their
+          presence selects the layout rather than a separate flag. */}
+      {fm.cta &&
+        (fm.cta.chips.length > 0 ? (
+          <CtaPanel
+            eyebrow={fm.cta.eyebrow}
+            heading={fm.cta.heading}
+            body={fm.cta.body}
+            chips={fm.cta.chips}
+            primary={fm.cta.primary}
+            secondary={fm.cta.secondary}
+          />
+        ) : (
+          <CTABand
+            eyebrow={fm.cta.eyebrow}
+            heading={fm.cta.heading}
+            body={fm.cta.body}
+            primary={fm.cta.primary}
+            secondary={fm.cta.secondary}
+          />
+        ))}
     </>
   );
 }

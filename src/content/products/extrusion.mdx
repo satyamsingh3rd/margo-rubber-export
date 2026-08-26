@@ -14,10 +14,18 @@ seo:
       - "EPDM extrusion profile supplier"
 
 # ── 01 · HERO ────────────────────────────────────────────────────────────
+hero:
+  image: products.extrusion.hero
+  alt: Extrusion line inside a rubber components plant
+
 intro: >-
   Continuous-length seals, channels, and structural profiles extruded to
   drawing. Five compounds, eight standard sections, per-metre pricing — no
   minimum run on repeat orders.
+
+heroActions:
+  - { label: Request a Quote, href: /contact, variant: primary }
+  - { label: View Profiles, href: "#profiles", variant: secondary }
 
 heroStats:
   - { value: "5", label: "Compounds" }
@@ -29,55 +37,65 @@ heroStats:
 # `id` on each card is the fragment the Products mega-dropdown links to.
 profileSection:
   eyebrow: PRODUCT RANGE
-  heading: Standard Extrusion Profile Library
+  heading: Standard Extrusion *Profile Library*
   body: >-
     Clean 2D cross-section drawings — every profile available in any compound
     from the specification table below. Tolerances held to ±0.2 mm on critical
     dimensions.
   items:
     - id: d-section
+      shape: d-section
       code: EXT-DS01
       name: D-Section
       body: Window, door & cabinet seals
     - id: p-seal
+      shape: p-seal
       code: EXT-PS01
       name: P-Seal
       body: Compression bulb with integral tail
     - id: t-profile
+      shape: t-profile
       code: EXT-TP01
       name: T-Profile
       body: Panel retention & anti-vibration
     - id: u-channel-round
+      shape: u-channel-round
       code: EXT-RU01
       name: Round U-Channel
       body: Edge protection & glass runs
     - id: u-channel-square
+      shape: u-channel-square
       code: EXT-SU01
       name: Square U-Channel
       body: Structural glazing channels
     - id: solid-cord
+      shape: solid-cord
       code: EXT-SC01
       name: Solid Cord
       body: Compression seals & joints
     - id: tubing
+      shape: tubing
       code: EXT-TB01
       name: Tubing
       body: Pneumatic & fluid conveyance
     - id: l-angle
+      shape: l-angle
       code: EXT-LA01
       name: L-Angle
       body: Corner protection & structural trim
     - id: custom-profile
+      shape: custom-profile
       name: Custom Profile
       body: Send your drawing or sample for a quotation
 
 # ── 03 · MATERIAL SPECIFICATIONS ─────────────────────────────────────────
 specSection:
   eyebrow: MATERIAL SPECIFICATIONS
-  heading: Compound Specification Range
+  heading: Compound *Specification Range*
   body: >-
     Every compound blended in-house. Five polymers covering −60°C to +200°C
     and the full chemical exposure spectrum.
+  controls: false
   columns: ["Compound", "Shore A", "Service Range", "Specified For"]
   rows:
     - ["EPDM", "50–80", "−40 → +140 °C", "Weather, ozone and water — the default for external sealing"]
@@ -93,24 +111,28 @@ specSection:
 # ── 04 · MANUFACTURING PROCESS ───────────────────────────────────────────
 processSection:
   eyebrow: MANUFACTURING PROCESS
-  heading: From Compound to Finished Profile
+  heading: From Compound *to Finished Profile*
   body: >-
     Every extrusion follows four tightly controlled stages. Each is monitored
     in-process and logged against the batch record.
   steps:
     - name: Compounding
+      icon: layers
       body: >-
         Base polymer blended with fillers, plasticisers & vulcanisation agents
         to exact in-house formulation
     - name: Extrusion
+      icon: gear
       body: >-
         Continuous profile formed through precision-machined tooling die at
         controlled barrel temperature
     - name: Curing
+      icon: bolt
       body: >-
         Vulcanisation via salt bath, microwave tunnel or LCM line — method
         selected for compound and section
     - name: Cooling & Cut-Off
+      icon: thermometer
       body: >-
         Water quench, online dimensional check, then precision cut to length
         or spooled per order
@@ -118,81 +140,94 @@ processSection:
 # ── 05 · SPECIFICATION GUIDE ─────────────────────────────────────────────
 specifySection:
   eyebrow: SPECIFICATION GUIDE
-  heading: Specify in Four Lines
+  heading: Specify in *Four Lines*
   body: >-
     These four parameters fully define any rubber extrusion. Provide them and
     our engineers will return a compound recommendation, hardness grade, and
     dimensional tolerance in a single technical pass — no back-and-forth.
   items:
     - label: Temperature
+      icon: thermometer
       value: "−60°C → +250°C"
       body: >-
         State the minimum and maximum operating temperatures. Our compound
         window spans −60°C to +250°C.
     - label: Fluid Contact
+      icon: droplet
       value: Media matched
       body: >-
         Water, oil, fuel, acid, steam, or ozone exposure — each environment
         demands a different polymer backbone.
     - label: Duty Cycle
+      icon: pulse
       value: Static / Dynamic
       body: >-
         Static compression seal, dynamic wiper, or structural load-bearing
         gasket — duty changes the hardness spec.
     - label: Compression Set
+      icon: cycle
       value: ASTM D395-B
       body: >-
         State your pass criterion at temperature and dwell time. We test to
         ASTM D395 Method B as standard.
 
 # ── 06 · QUALITY ASSURANCE ───────────────────────────────────────────────
-standardsSection:
+qualitySection:
   eyebrow: QUALITY ASSURANCE
-  heading: Quality Assured With Every Metre
-  answer: >-
+  heading: Quality That Travels *With Every Metre*
+  body: >-
     Every production batch is tested to international standards before
     despatch. Reports are supplied as standard with export orders; available
-    on request for domestic shipments. Every metre we ship carries a batch
-    test certificate — it arrives with the delivery note.
-  items:
-    - code: ISO 37
-      name: Tensile Strength & Elongation at Break
-      body: Measured on dumbbell specimens cut from the production batch.
-    - code: ISO 815 / ASTM D395
-      name: Compression Set (Method B)
-      body: Constant-deflection method, at the temperature and dwell you specify.
-    - code: ISO 1431-1
-      name: Ozone Resistance
-      body: Static strain exposure, for profiles in external or weathered service.
-    - code: ISO 188
-      name: Accelerated Heat Ageing
-      body: Predicts property retention across the service life of the section.
-    - code: ISO 48 / ASTM D2240
-      name: Hardness (Shore A & IRHD)
-      body: Checked against the hardness grade stated on the drawing.
-    - code: ASTM D2137
-      name: Low Temperature Flexibility
-      body: Brittleness point, for profiles specified below freezing.
+    on request for domestic shipments.
+  quote:
+    text: >-
+      Every metre we ship carries a batch test certificate. You never have to
+      ask — it arrives with the delivery note, before you even open the box.
+    author: Engineering Team
+    org: Margo Rubber Industries, Pune
+    initials: MR
+  badges:
+    - { label: ISO 9001:2015 Certified, icon: award }
+    - { label: Full Batch Traceability, icon: shield }
+    - { label: Reports on Delivery, icon: document }
+  standards:
+    - { name: Tensile Strength & Elongation at Break, code: ISO 37 }
+    - { name: Compression Set (Method B), code: ISO 815 / ASTM D395 }
+    - { name: Ozone Resistance, code: ISO 1431-1 }
+    - { name: Accelerated Heat Ageing, code: ISO 188 }
+    - { name: Hardness (Shore A & IRHD), code: ISO 48 / ASTM D2240 }
+    - { name: Low Temperature Flexibility, code: ASTM D2137 }
+  docPackage:
+    title: Standard Documentation Package
+    body: >-
+      Material test report · Batch certificate · Dimensional inspection sheet ·
+      Compound data sheet — all supplied with every order.
 
 # ── 07 · SECTORS SERVED ──────────────────────────────────────────────────
 sectorsSection:
   eyebrow: SECTORS SERVED
-  heading: Where Our Profiles Are Specified
+  heading: Where Our Profiles *Are Specified*
   body: >-
     From construction curtain wall to industrial fluid systems — our
     extrusions solve the same fundamental sealing problem across every sector.
   items:
     - name: Construction
+      icon: building
       body: Window & door seals, curtain wall glazing, expansion joints, roofing gaskets
     - name: Automotive
+      icon: vehicle
       body: Door & boot lid seals, body flange protection, trunk weatherstrips
     - name: HVAC
+      icon: airflow
       body: Duct seals, vibration isolators, access panel gaskets, AHU door seals
     - name: Industrial Machinery
+      icon: wrench
       body: Machine guards, conveyor wipers, hydraulic rod seals, coolant gaskets
     - name: Electrical
+      icon: chip
       body: Cable ingress seals, panel door gaskets, EMI strip, enclosure seals
     - name: Water Management
+      icon: droplet
       body: Pump seals, pipe penetration seals, valve stem packing, weir gaskets
 
 # ── 08 · COMMERCIAL TERMS ────────────────────────────────────────────────
@@ -213,12 +248,16 @@ commercialSection:
 # ── 09 · ENQUIRIES ───────────────────────────────────────────────────────
 cta:
   eyebrow: READY TO SPECIFY
-  heading: Let's Build Your Extrusion Profile
+  heading: Let's Build Your *Extrusion Profile*
   body: >-
     Send a CAD file, a section drawing, or a physical sample — our engineers
     will respond with compound recommendation and indicative pricing within
     48 hours.
-  chips: ["MOQ 500 pcs", "Sample 50 pcs", "Quote in 48 Hours", "CAD File Accepted"]
+  chips:
+    - { label: MOQ 500 pcs, icon: box }
+    - { label: Sample 50 pcs, icon: layers }
+    - { label: Quote in 48 Hours, icon: clock }
+    - { label: CAD File Accepted, icon: upload }
   primary: { label: Upload Drawing & Quote, href: /contact }
   secondary: { label: Request Data Sheets, href: /contact }
 

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Container, Eyebrow } from "@/components/ui/Section";
 import { Img } from "@/components/ui/Img";
-import { CtaChips } from "@/components/sections/CategoryBlocks";
 
 /**
  * The 40–60 word direct answer rendered BEFORE elaboration — the AEO pattern
@@ -80,15 +79,12 @@ export function CTABand({
   body,
   primary,
   secondary,
-  chips,
 }: {
   eyebrow: string;
   heading: string;
   body: string;
   primary: { label: string; href: string };
   secondary?: { label: string; href: string };
-  /** Optional facts above the buttons — MOQ, sample quantity, turnaround. */
-  chips?: readonly string[];
 }) {
   return (
     <section className="py-[70px]">
@@ -97,7 +93,6 @@ export function CTABand({
           <Eyebrow>{eyebrow}</Eyebrow>
           <h2 className="text-h1 mt-3">{heading}</h2>
           <p className="text-ink-3 mt-4 max-w-[60ch] leading-relaxed">{body}</p>
-          {chips && chips.length > 0 && <CtaChips chips={chips} />}
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href={primary.href}>{primary.label}</Button>
             {secondary && (
@@ -121,6 +116,8 @@ export function CategoryHero({
   link,
   stats,
   image,
+  actions,
+  eyebrowVariant = "badge",
 }: {
   badge: string;
   headingLead: string;
@@ -129,6 +126,14 @@ export function CategoryHero({
   link?: { label: string; href: string };
   stats: { value: string; label: string }[];
   image?: string;
+  /** Hero buttons. The UI-changes2 comps open with two; the nine older
+   *  category pages have none and pass nothing. */
+  actions?: readonly { label: string; href: string; variant?: "primary" | "secondary" }[];
+  /**
+   * How the line above the H1 is set. The nine existing pages use a pill
+   * `badge`; the new comps use the site's rule-and-label `eyebrow`.
+   */
+  eyebrowVariant?: "badge" | "rule";
 }) {
   return (
     <header className="relative isolate overflow-hidden">
@@ -141,15 +146,24 @@ export function CategoryHero({
             sizes="100vw"
             className="-z-10 object-cover"
           />
-          {/* Legibility scrim — the design sets the copy over the darkest area */}
-          <div className="from-canvas via-canvas/70 to-canvas/30 absolute inset-0 -z-10 bg-gradient-to-t" />
+          {/* Legibility scrim, in two passes because the copy is set left and
+              the plant photography is brightest top-right. The vertical pass
+              grounds the whole frame; the horizontal one darkens only the
+              column the text occupies, so the image stays readable on the
+              right instead of being flattened everywhere. */}
+          <div className="from-canvas via-canvas/85 to-canvas/50 absolute inset-0 -z-10 bg-gradient-to-t" />
+          <div className="from-canvas/95 via-canvas/60 absolute inset-0 -z-10 bg-gradient-to-r to-transparent" />
         </>
       )}
 
       <Container className="pt-32 pb-16 md:pt-48 md:pb-20">
-        <p className="text-eyebrow border-line-2 text-ink-2 inline-flex rounded-pill border px-4 py-1.5 font-mono uppercase">
-          {badge}
-        </p>
+        {eyebrowVariant === "rule" ? (
+          <Eyebrow variant="rule">{badge}</Eyebrow>
+        ) : (
+          <p className="text-eyebrow border-line-2 text-ink-2 inline-flex rounded-pill border px-4 py-1.5 font-mono uppercase">
+            {badge}
+          </p>
+        )}
 
         <h1 className="text-display mt-6">
           {headingLead}
@@ -168,7 +182,35 @@ export function CategoryHero({
           </a>
         )}
 
-        {stats.length > 0 && (
+        {actions && actions.length > 0 && (
+          <div className="mt-9 flex flex-wrap gap-3">
+            {actions.map((a) => (
+              <Button key={a.label} href={a.href} variant={a.variant ?? "primary"}>
+                {a.label}
+                <span aria-hidden>{a.variant === "secondary" ? "›" : "→"}</span>
+              </Button>
+            ))}
+          </div>
+        )}
+
+        {stats.length > 0 &&
+          (actions && actions.length > 0 ? (
+            /* The new comps set the stat row inside a bordered panel with
+               vertical rules between the columns, rather than the bare
+               border-top row the nine older pages use. */
+            <dl className="border-line bg-surface-2/60 rounded-card divide-line mt-12 grid divide-y border backdrop-blur sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+              {stats.map((s) => (
+                <div key={s.label} className="px-6 py-7 text-center">
+                  <dd className="text-ink order-1 text-2xl font-bold">
+                    {s.value}
+                  </dd>
+                  <dt className="text-ink-4 order-2 mt-1.5 text-xs">
+                    {s.label}
+                  </dt>
+                </div>
+              ))}
+            </dl>
+          ) : (
           <dl className="border-line mt-14 grid gap-8 border-t pt-6 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label}>
@@ -180,7 +222,7 @@ export function CategoryHero({
               </div>
             ))}
           </dl>
-        )}
+          ))}
       </Container>
     </header>
   );

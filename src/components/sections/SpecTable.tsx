@@ -6,6 +6,8 @@ type Props = {
   columns: string[];
   rows: string[][];
   footnote?: string;
+  /** Filter chips and search box. See the note at the render site. */
+  controls?: boolean;
 };
 
 /** Standard families derived from the "Part / Standard ID" column. */
@@ -20,7 +22,7 @@ const FAMILIES = ["AS568", "ISO", "JIS", "DIN"] as const;
  * stacking: stacking would destroy the column-to-column comparability that is
  * the entire point of the table.
  */
-export function SpecTable({ columns, rows, footnote }: Props) {
+export function SpecTable({ columns, rows, footnote, controls = true }: Props) {
   const [family, setFamily] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ col: number; dir: 1 | -1 } | null>(null);
@@ -60,7 +62,11 @@ export function SpecTable({ columns, rows, footnote }: Props) {
 
   return (
     <div>
-      {/* Controls */}
+      {/* Controls. Off for tables that are a short reference rather than a
+          searchable catalogue — the compound tables on the UI-changes2
+          category pages are five rows, and the standard-family chips below
+          are O-ring families that never match a compound name. */}
+      {controls && (
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex flex-wrap gap-2">
           <Chip active={family === "all"} onClick={() => setFamily("all")}>
@@ -84,6 +90,7 @@ export function SpecTable({ columns, rows, footnote }: Props) {
           />
         </label>
       </div>
+      )}
 
       {/* Table */}
       <div className="border-line rounded-card border overflow-x-auto">
@@ -150,7 +157,8 @@ export function SpecTable({ columns, rows, footnote }: Props) {
 
         {footnote && (
           <p className="text-ink-4 border-line border-t px-4 py-3 text-xs">
-            Showing {visible.length} of {rows.length} entries ·{" "}
+            {/* The count belongs to the filter, so it goes with it. */}
+            {controls && `Showing ${visible.length} of ${rows.length} entries · `}
             {footnote.replace(/^Showing \d+ of \d+ entries · /, "")}
           </p>
         )}
