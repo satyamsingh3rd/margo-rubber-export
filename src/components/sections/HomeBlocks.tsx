@@ -647,9 +647,20 @@ export function Portfolio({
             the nine categories match /products exactly. Replaces six generic
             marketing cards ("Rubber Sheets", "Custom Solutions") that did not
             correspond to anything in the catalogue. */}
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((p) => (
-            <li key={p.name} className="relative isolate">
+        {/* Six columns so a tile can be a third (span 2) or a half (span 3).
+            The comp runs rows of three and finishes on a row of two, and it
+            keeps that last row the SAME HEIGHT as the others — the tiles get
+            wider, not taller. A third-width 4:3 tile is W/4 high, so a
+            half-width tile at the same height is 2:1. */}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+          {items.map((p, i) => {
+            // Only when the last row would otherwise sit short by one.
+            const widowed = items.length % 3 === 2 && i >= items.length - 2;
+            return (
+            <li
+              key={p.name}
+              className={`relative isolate ${widowed ? "lg:col-span-3" : "lg:col-span-2"}`}
+            >
               <Link
                 href={p.href}
                 className="group block focus-visible:z-10"
@@ -657,9 +668,13 @@ export function Portfolio({
               >
                 <Photo
                   k={p.image}
-                  ratio="aspect-[4/3]"
+                  ratio={widowed ? "aspect-[2/1]" : "aspect-[4/3]"}
                   dissolve={false}
-                  sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                  sizes={
+                    widowed
+                      ? "(min-width:1024px) 50vw, (min-width:640px) 50vw, 100vw"
+                      : "(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                  }
                   brightness="brightness-[0.62] transition-[filter] duration-500 group-hover:brightness-[0.78]"
                 />
                 {/* Scrim only across the lower third, so the art stays legible
@@ -682,7 +697,8 @@ export function Portfolio({
                 </span>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </Container>
     </section>

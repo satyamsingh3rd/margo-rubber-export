@@ -209,6 +209,10 @@ type Card = {
   chips: string[];
   image: string;
   span: "wide" | "tall" | "normal";
+  /** How this category is sold — "by the piece", "by the metre". */
+  unit?: string;
+  /** Set on the first card of a labelled group; opens a new grid above it. */
+  groupLabel?: string;
 };
 
 export function ProductRange({
@@ -222,67 +226,112 @@ export function ProductRange({
   const visible =
     active === filters[0] ? cards : cards.filter((c) => c.tag === active);
 
+  /**
+   * The comp runs one uniform grid, then a labelled break, then a second
+   * grid — the two continuous-form categories are set apart from the nine
+   * sold by the piece. A card carrying `groupLabel` opens that new group.
+   */
+  const groups: { label?: string; cards: Card[] }[] = [];
+  for (const c of visible) {
+    if (!groups.length || c.groupLabel) {
+      groups.push({ label: c.groupLabel, cards: [] });
+    }
+    groups[groups.length - 1].cards.push(c);
+  }
+
   return (
     <div>
-      <div className="mb-8 flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => setActive(f)}
-            aria-pressed={active === f}
-            className={`rounded-pill px-4 py-2 text-xs font-medium transition-colors ${
-              active === f
-                ? "bg-accent-400 text-canvas"
-                : "border-line text-ink-3 hover:text-ink border"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
+      {/* Filters sit in one rounded well rather than free-floating pills. */}
+      <div className="mb-10 flex justify-center">
+        <div className="border-line bg-surface-2 rounded-pill flex flex-wrap justify-center gap-1 border p-1.5">
+          {filters.map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setActive(f)}
+              aria-pressed={active === f}
+              className={`rounded-pill px-4 py-2 text-xs font-medium transition-colors ${
+                active === f
+                  ? "bg-accent-400 text-canvas"
+                  : "text-ink-3 hover:text-ink"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="grid auto-rows-[260px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/products/${c.slug}`}
-            data-lift=""
-            className={`group rounded-card relative isolate overflow-hidden ${
-              c.span === "wide" ? "sm:col-span-2 sm:row-span-2" : ""
+      {groups.map((g, gi) => (
+        <div key={g.label ?? gi}>
+          {g.label && (
+            <p className="border-accent-400/30 text-accent-400 rounded-pill mt-10 mb-5 inline-flex border px-4 py-1.5 font-mono text-[10px] tracking-[0.16em] uppercase">
+              {g.label}
+            </p>
+          )}
+
+          {/* Equal cards, three across. The mosaic spans the earlier comp
+              used are gone: this one sizes every category the same. A group
+              of two fills the row at half width rather than sitting short. */}
+          <div
+            className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${
+              g.cards.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3"
             }`}
           >
-            <Img
-              k={c.image}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            />
-            <div className="from-canvas via-canvas/60 absolute inset-0 bg-gradient-to-t to-transparent" />
+            {g.cards.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/products/${c.slug}`}
+                data-lift=""
+                className={`group rounded-card relative isolate flex flex-col justify-end overflow-hidden p-5 ${
+                  // A half-width card at the same row height as a third-width
+                  // 4:3 one is 2:1. The comp widens this row, it does not
+                  // deepen it.
+                  g.cards.length === 2 ? "aspect-[4/3] lg:aspect-[2/1]" : "aspect-[4/3]"
+                }`}
+              >
+                <Img
+                  k={c.image}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="-z-10 object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                />
+                <div className="from-canvas via-canvas/75 absolute inset-0 -z-10 bg-gradient-to-t to-transparent" />
 
-            <span className="text-eyebrow bg-canvas/70 text-accent-400 absolute top-4 right-4 rounded-pill px-3 py-1 font-mono uppercase backdrop-blur">
-              {c.tag}
-            </span>
+                <span className="text-eyebrow bg-canvas/70 text-accent-400 rounded-pill absolute top-4 left-4 px-3 py-1 font-mono uppercase backdrop-blur">
+                  {c.tag}
+                </span>
 
-            <div className="absolute inset-x-0 bottom-0 p-5">
-              <p className="text-eyebrow text-accent-400 font-mono uppercase">
-                {c.kicker}
-              </p>
-              <h3 className="text-h3 mt-1.5">{c.title}</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {c.chips.map((ch) => (
-                  <span
-                    key={ch}
-                    className="border-line-2 text-ink-3 rounded-pill border px-2.5 py-1 text-[11px]"
-                  >
-                    {ch}
+                <p className="text-eyebrow text-accent-400 font-mono uppercase">
+                  {c.kicker}
+                </p>
+                <h3 className="text-h3 mt-1.5">{c.title}</h3>
+                {c.unit && (
+                  <p className="text-ink-4 mt-1 font-mono text-xs">{c.unit}</p>
+                )}
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {c.chips.map((ch) => (
+                    <span
+                      key={ch}
+                      className="border-line-2 text-ink-3 rounded-pill border px-2.5 py-1 text-[11px]"
+                    >
+                      {ch}
+                    </span>
+                  ))}
+                </div>
+
+                <span className="text-accent-400 mt-4 flex items-center gap-1.5 text-sm font-medium">
+                  View Details
+                  <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+                    &rarr;
                   </span>
-                ))}
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

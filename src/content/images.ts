@@ -72,6 +72,78 @@ export const IMAGES = {
     alt: "Sweeping folds of dark moulded rubber",
     status: "placeholder",
   },
+  /* --- Products: Extrusion Profiles category -------------------------- */
+  "products.extrusion.hero": {
+    src: "/images/products-category/9bb7539abd559eb1e8be67cf319646c7bb4c2b78.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAHBAAAgICAwAAAAAAAAAAAAAAAQIAAxFBEyRi/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwT/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8AhfjHVQIh3szPLoxJsawt6bMRKLBv/9k=",
+    w: 1800,
+    h: 1000,
+    alt: "Extrusion line inside a rubber components plant, profiles running through inline tooling stations",
+    status: "placeholder",
+  },
+
+  /* Homepage portfolio tiles for the two new categories. Separate keys from
+     the category heroes above, pointing at the same files for now, so a
+     proper 4:3 card crop can be dropped in later without touching the hero. */
+  "products.card.extrusion": {
+    src: "/images/products-category/9bb7539abd559eb1e8be67cf319646c7bb4c2b78.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAHBAAAgICAwAAAAAAAAAAAAAAAQIAAxFBEyRi/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwT/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8AhfjHVQIh3szPLoxJsawt6bMRKLBv/9k=",
+    w: 1800,
+    h: 1000,
+    alt: "Rubber extrusion line running continuous profile through inline tooling",
+    status: "placeholder",
+  },
+  "products.card.sponge-foam-rubber": {
+    src: "/images/products-category/2508834bbd9a6bae9c03ba86094ce277f1df025d.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAQG/8QAHRAAAwACAgMAAAAAAAAAAAAAAQIDABEEEiFBUf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAYEQACAwAAAAAAAAAAAAAAAAAAARESMf/aAAwDAQACEQMRAD8Az8OKO8kGqNc6Bb19y0wY0oi1ZVk3QBToeMYwhPRsz//Z",
+    w: 1600,
+    h: 1000,
+    alt: "Gloved operator handling sheet stock at a press",
+    status: "placeholder",
+  },
+
+  /* --- Products: Sponge & Foam Rubber category ------------------------ */
+  "products.sponge-foam.hero": {
+    src: "/images/products-category/2508834bbd9a6bae9c03ba86094ce277f1df025d.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAQG/8QAHRAAAwACAgMAAAAAAAAAAAAAAQIDABEEEiFBUf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAYEQACAwAAAAAAAAAAAAAAAAAAARESMf/aAAwDAQACEQMRAD8Az8OKO8kGqNc6Bb19y0wY0oi1ZVk3QBToeMYwhPRsz//Z",
+    w: 1600,
+    h: 1000,
+    alt: "Gloved operator feeding sheet stock into a press on the shop floor",
+    status: "placeholder",
+  },
+  "products.sponge-foam.hvac": {
+    src: "/images/products-category/f13ce855ebddcffcea38d2de9bfebdbab2e3d2f9.png",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAID/8QAIBAAAgIBAwUAAAAAAAAAAAAAAQIAAxEEIjEFEkFRcf/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/8QAFREBAQAAAAAAAAAAAAAAAAAAABH/2gAMAwEAAhEDEQA/AMOnBqD20LbeudxK7T89HEvU0WXXszJqiOByMDwIiItf/9k=",
+    w: 600,
+    h: 400,
+    alt: "Insulated HVAC ductwork running through a plant roof void",
+    status: "placeholder",
+  },
+  "products.sponge-foam.gaskets": {
+    src: "/images/products-category/718f7a259b1feb65f2ed2b4f2ce45a9a9352b62c.png",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUG/8QAHRAAAgIDAAMAAAAAAAAAAAAAAgMBEQAEEhMhsf/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAGREAAgMBAAAAAAAAAAAAAAAAAREAAgQh/9oADAMBAAIRAxEAPwCo3baRbC5HyLYMCEdVdjc/MzuyzWSQp2TeJrHmoovVzjGFcPhlOdizE//Z",
+    w: 600,
+    h: 400,
+    alt: "Digital calipers measuring the section of a moulded rubber seal",
+    status: "placeholder",
+  },
+  "products.sponge-foam.automotive": {
+    src: "/images/products-category/0b5bf692fcb8f28ffc80bce735e80cc85c501209.png",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAMG/8QAIhAAAQQBAgcAAAAAAAAAAAAAAQACAwQRBRITIjFBUWGB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC2o4raZIDLHA5/KZHePQ7lZM26keGNrcYAY3vcQT8HREUH/9k=",
+    w: 600,
+    h: 400,
+    alt: "Rubber weatherseal along a car window frame, beaded with rain",
+    status: "placeholder",
+  },
+  "products.sponge-foam.cleanroom": {
+    src: "/images/products-category/2880ed3ca5cd67672d30688dce5f496b6a062a37.png",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAP/xAAjEAACAQMBCQAAAAAAAAAAAAABAgMABCEFERITFCIxUYGx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAQL/xAAXEQADAQAAAAAAAAAAAAAAAAAAAREx/9oADAMBAAIRAxEAPwCc3MSZhG8NoVXKnOPAHb5VXaOybh3uoGCY9RjiBYAH3SlQ9go//9k=",
+    w: 600,
+    h: 400,
+    alt: "Moulding machines in line on a rubber production floor",
+    status: "placeholder",
+  },
+
   "products.material.fkm": {
     src: "/images/products-category/e7261bcef11d425da03cc396a9380a40a734352d.png",
     blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAIAAwDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAeEAEAAgIBBQAAAAAAAAAAAAABAgMAESEEIkFCof/EABQBAQAAAAAAAAAAAAAAAAAAAAL/xAAWEQADAAAAAAAAAAAAAAAAAAAAASH/2gAMAwEAAhEDEQA/AJdnQwFaby42hbE4knjWLarKkrGLKJ3xPSTyx+4xiUA6f//Z",

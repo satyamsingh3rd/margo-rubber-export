@@ -138,6 +138,18 @@ portfolio:
       spec: Plug / Bladder / Diaphragm
       image: products.card.leak-test-rubber
       href: /products/leak-test-rubber
+    # The comp gives both of these the O-Rings spec line, "AS568 / BS1806 /
+    # Metric" — an O-ring size standard, which means nothing for an extruded
+    # profile or a foam sheet. Specs below name what each category is actually
+    # made in, matching the two new category pages.
+    - name: Extrusion
+      spec: D-Section / U-Channel / Cord
+      image: products.card.extrusion
+      href: /products/extrusion
+    - name: Sponge & Foam Rubber
+      spec: Closed Cell / Open Cell / Tape
+      image: products.card.sponge-foam-rubber
+      href: /products/sponge-foam-rubber
 
 # ── 06 · SECTORS ─────────────────────────────────────────────────────────
 sectors:
@@ -268,7 +280,11 @@ cta:
     - { name: country, label: "COUNTRY *",  placeholder: Select country,   type: select, required: true, options: [India, United States, United Arab Emirates, Saudi Arabia, Australia, Germany, United Kingdom, Other] }
     - { name: email,   label: "EMAIL *",    placeholder: "you@company.com", type: email, required: true }
     - { name: phone,   label: PHONE,        placeholder: "+1 234 567 8900", type: tel }
-    - { name: product, label: PRODUCT / MATERIAL, placeholder: Select type, type: select, options: [O-Rings, Gaskets, Moulded Components, Rubber Sheets, Extruded Profiles, Custom Solution] }
+    # The eleven categories that actually exist, in catalogue order. Was
+    # [O-Rings, Gaskets, Moulded Components, Rubber Sheets, Extruded Profiles,
+    # Custom Solution] — four of those six matched no page, and "Extruded
+    # Profiles" was close enough to the real Extrusion category to mislead.
+    - { name: product, label: PRODUCT / MATERIAL, placeholder: Select type, type: select, options: [O-Rings, Oil Seals, Gaskets, Bellows, Anti-Vibration Mounts, Grommets, Bushes, "Pads, Stoppers & Caps", Leak Test Rubber, Extrusion Profiles, "Sponge & Foam Rubber", Custom / Not Listed] }
     - { name: volume,  label: ANNUAL QUANTITY, placeholder: Estimated volume, type: text }
     - { name: requirements, label: TECHNICAL REQUIREMENTS, placeholder: "Describe material, application, operating temperature, pressure, industry standards required...", type: textarea, full: true }
   uploadLabel: "ATTACH DRAWING / SPEC (OPTIONAL)"
