@@ -51,7 +51,20 @@ export default async function ProductsHubPage() {
         accentLastWords={1}
         heading={fm.range.heading}
         body={fm.range.body}
+        className="relative"
       >
+        {/* The count, set large and faint beside the heading — the comp's
+            device, and it was in the schema without ever being rendered.
+            Decorative, so it is hidden from assistive tech: the number of
+            categories is already evident from the grid. */}
+        {fm.range.watermark && (
+          <span
+            aria-hidden
+            className="text-accent-400/10 pointer-events-none absolute top-16 right-6 text-7xl leading-none font-bold tabular-nums select-none md:right-[50px] md:text-8xl"
+          >
+            {fm.range.watermark}
+          </span>
+        )}
         <ProductRange filters={fm.range.filters} cards={fm.range.cards} />
         {fm.range.cta && (
           <div className="mt-10 flex justify-center">

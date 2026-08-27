@@ -621,6 +621,11 @@ export const productsHubSchema = baseSchema.extend({
         chips: z.array(z.string()).default([]),
         image: imageRefSchema,
         span: z.enum(["wide", "tall", "normal"]).default("normal"),
+        /** How the category is sold. The comp prints it under every title. */
+        unit: z.string().optional(),
+        /** Opens a labelled group above this card, as the comp does for the
+         *  two continuous-form categories. */
+        groupLabel: z.string().optional(),
       }),
     ),
     cta: z.object({ label: z.string(), href: z.string() }).optional(),
