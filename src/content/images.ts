@@ -82,6 +82,26 @@ export const IMAGES = {
     status: "placeholder",
   },
 
+  /* Homepage portfolio tiles for the two new categories. Separate keys from
+     the category heroes above, pointing at the same files for now, so a
+     proper 4:3 card crop can be dropped in later without touching the hero. */
+  "products.card.extrusion": {
+    src: "/images/products-category/9bb7539abd559eb1e8be67cf319646c7bb4c2b78.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAEF/8QAHBAAAgICAwAAAAAAAAAAAAAAAQIAAxFBEyRi/8QAFQEBAQAAAAAAAAAAAAAAAAAAAwT/xAAVEQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEQMRAD8AhfjHVQIh3szPLoxJsawt6bMRKLBv/9k=",
+    w: 1800,
+    h: 1000,
+    alt: "Rubber extrusion line running continuous profile through inline tooling",
+    status: "placeholder",
+  },
+  "products.card.sponge-foam-rubber": {
+    src: "/images/products-category/2508834bbd9a6bae9c03ba86094ce277f1df025d.jpg",
+    blur: "data:image/jpeg;base64,/9j/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAHAAwDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAQG/8QAHRAAAwACAgMAAAAAAAAAAAAAAQIDABEEEiFBUf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/xAAYEQACAwAAAAAAAAAAAAAAAAAAARESMf/aAAwDAQACEQMRAD8Az8OKO8kGqNc6Bb19y0wY0oi1ZVk3QBToeMYwhPRsz//Z",
+    w: 1600,
+    h: 1000,
+    alt: "Gloved operator handling sheet stock at a press",
+    status: "placeholder",
+  },
+
   /* --- Products: Sponge & Foam Rubber category ------------------------ */
   "products.sponge-foam.hero": {
     src: "/images/products-category/2508834bbd9a6bae9c03ba86094ce277f1df025d.jpg",
