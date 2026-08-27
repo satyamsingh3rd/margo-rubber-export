@@ -148,7 +148,7 @@ export default async function ProductsHubPage() {
             <p className="mt-8 text-center">
               <Link
                 href={fm.compounds.cta.href}
-                className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+                className="text-accent-400 hover:opacity-80 inline-flex items-center gap-2 text-sm font-medium transition-colors"
               >
                 {fm.compounds.cta.label}
                 <span aria-hidden>&rarr;</span>

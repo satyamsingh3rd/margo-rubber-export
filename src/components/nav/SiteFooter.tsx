@@ -186,7 +186,7 @@ export async function SiteFooter() {
           </div>
           <Link
             href={fm.cta.action.href}
-            className="rounded-pill bg-accent-400 text-canvas hover:bg-accent-300 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-colors"
+            className="rounded-pill bg-accent-400 text-canvas hover:opacity-90 inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-colors"
           >
             {fm.cta.action.label}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="size-4" aria-hidden>

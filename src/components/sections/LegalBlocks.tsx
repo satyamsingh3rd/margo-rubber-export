@@ -203,7 +203,7 @@ export function LegalBody({
                 follows the rounded corner instead of cutting across it. */}
             <span
               aria-hidden
-              className="from-accent-400 via-accent-400/25 absolute inset-x-6 top-0 h-px rounded-full bg-gradient-to-r to-transparent"
+              className="bg-accent-400/40 absolute inset-x-6 top-0 h-px rounded-full"
             />
 
             {sections.map((s, i) => (

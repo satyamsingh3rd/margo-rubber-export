@@ -139,7 +139,7 @@ function GuideCard({ g, label }: { g: Guide; label: string }) {
       <p className="text-ink-4 mt-3 flex-1 text-sm leading-relaxed">{g.intro}</p>
       <Link
         href={`/resources/${g.slug}`}
-        className="text-accent-400 hover:text-accent-300 mt-6 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+        className="text-accent-400 hover:opacity-80 mt-6 inline-flex items-center gap-2 text-sm font-medium transition-colors"
       >
         Read Guide
         <Arrow />
@@ -277,7 +277,7 @@ export function ResourceLibrary({
       )}
 
       {/* Category groups */}
-      <section className="bg-canvas py-14">
+      <section className="bg-canvas py-[70px]">
         <Container>
           {categories.map((c) => {
             const inGroup = matches.filter((g) => g.category === c.key);
@@ -359,7 +359,7 @@ export function ResourceCta({
                 <Link
                   key={a.label}
                   href={a.href}
-                  className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                  className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                 >
                   {a.label}
                   <Arrow />

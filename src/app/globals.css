@@ -9,17 +9,14 @@
    ============================================================ */
 
 @theme {
-  /* --- Brand accent ------------------------------------- */
-  --color-accent-50: #e6fafb;
-  --color-accent-100: #c2f2f5;
-  --color-accent-200: #8ae6eb;
-  --color-accent-300: #52d5dd;
-  --color-accent-400: #2bbcc4; /* ← primary accent, sampled */
-  --color-accent-500: #25a0a7;
-  --color-accent-600: #208d93;
-  --color-accent-700: #1b767b;
-  --color-accent-800: #155e62;
-  --color-accent-900: #0e4145;
+  /* --- Brand accent ---------------------------------------
+     ONE blue. The brand spec allows #2BBCC4 and nothing else, so the nine-
+     step ramp that used to live here is gone rather than left available:
+     a token that exists gets reached for. States that used to lighten to
+     accent-300 now change alpha, which keeps the hue exactly on brand.
+     Alpha variants of this same colour (`--color-line-accent`) are fine —
+     they are still #2BBCC4, just composited. */
+  --color-accent-400: #2bbcc4;
 
   /* --- Surfaces --------------------------------------------
      TWO ramps exist in this design system, and they are not
@@ -53,9 +50,14 @@
      blue-tinted: the earlier ramp read noticeably cool against
      the design's flat greys. */
   --color-ink: #ffffff; /* headings, card names */
-  --color-ink-2: #c0c1c1; /* body copy, answer block */
-  --color-ink-3: #818181; /* section ledes */
-  --color-ink-4: #6a6a6a; /* card body, labels, footnotes */
+  /* Body text is one colour, #7A8499, per the brand rules — "subheading or
+     any para". The three tokens are kept rather than collapsed into one so
+     the tiers stay addressable: if the hierarchy between body copy, ledes
+     and footnotes is ever wanted back, it is three values here rather than
+     a search across every component. */
+  --color-ink-2: #7a8499; /* body copy, answer block */
+  --color-ink-3: #7a8499; /* section ledes */
+  --color-ink-4: #7a8499; /* card body, labels, footnotes */
 
   /* --- Lines --------------------------------------------- */
   --color-line: rgb(255 255 255 / 0.08);
@@ -150,6 +152,9 @@
   /* --- Radii / layout ------------------------------------ */
   --radius-card: 0.75rem;
   --radius-pill: 999px;
+  /* CTA buttons, specified as 50px by the brand rules. Distinct from
+     `pill`, which is the fully-round treatment used by chips and tags. */
+  --radius-cta: 50px;
   --spacing-gutter: 1.5rem;
   /* Design canvas is 1400px with a 1184px content column (x108 to x1292).
      Section gutters are now 50px each side, so the max-width carries that:

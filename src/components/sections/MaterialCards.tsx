@@ -50,7 +50,10 @@ export function MaterialCards({ items }: { items: Material[] }) {
 function MaterialCard({ m }: { m: Material }) {
   const [open, setOpen] = useState(false);
   const panelId = `material-${m.code.toLowerCase()}`;
-  const dot = m.dot ?? DOT[m.code] ?? "var(--color-accent-800)";
+  // Fallback for a compound with no swatch of its own. Was accent-800, a
+  // token removed when the accent ramp was cut to the single brand blue —
+  // an undefined var here would have rendered no dot at all.
+  const dot = m.dot ?? DOT[m.code] ?? "var(--color-surface-4)";
 
   return (
     <article className="bg-card relative isolate overflow-hidden">

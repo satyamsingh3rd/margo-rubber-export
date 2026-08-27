@@ -382,7 +382,7 @@ export function CertificateBlock({
           </div>
           <button
             type="button"
-            className="bg-accent-400 text-canvas hover:bg-accent-300 rounded-pill px-5 py-2.5 text-sm font-semibold transition-colors"
+            className="bg-accent-400 text-canvas hover:opacity-90 rounded-pill px-5 py-2.5 text-sm font-semibold transition-colors"
           >
             ↓ {card.downloadLabel}
           </button>
@@ -615,7 +615,7 @@ export function DocsPanel({
           ))}
         </div>
 
-        <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
+        <EnquirySubmit className="bg-accent-400 text-canvas hover:opacity-90 mt-6 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
           {submitLabel} <span aria-hidden>→</span>
         </EnquirySubmit>
         <EnquiryStatus />

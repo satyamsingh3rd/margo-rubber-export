@@ -385,7 +385,7 @@ export function HomeHero({
                   <Link
                     key={a.label}
                     href={a.href}
-                    className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                    className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                   >
                     {a.label}
                     <Arrow />
@@ -549,7 +549,7 @@ export function Story({
 
             <Link
               href={cta.href}
-              className="text-accent-400 hover:text-accent-300 mt-8 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+              className="text-accent-400 hover:opacity-80 mt-8 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
             >
               {cta.label}
               <Arrow />
@@ -624,7 +624,7 @@ export function Portfolio({
           </div>
           <Link
             href={cta.href}
-            className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
+            className="text-accent-400 hover:opacity-80 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
           >
             {cta.label}
             <svg
@@ -1262,7 +1262,7 @@ export function HomeCta({
               </div>
             </div>
 
-            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill mt-7 flex w-full items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition-colors">
+            <EnquirySubmit className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow rounded-pill mt-7 flex w-full items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
             </EnquirySubmit>

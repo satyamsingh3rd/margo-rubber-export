@@ -74,7 +74,7 @@ export function PartsGrid({
           </p>
           <Link
             href={`/products/${categorySlug}/${p.id}`}
-            className="text-accent-400 hover:text-accent-300 mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors"
+            className="text-accent-400 hover:opacity-80 mt-5 inline-flex items-center gap-2 text-sm font-medium transition-colors"
           >
             View part
             <Arrow />

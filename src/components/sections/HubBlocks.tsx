@@ -818,7 +818,7 @@ export function CatalogueBlock({
               />
             </label>
           ))}
-          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 w-full rounded-lg px-6 py-3 text-sm font-semibold transition-colors">
+          <EnquirySubmit className="bg-accent-400 text-canvas hover:opacity-90 w-full rounded-lg px-6 py-3 text-sm font-semibold transition-colors">
             ↓ {submitLabel}
           </EnquirySubmit>
           <EnquiryStatus />
@@ -1033,7 +1033,7 @@ export function QuoteBand({
             ))}
           </div>
 
-          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 mt-7 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
+          <EnquirySubmit className="bg-accent-400 text-canvas hover:opacity-90 mt-7 w-full rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors">
             ➤ {submitLabel}
           </EnquirySubmit>
           <EnquiryStatus />
