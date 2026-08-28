@@ -143,10 +143,10 @@ export function DensityBlock({
           </div>
         </div>
 
-        {/* The scale itself. A gradient rather than a filled bar, because
-            density is continuous and any fill level would be a fiction. */}
-        {/* Flat, not a gradient: the brand allows one blue. Low-to-high density
-            is already carried by the labels either side. */}
+        {/* The scale itself. Flat rather than a gradient — the brand allows
+            one blue — and unfilled, because density is continuous and any
+            fill level would be a fiction. Low-to-high is carried by the
+            labels either side. */}
         <div className="bg-accent-400/60 mt-7 h-2.5 rounded-full" />
         <div className="text-ink-4 mt-3 flex items-center justify-between font-mono text-[10px]">
           <span>
