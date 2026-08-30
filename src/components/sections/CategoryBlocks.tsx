@@ -242,7 +242,7 @@ export function QualityPanel({
                   {quote.text}
                 </blockquote>
                 <figcaption className="mt-5 flex items-center gap-3">
-                  <span className="bg-accent-400 text-canvas grid size-9 shrink-0 place-items-center rounded-full text-[11px] font-bold">
+                  <span className="bg-accent-400 text-ink grid size-9 shrink-0 place-items-center rounded-full text-[11px] font-bold">
                     {quote.initials}
                   </span>
                   <span className="text-sm">

@@ -398,7 +398,7 @@ export function WhyHero({
               <Link
                 key={a.label}
                 href={a.href}
-                className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
               >
                 {a.label}
                 <Arrow />
@@ -1242,7 +1242,7 @@ export function Enquiry({
               ))}
             </div>
 
-            <EnquirySubmit className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow mt-7 flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-4 text-sm font-semibold tracking-wide transition-colors">
+            <EnquirySubmit className="bg-accent-400 text-ink hover:opacity-90 shadow-glow mt-7 flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-4 text-sm font-semibold tracking-wide transition-colors">
               <Icon name="send" className="size-4" />
               {submitLabel}
             </EnquirySubmit>

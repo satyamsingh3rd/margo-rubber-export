@@ -403,7 +403,7 @@ export function ApplicationCards({
                 className="text-ink-4/40 size-10"
               />
             )}
-            <span className="bg-accent-400 text-canvas absolute top-3 right-3 rounded px-2 py-1 font-mono text-[9px] tracking-[0.1em] uppercase">
+            <span className="bg-accent-400 text-ink absolute top-3 right-3 rounded px-2 py-1 font-mono text-[9px] tracking-[0.1em] uppercase">
               {a.tag}
             </span>
           </div>

@@ -114,7 +114,7 @@ export default async function ResourceGuidePage(
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/contact"
-                className="bg-accent-400 text-canvas hover:opacity-90 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-colors"
+                className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-colors"
               >
                 Ask our engineers
               </Link>
