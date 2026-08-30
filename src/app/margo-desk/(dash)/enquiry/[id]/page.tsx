@@ -63,7 +63,12 @@ export default async function EnquiryDetailPage(
           <label className="sr-only" htmlFor="status">
             Status
           </label>
+          {/* Keyed on the value. `defaultValue` is only read when the element
+              mounts, so after an update React reuses the same <select> and it
+              keeps showing the old status while the pill beside it shows the
+              new one. Changing the key remounts it. */}
           <select
+            key={row.status}
             id="status"
             name="status"
             defaultValue={row.status}
