@@ -48,9 +48,30 @@ const files = walk(SRC);
 /* ── What routes exist? ─────────────────────────────────────────────────── */
 const live = new Set<string>();
 
+const stripGroups = (p: string) =>
+  p.replace(/\/\([^/]+\)/g, "").replace(/^\([^/]+\)/, "") || "/";
+
+// Route handlers are routes too. Without this, an href to /api/enquiries —
+// the dashboard's CSV export link — reads as broken.
+for (const f of files) {
+  if (!f.endsWith("route.ts") && !f.endsWith("route.tsx")) continue;
+  const route = stripGroups(
+    f.slice(SRC.length + 4, -(f.endsWith(".tsx") ? "/route.tsx" : "/route.ts").length),
+  );
+  if (!route.includes("[")) live.add(route);
+}
+
 for (const f of files) {
   if (!f.endsWith("page.tsx")) continue;
-  const route = f.slice(SRC.length + 4, -"/page.tsx".length) || "/";
+  const route =
+    f
+      .slice(SRC.length + 4, -"/page.tsx".length)
+      // Route groups — `(site)`, `(dash)` — organise files without adding a
+      // path segment, so they must not appear in the route either. Without
+      // this every grouped page reads as a route nobody links to, and every
+      // real link to it reads as broken.
+      .replace(/\/\([^/]+\)/g, "")
+      .replace(/^\([^/]+\)/, "") || "/";
   if (!route.includes("[")) live.add(route);
 }
 

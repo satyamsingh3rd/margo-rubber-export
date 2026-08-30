@@ -67,6 +67,10 @@
   /* --- Status -------------------------------------------- */
   --color-warn: #f5a623;
   --color-danger: #e5484d;
+  /* Semantic success, for admin state chips. Separate from the brand accent
+     on purpose: state colour and brand colour must not be the same, or
+     "won" reads as decoration rather than as a status. */
+  --color-ok: #3fb27f;
 
   /* --- Typography ---------------------------------------- */
   /* TWO FAMILIES, SPLIT BY ROLE.
