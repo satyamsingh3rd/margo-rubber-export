@@ -1,6 +1,12 @@
 import { revalidateTag } from "next/cache";
 import { isValidSignature, SIGNATURE_HEADER_NAME } from "@sanity/webhook";
 import { legalTag } from "@/lib/legal-source";
+import { productTag } from "@/lib/product-source";
+import { industryTag } from "@/lib/industry-source";
+import { skuTag } from "@/lib/sku-source";
+import { resourceTag } from "@/lib/resource-source";
+import { pageTag } from "@/lib/page-source";
+import { imageOverrideTag } from "@/lib/image-overrides";
 
 /**
  * POST /api/revalidate
@@ -49,12 +55,44 @@ export async function POST(request: Request) {
   const slug =
     typeof payload.slug === "string" ? payload.slug : payload.slug?.current;
 
+  /**
+   * Document type → the tag factory for that collection.
+   *
+   * A table rather than a chain of ifs, because this grows to seventeen
+   * entries as the migration proceeds and every one of them does exactly the
+   * same two things.
+   */
+  const TAGS: Record<string, (slug?: string) => string> = {
+    legal: legalTag,
+    productCategory: productTag,
+    industry: industryTag,
+    sku: skuTag,
+    resource: resourceTag,
+    // The one-off marketing pages all share one tag family, keyed by slug.
+    resourcesHub: pageTag,
+    industriesHub: pageTag,
+    contactPage: pageTag,
+    utilityPage: pageTag,
+    certificationsPage: pageTag,
+    caseStudiesPage: pageTag,
+    exportPage: pageTag,
+    productsHub: pageTag,
+    homePage: pageTag,
+    whyMargoPage: pageTag,
+    aboutPage: pageTag,
+    siteFooter: pageTag,
+    // Every page draws images, so a new photograph clears the whole map.
+    imageOverride: imageOverrideTag,
+  };
+
+  const tagFor = payload._type ? TAGS[payload._type] : undefined;
+
   const tags: string[] = [];
-  if (payload._type === "legal") {
-    // The collection tag covers generateStaticParams and any list of legal
+  if (tagFor) {
+    // The collection tag covers generateStaticParams and any list of these
     // pages; the per-slug tag covers the page itself.
-    tags.push(legalTag());
-    if (slug) tags.push(legalTag(slug));
+    tags.push(tagFor());
+    if (slug) tags.push(tagFor(slug));
   }
 
   if (!tags.length) {

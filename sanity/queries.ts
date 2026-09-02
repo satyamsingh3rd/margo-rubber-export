@@ -20,7 +20,10 @@ export const legalBySlugQuery = groq`
     seo{
       title,
       description,
-      "keywords": select(defined(primaryKeyword) => { "primary": primaryKeyword })
+      "keywords": select(defined(primaryKeyword) => {
+        "primary": primaryKeyword,
+        "secondary": coalesce(secondaryKeywords, [])
+      })
     },
     sections[]{
       "id": id.current,
@@ -43,4 +46,228 @@ export const legalBySlugQuery = groq`
 /** Slugs for generateStaticParams, and for the sitemap once migrated. */
 export const legalSlugsQuery = groq`
   *[_type == "legal" && defined(slug.current)].slug.current
+`;
+
+/**
+ * One product category by slug.
+ *
+ * Two things happen in the projection that would otherwise have to happen in a
+ * component, and both belong here:
+ *
+ *  · The SPEC TABLE is flattened. Sanity cannot nest an array inside an array,
+ *    so a table row is stored as an object holding `cells`. The renderer and
+ *    the Zod schema both expect `string[][]`, exactly as the .mdx files
+ *    provide, so `rows[].cells` unwraps it and nothing downstream ever learns
+ *    the storage shape was different.
+ *
+ *  · The PARTS GRID is filled in from the document. The block itself holds
+ *    only its heading copy; the parts, the category label and the slug are
+ *    read from the enclosing document with `^`. Storing them on the block
+ *    would mean the same list existed twice — and that list is also the target
+ *    of the 301 redirect map, so a divergence would break old inbound links
+ *    without anything failing.
+ *
+ * `_type` and `_key` are projected through deliberately. They are what the
+ * renderer dispatches on, and what React keys the list by.
+ */
+export const productCategoryBySlugQuery = groq`
+  *[_type == "productCategory" && slug.current == $slug][0]{
+    "slug": slug.current,
+    status,
+    navLabel,
+    h1,
+    h1Accent,
+    intro,
+    hero,
+    heroStats,
+    heroStatsAlign,
+    heroLink,
+    heroActions,
+    heroBreadcrumb,
+    anchors,
+    faqs,
+    confirmWithMargo,
+    related,
+    seo{
+      title,
+      description,
+      "keywords": select(defined(primaryKeyword) => {
+        "primary": primaryKeyword,
+        "secondary": coalesce(secondaryKeywords, [])
+      })
+    },
+    sections[]{
+      ...,
+      _type == "block.specTable" => { "rows": rows[].cells },
+      _type == "block.partsGrid" => {
+        "parts": ^.anchors,
+        "categoryLabel": ^.navLabel,
+        "categorySlug": ^.slug.current
+      }
+    }
+  }
+`;
+
+/** Slugs for generateStaticParams. */
+export const productCategorySlugsQuery = groq`
+  *[_type == "productCategory" && defined(slug.current)].slug.current
+`;
+
+/**
+ * One industry page by slug.
+ *
+ * `faqs` are joined onto the FAQ block from the document with `^`, the same
+ * arrangement as the product parts grid: the list is stored once because it
+ * feeds both the on-page accordion and the FAQPage structured data, and two
+ * copies would eventually disagree.
+ */
+export const industryBySlugQuery = groq`
+  *[_type == "industry" && slug.current == $slug][0]{
+    "slug": slug.current,
+    status,
+    navLabel,
+    tier,
+    badge,
+    // The flat heading, for the structured data. Needed here as well as on the
+    // document — a field that is written but not projected is missing as far
+    // as validation is concerned, which is how this was wrong twice.
+    h1,
+    h1Lines,
+    h1AccentLines,
+    intro,
+    hero,
+    heroBoost,
+    actions,
+    faqs,
+    nonClaims,
+    confirmWithMargo,
+    related,
+    seo{
+      title,
+      description,
+      "keywords": select(defined(primaryKeyword) => {
+        "primary": primaryKeyword,
+        "secondary": coalesce(secondaryKeywords, [])
+      })
+    },
+    sections[]{
+      ...,
+      _type == "block.industryFaq" => { "items": ^.faqs }
+    }
+  }
+`;
+
+/** Slugs for generateStaticParams. */
+export const industrySlugsQuery = groq`
+  *[_type == "industry" && defined(slug.current)].slug.current
+`;
+
+/**
+ * One catalogue part by slug.
+ *
+ * No `sections` — a SKU page is fixed structure, so every field is projected
+ * flat, exactly as the .mdx frontmatter provides it.
+ *
+ * `compoundProperties` is stored as a list of code/values pairs because Sanity
+ * has no map type, and is rebuilt into a map in the source layer. Projected
+ * here as stored; the reshaping is one place, and it is not this one.
+ */
+export const skuBySlugQuery = groq`
+  *[_type == "sku" && slug.current == $slug][0]{
+    "slug": slug.current,
+    status,
+    category,
+    navLabel,
+    h1,
+    eyebrow,
+    intro,
+    productCode,
+    stockLabel,
+    gallery,
+    quickSpecs,
+    order,
+    assurances,
+    dimensional,
+    specs,
+    compounds,
+    compoundProperties,
+    advantages,
+    applications,
+    process,
+    quality,
+    downloads,
+    faqs,
+    confirmWithMargo,
+    related,
+    seo{
+      title,
+      description,
+      "keywords": select(defined(primaryKeyword) => {
+        "primary": primaryKeyword,
+        "secondary": coalesce(secondaryKeywords, [])
+      })
+    }
+  }
+`;
+
+/** Slugs for generateStaticParams. */
+export const skuSlugsQuery = groq`
+  *[_type == "sku" && defined(slug.current)].slug.current
+`;
+
+/**
+ * One resource guide by slug.
+ *
+ * `body` is portable text and is projected whole. It is the only rich-text
+ * field on the site, and the only content that will be WRITTEN in the CMS
+ * rather than moved into it.
+ */
+export const resourceBySlugQuery = groq`
+  *[_type == "resource" && slug.current == $slug][0]{
+    "slug": slug.current,
+    status,
+    navLabel,
+    category,
+    icon,
+    featured,
+    readingMinutes,
+    h1,
+    intro,
+    body,
+    faqs,
+    confirmWithMargo,
+    related,
+    seo{
+      title,
+      description,
+      "keywords": select(defined(primaryKeyword) => {
+        "primary": primaryKeyword,
+        "secondary": coalesce(secondaryKeywords, [])
+      })
+    }
+  }
+`;
+
+/** Slugs for generateStaticParams. */
+export const resourceSlugsQuery = groq`
+  *[_type == "resource" && defined(slug.current)].slug.current
+`;
+
+/**
+ * Every photograph an editor has uploaded to replace a stock image.
+ *
+ * One query for all of them: there are at most 85, they are tiny, and the site
+ * needs the whole map on any page that draws an image. Fetching per-image
+ * would mean a request per photograph on every page.
+ */
+export const imageOverridesQuery = groq`
+  *[_type == "imageOverride" && defined(image.asset)]{
+    // Decoding the id back into a slot: "__" was a dot on the way in.
+    "slot": array::join(string::split(string::split(_id, "imageOverride-")[1], "__"), "."),
+    alt,
+    "url": image.asset->url,
+    "w": image.asset->metadata.dimensions.width,
+    "h": image.asset->metadata.dimensions.height,
+    "blur": image.asset->metadata.lqip
+  }
 `;

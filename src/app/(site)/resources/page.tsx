@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getAllFrontmatter } from "@/lib/content";
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -14,7 +14,7 @@ import {
 } from "@/components/sections/ResourceBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("resources", resourcesHubSchema);
+  const fm = await getSitePage("resources", resourcesHubSchema);
   return buildMetadata(fm, "/resources");
 }
 
@@ -27,7 +27,7 @@ export async function generateMetadata() {
  * one-route-N-files pattern as /products and /industries.
  */
 export default async function ResourcesPage() {
-  const fm = await getPage("resources", resourcesHubSchema);
+  const fm = await getSitePage("resources", resourcesHubSchema);
 
   const guides: Guide[] = getAllFrontmatter("resources")
     .map((g) => ({

@@ -1,4 +1,6 @@
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ImageOverrideProvider } from "@/components/ui/ImageOverrideProvider";
+import { getImageOverrides } from "@/lib/image-overrides";
 import { SiteFooter } from "@/components/nav/SiteFooter";
 
 /**
@@ -8,12 +10,18 @@ import { SiteFooter } from "@/components/nav/SiteFooter";
  * what it was. It exists so the header and footer wrap the marketing pages
  * and nothing else — the enquiries desk sits outside it and renders bare.
  */
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  // Fetched once here rather than per image: `Img` is used inside client
+  // components and cannot fetch, and resolving overrides inside every page's
+  // data fetch would mean changing the props of nearly every component that
+  // takes an image key.
+  const images = await getImageOverrides();
+
   return (
-    <>
+    <ImageOverrideProvider value={images}>
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
-    </>
+    </ImageOverrideProvider>
   );
 }

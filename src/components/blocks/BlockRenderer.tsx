@@ -1,0 +1,537 @@
+import { Fragment, type ReactNode } from "react";
+import { Section } from "@/components/ui/Section";
+import { SpecTable } from "@/components/sections/SpecTable";
+import { MaterialCards } from "@/components/sections/MaterialCards";
+import { PartsGrid } from "@/components/sections/PartsGrid";
+import {
+  CtaPanel,
+  ProcessTimeline,
+  ProfileGrid,
+  QualityPanel,
+  SectorCards,
+  SpecifyCards,
+} from "@/components/sections/CategoryBlocks";
+import {
+  ApplicationCards,
+  ComparePanels,
+  DensityBlock,
+  SubCategoryBlock,
+} from "@/components/sections/FoamBlocks";
+import { CompoundGuide } from "@/components/sections/CompoundGuide";
+import {
+  AnswerBlock,
+  CommercialTable,
+  CTABand,
+  NarrowBlock,
+  StandardsGrid,
+} from "@/components/sections/Blocks";
+import {
+  ApplicationCards as IndustryApplicationCards,
+  ClosingBand,
+  ComponentTabs,
+  ConditionGrid,
+  CustomPanel,
+  ExportLane,
+  IndustryFAQ,
+  QualityCards,
+} from "@/components/sections/IndustryDetail";
+import { Container, Eyebrow } from "@/components/ui/Section";
+import type { Block } from "@/content/blocks";
+
+/**
+ * THE BLOCK RENDERER
+ *
+ * One ordered list in, one page out. This is the piece that turns the page
+ * builder from a schema into something a visitor can see.
+ *
+ * It replaces fifteen `{fm.xSection && <Section …>}` stanzas in the category
+ * route. Those stanzas encoded two separate things at once — which sections
+ * exist, and how each is presented — and only the first of those should be an
+ * editor's business. The presentation stays here, in code: an editor chooses
+ * that a page HAS a compound table and where it sits, not that it is centred
+ * with a rule eyebrow and an accent bloom.
+ *
+ * That division is what makes the page builder safe. Reordering blocks cannot
+ * produce an ugly page, because the styling is not reorderable.
+ */
+
+/* ── Banding ──────────────────────────────────────────────────────────────── */
+
+/**
+ * The newer comps alternate a near-black band with a lighter one. `bg-band` is
+ * #030303 against a #000000 canvas — invisible — so these pages use
+ * `bg-surface-2`.
+ *
+ * Assigned in a pass BEFORE rendering rather than counted during it. The old
+ * template incremented a counter inside JSX, which worked only because JSX
+ * evaluates top to bottom in one uninterrupted return. Here the list can be
+ * split around the prose slot, so the alternation is computed up front and the
+ * result travels with each block.
+ *
+ * Only some blocks participate. A material-cards or terms block sets `bg-band`
+ * outright, and the standards block sets nothing — those must not consume a
+ * turn, or every band after them would flip. This set is exactly the blocks
+ * that called `band()` in the original template, and changing it changes the
+ * appearance of eleven live pages.
+ */
+const BANDED = new Set<Block["_type"]>([
+  "block.cardGrid",
+  "block.comparePanels",
+  "block.compoundSelector",
+  "block.specTable",
+  "block.densityScale",
+  "block.processTimeline",
+  "block.subCategory",
+  "block.applicationCards",
+  "block.specifyGrid",
+  "block.qualityPanel",
+  "block.ctaBand",
+]);
+
+export type BandedBlock = { block: Block; band: string };
+
+export function assignBands(blocks: Block[], alternate: boolean): BandedBlock[] {
+  let i = 0;
+  return blocks.map((block) => {
+    // The closing band only alternates in its panel form. Its plain form takes
+    // no className at all, so it must not consume a turn either.
+    const participates =
+      BANDED.has(block._type) &&
+      (block._type !== "block.ctaBand" || chipCount(block) > 0);
+
+    if (!alternate || !participates) return { block, band: "" };
+    return { block, band: i++ % 2 === 1 ? "bg-surface-2" : "" };
+  });
+}
+
+function chipCount(block: Block): number {
+  const chips = block.chips;
+  return Array.isArray(chips) ? chips.length : 0;
+}
+
+/* ── Per-block rendering ──────────────────────────────────────────────────── */
+
+/**
+ * Fields arrive already validated against the same Zod schema the .mdx files
+ * use, so each block's shape is known once its `_type` is. The list is
+ * heterogeneous by nature, so the widening happens once here rather than being
+ * repeated at fifteen call sites.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const f = (block: Block) => block as Record<string, any>;
+
+type Ctx = {
+  band: string;
+  /** True on the pages built from the newer comps — they centre their headers. */
+  comp2: boolean;
+};
+
+function renderBlock(block: Block, ctx: Ctx): ReactNode {
+  const b = f(block);
+  const { band, comp2 } = ctx;
+
+  switch (block._type) {
+    /* The catalogue of sections comes before the compound table: you pick the
+       shape you need, then the compound it is made in. That is the order the
+       comp draws and the order a buyer decides in — but it is now the order of
+       the LIST, not of this file. */
+    case "block.cardGrid": {
+      const sectors = block.layout === "sectors";
+      return (
+        <Section
+          id={sectors ? "sectors" : "profiles"}
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          align="center"
+          eyebrowVariant="rule"
+          className={band}
+          glow
+        >
+          {sectors ? (
+            <SectorCards items={b.items} />
+          ) : (
+            <ProfileGrid items={b.items} />
+          )}
+        </Section>
+      );
+    }
+
+    case "block.comparePanels":
+      return (
+        <Section
+          id="cell-structure"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          align="center"
+          eyebrowVariant="rule"
+          className={band}
+          glow
+        >
+          <ComparePanels panels={b.panels} />
+        </Section>
+      );
+
+    case "block.compoundSelector":
+      return (
+        <Section
+          id="compounds"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          className={band}
+          glow
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <CompoundGuide items={b.items} />
+        </Section>
+      );
+
+    case "block.specTable":
+      return (
+        <Section
+          id="specifications"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          align={comp2 ? "center" : "left"}
+          eyebrowVariant={comp2 ? "rule" : "plain"}
+          className={band}
+          glow={comp2}
+        >
+          <SpecTable
+            columns={b.columns}
+            rows={b.rows}
+            footnote={b.footnote}
+            controls={b.controls}
+          />
+        </Section>
+      );
+
+    case "block.densityScale":
+      return (
+        <Section
+          id="density"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          eyebrowVariant="rule"
+          className={band}
+          glow
+        >
+          <DensityBlock scale={b.scale} quote={b.quote} bands={b.bands} />
+        </Section>
+      );
+
+    case "block.materialCards":
+      return (
+        <Section
+          id="materials"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          className="bg-band"
+        >
+          <MaterialCards items={b.items} />
+        </Section>
+      );
+
+    /* Parts in this category. Renders the `anchors:` data every category file
+       carries, and gives the 301 map real fragment targets to land on. */
+    case "block.partsGrid":
+      return (
+        <Section id="parts" eyebrow={b.eyebrow} heading={b.heading} body={b.body}>
+          <PartsGrid
+            parts={b.parts}
+            categoryLabel={b.categoryLabel}
+            categorySlug={b.categorySlug}
+          />
+        </Section>
+      );
+
+    case "block.processTimeline":
+      return (
+        <Section
+          id="process"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          className={band}
+          glow
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <ProcessTimeline steps={b.steps} />
+        </Section>
+      );
+
+    case "block.subCategory":
+      return (
+        <SubCategoryBlock
+          id={b.id}
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          dividerLabel={b.dividerLabel}
+          buildUp={b.buildUp}
+          comparisons={b.comparisons}
+          note={b.note}
+          className={band}
+        />
+      );
+
+    case "block.applicationCards":
+      return (
+        <Section
+          id="applications"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          className={band}
+          glow
+          align="center"
+          eyebrowVariant="rule"
+        >
+          <ApplicationCards items={b.items} />
+        </Section>
+      );
+
+    case "block.specifyGrid":
+      return (
+        <Section
+          id="specify"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          align="center"
+          eyebrowVariant="rule"
+          className={band}
+          glow
+        >
+          <SpecifyCards items={b.items} />
+        </Section>
+      );
+
+    case "block.standardsAnswer":
+      return (
+        <Section id="standards" eyebrow={b.eyebrow} heading={b.heading}>
+          <NarrowBlock>
+            <AnswerBlock>{b.answer}</AnswerBlock>
+            <div className="mt-[38px]">
+              <StandardsGrid items={b.items} />
+            </div>
+          </NarrowBlock>
+        </Section>
+      );
+
+    case "block.qualityPanel":
+      return (
+        <QualityPanel
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          quote={b.quote}
+          badges={b.badges}
+          standards={b.standards}
+          docPackage={b.docPackage}
+          className={band}
+        />
+      );
+
+    case "block.propertyList":
+      return (
+        <Section
+          id="commercial"
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          className="bg-band"
+        >
+          <CommercialTable rows={b.rows} />
+        </Section>
+      );
+
+    /* Two closing bands. The nine older pages use the left-aligned CTABand;
+       the newer comps use a centred panel with corner brackets and a row of
+       fact chips. Chips are what distinguishes them, so their presence selects
+       the layout rather than a separate flag. */
+    case "block.ctaBand":
+      return chipCount(block) > 0 ? (
+        <CtaPanel
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          chips={b.chips}
+          primary={b.primary}
+          secondary={b.secondary}
+          className={band}
+        />
+      ) : (
+        <CTABand
+          eyebrow={b.eyebrow}
+          heading={b.heading}
+          body={b.body}
+          primary={b.primary}
+          secondary={b.secondary}
+        />
+      );
+
+    /* ── Industry blocks ──────────────────────────────────────────────────
+       These set their own background rather than taking a turn in the
+       alternation. The industry route hard-coded `bg-[#050505]` on specific
+       sections instead of counting, so a section's background is a property
+       of what it IS, not of where it sits. Preserved as-is: changing it would
+       change nine live pages. */
+
+    case "block.componentTabs":
+      return (
+        <Section
+          eyebrow={b.eyebrow}
+          eyebrowVariant="rule"
+          heading={b.heading}
+          body={b.body}
+        >
+          <ComponentTabs items={b.items} />
+        </Section>
+      );
+
+    case "block.industryApplications":
+      return (
+        <Section
+          className="bg-[#050505]"
+          eyebrow={b.eyebrow}
+          eyebrowVariant="rule"
+          heading={b.heading}
+          body={b.body}
+        >
+          <IndustryApplicationCards items={b.items} />
+        </Section>
+      );
+
+    case "block.conditionGrid":
+      return (
+        <Section
+          align="center"
+          eyebrow={b.eyebrow}
+          eyebrowVariant="rule"
+          heading={b.heading}
+          body={b.body}
+        >
+          <ConditionGrid items={b.items} />
+        </Section>
+      );
+
+    case "block.customPanel":
+      return (
+        <Section className="bg-[#050505]">
+          <CustomPanel
+            eyebrow={b.eyebrow}
+            heading={b.heading}
+            body={b.body}
+            bullets={b.bullets}
+            cta={b.cta}
+            image={b.image}
+            imageCaption={b.imageCaption}
+          />
+        </Section>
+      );
+
+    case "block.qualityCards":
+      return (
+        <Section
+          eyebrow={b.eyebrow}
+          eyebrowVariant="rule"
+          heading={b.heading}
+          body={b.body}
+        >
+          <QualityCards items={b.items} links={b.links} />
+        </Section>
+      );
+
+    case "block.exportLane":
+      return (
+        <Section
+          className="bg-[#050505]"
+          eyebrow={b.eyebrow}
+          eyebrowVariant="rule"
+          heading={b.heading}
+        >
+          <ExportLane paragraphs={b.paragraphs} rows={b.rows} card={b.card} />
+        </Section>
+      );
+
+    case "block.industryFaq":
+      return (
+        <Section>
+          <Container className="!px-0">
+            <Eyebrow variant="rule">
+              {b.eyebrow ?? "FREQUENTLY ASKED QUESTIONS"}
+            </Eyebrow>
+            <h2 className="text-h2 mt-4 mb-10">
+              {b.heading ?? "Common questions."}
+            </h2>
+          </Container>
+          <IndustryFAQ items={b.items} />
+        </Section>
+      );
+
+    case "block.closingBand":
+      return (
+        <ClosingBand
+          eyebrow={b.eyebrow}
+          lines={b.lines}
+          accentLines={b.accentLines}
+          body={b.body}
+          actions={b.actions}
+          contacts={b.contacts}
+        />
+      );
+
+    default:
+      // Unreachable for validated blocks — parseBlocks drops unknown types
+      // before they get here. Returning null rather than throwing keeps a
+      // future block type from taking a live page down while it is being
+      // added.
+      return null;
+  }
+}
+
+/* ── The renderer ─────────────────────────────────────────────────────────── */
+
+export function BlockRenderer({
+  blocks,
+  comp2,
+  prose,
+}: {
+  blocks: Block[];
+  comp2: boolean;
+  /**
+   * The compiled .mdx body, for the pages that still have one.
+   *
+   * It renders immediately before the closing call-to-action, which is where
+   * the template placed it. Passing it as a slot rather than appending it
+   * keeps a page served from a file and the same page served from the CMS in
+   * the same order — the CMS has no .mdx body, so the slot is simply absent.
+   */
+  prose?: ReactNode;
+}) {
+  const banded = assignBands(blocks, comp2);
+  const ctaAt = banded.findIndex((b) => b.block._type === "block.ctaBand");
+  const proseAt = ctaAt === -1 ? banded.length : ctaAt;
+
+  return (
+    <>
+      {banded.map(({ block, band }, i) => (
+        // Fragment, never a wrapper element: these eleven pages already ship,
+        // and an extra div around every section would change their layout.
+        <Fragment key={block._key}>
+          {i === proseAt && prose}
+          {renderBlock(block, { band, comp2 })}
+        </Fragment>
+      ))}
+      {proseAt === banded.length && prose}
+    </>
+  );
+}

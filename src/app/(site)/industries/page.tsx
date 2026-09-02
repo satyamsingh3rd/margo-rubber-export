@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -11,12 +11,12 @@ import {
 } from "@/components/sections/IndustryBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("industries", industriesHubSchema);
+  const fm = await getSitePage("industries", industriesHubSchema);
   return buildMetadata(fm, "/industries");
 }
 
 export default async function IndustriesHubPage() {
-  const fm = await getPage("industries", industriesHubSchema);
+  const fm = await getSitePage("industries", industriesHubSchema);
 
   return (
     <>

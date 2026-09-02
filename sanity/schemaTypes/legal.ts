@@ -26,7 +26,7 @@ export const legal = defineType({
     }),
     defineField({
       name: "slug",
-      title: "URL",
+      title: "Web address",
       type: "slug",
       description: "The address, after /legal/. Changing it breaks old links.",
       options: { source: "title", maxLength: 96 },
@@ -34,7 +34,7 @@ export const legal = defineType({
     }),
     defineField({
       name: "status",
-      title: "Visible to Google",
+      title: "Publication status",
       type: "string",
       description:
         "Draft and Ready are both hidden from search engines. Only Published is indexed, listed in the sitemap and given structured data.",
@@ -58,7 +58,7 @@ export const legal = defineType({
     }),
     defineField({
       name: "intro",
-      title: "Introduction",
+      title: "Opening paragraph",
       type: "text",
       rows: 4,
       validation: (r) => r.required().min(40),
@@ -72,7 +72,7 @@ export const legal = defineType({
     }),
     defineField({
       name: "seo",
-      title: "Search appearance",
+      title: "Search engine listing",
       type: "seo",
       validation: (r) => r.required(),
     }),

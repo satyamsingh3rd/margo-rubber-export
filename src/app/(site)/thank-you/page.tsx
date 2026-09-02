@@ -1,11 +1,11 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { utilityPageSchema } from "@/content/schemas";
 import { SITE } from "@/content/site";
 import { UtilityPage } from "@/components/sections/UtilityPage";
 
 export async function generateMetadata() {
-  const fm = await getPage("thank-you", utilityPageSchema);
+  const fm = await getSitePage("thank-you", utilityPageSchema);
   return buildMetadata(fm, "/thank-you");
 }
 
@@ -26,7 +26,7 @@ export async function generateMetadata() {
  * queries.
  */
 export default async function ThankYouPage() {
-  const fm = await getPage("thank-you", utilityPageSchema);
+  const fm = await getSitePage("thank-you", utilityPageSchema);
 
   return (
     <UtilityPage

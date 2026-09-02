@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Img } from "@/components/ui/Img";
 import { Container } from "@/components/ui/Section";
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { footerSchema } from "@/content/schemas";
 
 /**
@@ -71,7 +71,7 @@ function ContactRow({ icon, children }: { icon: React.ReactNode; children: React
 }
 
 export async function SiteFooter() {
-  const fm = await getPage("footer", footerSchema);
+  const fm = await getSitePage("footer", footerSchema);
   const social = fm.social.filter((s) => s.href.trim() !== "");
 
   return (

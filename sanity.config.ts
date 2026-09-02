@@ -5,6 +5,11 @@ import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
+import { photographsMenu } from "./sanity/structure/photographs";
+import {
+  singletonActions,
+  singletonTemplateFilter,
+} from "./sanity/structure/singletons";
 
 /**
  * Sanity Studio, mounted inside this app at /studio.
@@ -25,6 +30,15 @@ export default defineConfig({
   basePath: "/studio",
   projectId,
   dataset,
+
+  document: {
+    // A page there can only be one of cannot be duplicated or deleted.
+    actions: singletonActions,
+    // …and is not offered by the global "create new" menu either, which builds
+    // its list from the schema rather than from the actions above.
+    newDocumentOptions: (prev) => singletonTemplateFilter(prev),
+  },
+
   schema: { types: schemaTypes },
   plugins: [
     structureTool({
@@ -32,6 +46,156 @@ export default defineConfig({
         S.list()
           .title("Content")
           .items([
+            S.listItem()
+              .title("Product categories")
+              .child(
+                S.documentTypeList("productCategory")
+                  .title("Product categories")
+                  // Ordered the way the site orders them, not by creation
+                  // date — an editor looking for "Gaskets" scans a list, and
+                  // a list only supports scanning if it is alphabetical.
+                  .defaultOrdering([{ field: "navLabel", direction: "asc" }]),
+              ),
+            S.listItem()
+              .title("Industries")
+              .child(
+                S.documentTypeList("industry")
+                  .title("Industries")
+                  .defaultOrdering([{ field: "navLabel", direction: "asc" }]),
+              ),
+            S.listItem()
+              .title("Parts")
+              .child(
+                // Grouped by category rather than listed flat: thirty-one
+                // parts in one alphabetical list is a database browser, not a
+                // place to work.
+                S.documentTypeList("sku")
+                  .title("Parts")
+                  .defaultOrdering([
+                    { field: "category", direction: "asc" },
+                    { field: "h1", direction: "asc" },
+                  ]),
+              ),
+            S.listItem()
+              // The individual articles. The page that lists them is under
+              // Pages → Resources & Guides, matching the site's own wording.
+              .title("Guides")
+              .child(
+                S.documentTypeList("resource")
+                  .title("Guides")
+                  .defaultOrdering([{ field: "navLabel", direction: "asc" }]),
+              ),
+            S.divider(),
+
+            /**
+             * The one-off pages, opened DIRECTLY rather than through a list.
+             *
+             * Each of these exists exactly once, so a list would be a list of
+             * one — an extra click that teaches the editor nothing. Pointing
+             * at a fixed document id also means "Contact" always opens the
+             * contact page and never an accidental second copy of it.
+             */
+            S.listItem()
+              .title("Pages")
+              .child(
+                S.list()
+                  .title("Pages")
+                  .items([
+                    S.listItem()
+                      .title("Home")
+                      .child(
+                        S.document().schemaType("homePage").documentId("homePage-home").title("Home"),
+                      ),
+                    S.listItem()
+                      .title("About")
+                      .child(
+                        S.document().schemaType("aboutPage").documentId("aboutPage-about").title("About"),
+                      ),
+                    S.listItem()
+                      .title("Why Margo")
+                      .child(
+                        S.document().schemaType("whyMargoPage").documentId("whyMargoPage-why-margo").title("Why Margo"),
+                      ),
+                    S.listItem()
+                      .title("Export")
+                      .child(
+                        S.document().schemaType("exportPage").documentId("exportPage-export").title("Export"),
+                      ),
+                    S.listItem()
+                      .title("Certifications")
+                      .child(
+                        S.document().schemaType("certificationsPage").documentId("certificationsPage-certifications").title("Certifications"),
+                      ),
+                    S.listItem()
+                      .title("Case Studies")
+                      .child(
+                        S.document().schemaType("caseStudiesPage").documentId("caseStudiesPage-case-studies").title("Case Studies"),
+                      ),
+                    S.listItem()
+                      .title("Contact")
+                      .child(
+                        S.document()
+                          .schemaType("contactPage")
+                          .documentId("contactPage-contact")
+                          .title("Contact"),
+                      ),
+                    S.listItem()
+                      .title("Products page")
+                      .child(
+                        S.document()
+                          .schemaType("productsHub")
+                          .documentId("productsHub-products")
+                          .title("Products page"),
+                      ),
+                    S.listItem()
+                      .title("Industries page")
+                      .child(
+                        S.document()
+                          .schemaType("industriesHub")
+                          .documentId("industriesHub-industries")
+                          .title("Industries page"),
+                      ),
+                    S.listItem()
+                      .title("Resources & Guides")
+                      .child(
+                        S.document()
+                          .schemaType("resourcesHub")
+                          .documentId("resourcesHub-resources")
+                          .title("Resources & Guides"),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title("Thank you")
+                      .child(
+                        S.document()
+                          .schemaType("utilityPage")
+                          .documentId("utilityPage-thank-you")
+                          .title("Thank you"),
+                      ),
+                    S.listItem()
+                      .title("Page not found (404)")
+                      .child(
+                        S.document()
+                          .schemaType("utilityPage")
+                          .documentId("utilityPage-not-found")
+                          .title("Page not found"),
+                      ),
+                  ]),
+              ),
+
+            S.listItem()
+              .title("Photographs")
+              .child(photographsMenu(S)),
+            S.listItem()
+              .title("Footer")
+              .child(
+                S.document()
+                  .schemaType("siteFooter")
+                  .documentId("siteFooter-footer")
+                  .title("Footer"),
+              ),
+
+            S.divider(),
             S.listItem()
               .title("Legal pages")
               .child(S.documentTypeList("legal").title("Legal pages")),

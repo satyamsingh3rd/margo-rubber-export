@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -12,7 +12,7 @@ import {
 } from "@/components/sections/CaseStudyBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("case-studies", caseStudiesPageSchema);
+  const fm = await getSitePage("case-studies", caseStudiesPageSchema);
   return buildMetadata(fm, "/case-studies");
 }
 
@@ -30,7 +30,7 @@ export async function generateMetadata() {
  * four headings in the methodology section map straight onto frontmatter.
  */
 export default async function CaseStudiesPage() {
-  const fm = await getPage("case-studies", caseStudiesPageSchema);
+  const fm = await getSitePage("case-studies", caseStudiesPageSchema);
 
   return (
     <>

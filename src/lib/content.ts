@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
-import { COLLECTIONS, type Collection, type Frontmatter } from "@/content/schemas";
+import { COLLECTIONS, type Collection, type Frontmatter } from "../content/schemas/index.ts";
 
 /**
  * CONTENT LOADER

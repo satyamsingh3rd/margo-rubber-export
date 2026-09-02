@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -21,7 +21,7 @@ import {
 } from "@/components/sections/WhyBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("why-margo", whyMargoPageSchema);
+  const fm = await getSitePage("why-margo", whyMargoPageSchema);
   return buildMetadata(fm, "/why-margo");
 }
 
@@ -35,7 +35,7 @@ export async function generateMetadata() {
  * the confirmWithMargo block in why-margo.mdx.
  */
 export default async function WhyMargoPage() {
-  const fm = await getPage("why-margo", whyMargoPageSchema);
+  const fm = await getSitePage("why-margo", whyMargoPageSchema);
 
   return (
     <>
