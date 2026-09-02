@@ -23,7 +23,7 @@ export default async function AdminEnquiriesPage(props: PageProps<"/margo-desk">
   const q = one(sp.q);
   const page = Math.max(1, Number(one(sp.page) ?? 1) || 1);
 
-  const [{ rows, total }, counts] = await Promise.all([
+  const [{ rows, total, error }, counts] = await Promise.all([
     listEnquiries({
       status,
       source,
@@ -44,6 +44,21 @@ export default async function AdminEnquiriesPage(props: PageProps<"/margo-desk">
 
   return (
     <>
+      {error && (
+        <div className="border-danger/40 bg-danger/10 mb-8 rounded-lg border px-4 py-3 text-sm">
+          <p className="text-ink">
+            <strong>Cannot reach the database.</strong> No enquiries can be
+            listed, and new submissions are not being saved.
+          </p>
+          <p className="text-ink-3 mt-2 font-mono text-xs break-words">{error}</p>
+          <p className="text-ink-3 mt-2">
+            Check that <code>DATABASE_URL</code> is set correctly in the
+            hosting environment and that the deployment has been redeployed
+            since it was added.
+          </p>
+        </div>
+      )}
+
       {!isStoreConfigured() && (
         <p className="border-warn/40 bg-warn/10 text-ink-2 mb-8 rounded-lg border px-4 py-3 text-sm">
           <strong className="text-ink">DATABASE_URL is not set.</strong> These
