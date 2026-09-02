@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getAllSlugs, getFrontmatter } from "@/lib/content";
+import { getLegalPage, legalSlugs } from "@/lib/legal-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -26,17 +26,14 @@ import { LegalBody, LegalHero } from "@/components/sections/LegalBlocks";
  * until counsel supplies the text. See §A of 17_Open_Questions_For_Margo.md.
  */
 
-export function generateStaticParams() {
-  return getAllSlugs("legal").map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  return (await legalSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata(props: PageProps<"/legal/[slug]">) {
   const { slug } = await props.params;
-  try {
-    return buildMetadata(getFrontmatter("legal", slug), `/legal/${slug}`);
-  } catch {
-    return {};
-  }
+  const fm = await getLegalPage(slug);
+  return fm ? buildMetadata(fm, `/legal/${slug}`) : {};
 }
 
 const PENDING =
@@ -45,12 +42,8 @@ const PENDING =
 export default async function LegalPage(props: PageProps<"/legal/[slug]">) {
   const { slug } = await props.params;
 
-  let fm;
-  try {
-    fm = getFrontmatter("legal", slug);
-  } catch {
-    notFound();
-  }
+  const fm = await getLegalPage(slug);
+  if (!fm) notFound();
 
   return (
     <>
