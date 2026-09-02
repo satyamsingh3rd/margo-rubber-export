@@ -94,7 +94,7 @@ export function productNode(fm: ProductCategory, path: string): Node {
       {
         "@type": "PropertyValue",
         name: "Monthly Capacity",
-        value: `${SITE.capacity.monthly.toLocaleString("en-IN")} pieces`,
+        value: `${SITE.capacity.monthly.toLocaleString("en-GB")} pieces`,
       },
     ],
     offers: {
