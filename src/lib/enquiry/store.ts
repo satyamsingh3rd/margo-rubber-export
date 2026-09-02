@@ -169,7 +169,15 @@ export type ListQuery = {
   offset?: number;
 };
 
-export type ListResult = { rows: EnquiryRow[]; total: number };
+/**
+ * `error` carries a database failure to the caller rather than throwing.
+ *
+ * The dashboard renders during a request; an exception here becomes a bare
+ * 500 with no indication of what went wrong, which is exactly what happened
+ * on the first Vercel deploy. An operator seeing "cannot reach the database"
+ * can act on it. An operator seeing Vercel's error page cannot.
+ */
+export type ListResult = { rows: EnquiryRow[]; total: number; error?: string };
 
 export async function listEnquiries(query: ListQuery = {}): Promise<ListResult> {
   const { status, source, q, limit = 50, offset = 0 } = query;
@@ -191,7 +199,8 @@ export async function listEnquiries(query: ListQuery = {}): Promise<ListResult> 
     return { rows: rows.slice(offset, offset + limit), total: rows.length };
   }
 
-  const sql = neon(url);
+  try {
+    const sql = neon(url);
 
   // Every filter is optional, so each predicate is written to be a no-op when
   // its parameter is null. That keeps this as one parameterised statement
@@ -220,7 +229,14 @@ export async function listEnquiries(query: ListQuery = {}): Promise<ListResult> 
             coalesce(message, '') ILIKE ${"%" + (q ?? "") + "%"}))
   `) as Array<{ total: number }>;
 
-  return { rows, total: counted[0]?.total ?? 0 };
+    return { rows, total: counted[0]?.total ?? 0 };
+  } catch (err) {
+    return {
+      rows: [],
+      total: 0,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 }
 
 export async function getEnquiry(id: string): Promise<EnquiryRow | null> {
@@ -231,11 +247,18 @@ export async function getEnquiry(id: string): Promise<EnquiryRow | null> {
     return (await devRead()).find((r) => r.id === id) ?? null;
   }
 
-  const sql = neon(url);
-  const rows = (await sql`
-    SELECT * FROM enquiries WHERE id = ${id}::uuid
-  `) as EnquiryRow[];
-  return rows[0] ?? null;
+  try {
+    const sql = neon(url);
+    const rows = (await sql`
+      SELECT * FROM enquiries WHERE id = ${id}::uuid
+    `) as EnquiryRow[];
+    return rows[0] ?? null;
+  } catch {
+    // Indistinguishable from "not found" to the caller, which renders a 404.
+    // Acceptable: the list page above states the database problem plainly,
+    // and that is where an operator arrives from.
+    return null;
+  }
 }
 
 /** Counts per status, for the dashboard's summary row. Always all five keys. */
@@ -252,11 +275,16 @@ export async function countByStatus(): Promise<Record<Status, number>> {
     return empty;
   }
 
-  const sql = neon(url);
-  const rows = (await sql`
-    SELECT status, count(*)::int AS n FROM enquiries GROUP BY status
-  `) as Array<{ status: Status; n: number }>;
-  for (const r of rows) empty[r.status] = r.n;
+  try {
+    const sql = neon(url);
+    const rows = (await sql`
+      SELECT status, count(*)::int AS n FROM enquiries GROUP BY status
+    `) as Array<{ status: Status; n: number }>;
+    for (const r of rows) empty[r.status] = r.n;
+  } catch {
+    // Zeroes. listEnquiries reports the reason; two identical error banners
+    // on one page would be noise.
+  }
   return empty;
 }
 
