@@ -401,7 +401,7 @@ export function AboutHero({
                   <Link
                     key={a.label}
                     href={a.href}
-                    className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                    className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                   >
                     {a.label}
                     <Arrow />
@@ -517,7 +517,7 @@ export function Story({
                 sizes="(min-width:1024px) 20vw, 42vw"
               />
             </div>
-            <div className="bg-accent-400 text-canvas shadow-glow absolute bottom-6 left-0 rounded-2xl px-6 py-4 text-center">
+            <div className="bg-accent-400 text-ink shadow-glow absolute bottom-6 left-0 rounded-2xl px-6 py-4 text-center">
               <p className="text-2xl leading-none font-semibold">{badge.value}</p>
               <p className="text-eyebrow mt-1.5 font-mono uppercase opacity-80">
                 {badge.label}
@@ -549,7 +549,7 @@ export function Story({
 
             <Link
               href={cta.href}
-              className="text-accent-400 hover:text-accent-300 mt-8 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
+              className="text-accent-400 hover:opacity-80 mt-8 inline-flex items-center gap-2 text-sm font-semibold transition-colors"
             >
               {cta.label}
               <Arrow />
@@ -1348,7 +1348,7 @@ export function Closing({
   assurances: readonly string[];
 }) {
   return (
-    <section className="bg-surface-2 relative isolate overflow-hidden py-24 md:py-32">
+    <section className="bg-surface-2 relative isolate overflow-hidden py-[70px]">
       <Img
         k={image}
         fill
@@ -1390,7 +1390,7 @@ export function Closing({
               placeholder={placeholder}
               className="text-ink placeholder:text-ink-4 focus:border-accent-400 rounded-pill min-w-0 flex-1 border border-line-2 bg-surface-4/85 px-6 py-3.5 text-sm backdrop-blur"
             />
-            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold transition-colors">
+            <EnquirySubmit className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
             </EnquirySubmit>

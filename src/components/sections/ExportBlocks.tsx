@@ -405,7 +405,7 @@ export function MarketSection({
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-2 text-sm transition-colors"
+                      className="text-accent-400 hover:opacity-80 inline-flex items-center gap-2 text-sm transition-colors"
                     >
                       {l.label}
                       <Arrow className="size-3.5" />
@@ -708,7 +708,7 @@ export function ExportQuote({
                 </label>
               ))}
             </div>
-            <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow mt-7 flex w-full items-center justify-center gap-2 rounded-md px-6 py-4 text-sm font-semibold transition-colors">
+            <EnquirySubmit className="bg-accent-400 text-ink hover:opacity-90 shadow-glow mt-7 flex w-full items-center justify-center gap-2 rounded-md px-6 py-4 text-sm font-semibold transition-colors">
               {submitLabel}
               <Arrow />
             </EnquirySubmit>

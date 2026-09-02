@@ -48,15 +48,18 @@ export function Eyebrow({
 }
 
 /**
- * The accent bloom used at band changes. `overflow-hidden` on the section
- * keeps it from bleeding into the neighbour above, and the Container above
- * it is `relative` so the copy sits in front without needing a z-index.
+ * The accent bloom used at band changes.
+ *
+ * A flat #2BBCC4 at 6% faded out with a mask, rather than a colour gradient:
+ * the brand allows one blue, so the fade is in alpha only. `overflow-hidden`
+ * on the section keeps it from bleeding into the neighbour above, and the
+ * Container is `relative` so the copy sits in front without a z-index.
  */
 export function SectionGlow() {
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_100%_at_50%_0%,rgb(43_188_196/0.10),transparent_72%)]"
+      className="bg-accent-400/[0.06] pointer-events-none absolute inset-x-0 top-0 h-24 [mask-image:linear-gradient(to_bottom,black,transparent)]"
     />
   );
 }
@@ -92,7 +95,7 @@ export function Section({
    *  headers that introduce a full-width grid below them. */
   align?: "left" | "center";
   /**
-   * Soft accent bloom at the top edge, fading down over ~16rem.
+   * Soft accent bloom at the top edge, masked out over 6rem.
    *
    * The UI-changes2 comps use it at every band change: it is what stops two
    * adjacent dark sections reading as one undifferentiated block. Kept off

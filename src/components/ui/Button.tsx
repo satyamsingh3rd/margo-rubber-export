@@ -5,10 +5,12 @@ import type { ReactNode } from "react";
 // pointer instead of only changing colour. Transition covers transform as
 // well as colour so the release eases back rather than snapping.
 const base =
-  "inline-flex items-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-[color,background-color,border-color,transform] duration-200 ease-standard active:scale-[0.97]";
+  "inline-flex items-center gap-2 rounded-cta px-6 py-3 text-sm font-semibold transition-[color,background-color,border-color,opacity,transform] duration-200 ease-standard active:scale-[0.97]";
 
 const variants = {
-  primary: "bg-accent-400 text-canvas hover:bg-accent-300",
+  // Brand rule: the fill is #2BBCC4 and the label is white. Hover changes
+  // alpha rather than hue, so no second blue enters the palette.
+  primary: "bg-accent-400 text-ink hover:opacity-90",
   secondary: "border border-line-2 text-ink hover:border-accent-400 hover:text-accent-400",
 } as const;
 

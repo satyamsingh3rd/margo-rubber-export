@@ -89,7 +89,7 @@ export function TimelineSlider({ items }: { items: readonly Item[] }) {
             type="button"
             onClick={() => go(i + 1)}
             aria-label="Next milestone"
-            className="border-accent-400/50 text-accent-400 hover:bg-accent-400 hover:text-canvas grid size-9 place-items-center rounded-full border transition-colors"
+            className="border-accent-400/50 text-accent-400 hover:bg-accent-400 hover:text-ink grid size-9 place-items-center rounded-full border transition-colors"
           >
             <Chevron className="size-4" />
           </button>

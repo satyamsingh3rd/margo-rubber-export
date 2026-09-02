@@ -41,7 +41,7 @@ export function SkuCompoundPicker({ items }: { items: readonly Compound[] }) {
             >
               <span
                 aria-hidden
-                className="from-accent-300 to-accent-600 block size-8 rounded-full bg-gradient-to-br"
+                className="bg-accent-400 block size-8 rounded-full"
               />
               <span className="text-ink mt-4 block text-lg font-semibold">
                 {c.code}

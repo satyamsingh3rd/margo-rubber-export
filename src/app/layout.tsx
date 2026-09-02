@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins, Source_Sans_3, JetBrains_Mono } from "next/font/google";
-import { SiteHeader } from "@/components/nav/SiteHeader";
-import { SiteFooter } from "@/components/nav/SiteFooter";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -67,10 +65,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           a hydration mismatch. This suppresses that on <body> only; it does not
           mask mismatches in our own components.
  */}
+      {/* Chrome lives in the (site) group, not here. The root layout owns
+          <html>, the fonts and the stylesheet — things every route needs —
+          while the marketing header and footer belong only to the marketing
+          routes. /margo-desk is a tool and must not inherit them. */}
       <body className="flex min-h-screen flex-col" suppressHydrationWarning>
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        {children}
       </body>
     </html>
   );

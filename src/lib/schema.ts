@@ -94,7 +94,7 @@ export function productNode(fm: ProductCategory, path: string): Node {
       {
         "@type": "PropertyValue",
         name: "Monthly Capacity",
-        value: `${SITE.capacity.monthly.toLocaleString("en-IN")} pieces`,
+        value: `${SITE.capacity.monthly.toLocaleString("en-GB")} pieces`,
       },
     ],
     offers: {
@@ -103,6 +103,126 @@ export function productNode(fm: ProductCategory, path: string): Node {
       areaServed: [...SITE.exportMarkets],
     },
   };
+}
+
+/** The site itself. One node, emitted once, on the homepage only. */
+export function webSiteNode(): Node {
+  return {
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: SITE.legalName,
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    inLanguage: "en",
+    // No SearchAction: there is no site search, and declaring one that does
+    // not exist is a broken promise Google can act on.
+  };
+}
+
+/**
+ * A single named part. Narrower than the category Product above — a SKU is a
+ * specific item, so it gets `isSimilarTo` back to its category rather than
+ * duplicating the category's claims.
+ */
+export function skuNode(
+  fm: { h1: string; seo: { description: string }; productCode?: string },
+  path: string,
+  categoryPath: string,
+): Node {
+  return {
+    "@type": "Product",
+    "@id": `${SITE_URL}${path}#product`,
+    name: fm.h1,
+    description: fm.seo.description,
+    ...(fm.productCode ? { sku: fm.productCode, mpn: fm.productCode } : {}),
+    brand: { "@id": `${SITE_URL}/#organization` },
+    isSimilarTo: { "@id": `${SITE_URL}${categoryPath}#product` },
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      areaServed: [...SITE.exportMarkets],
+    },
+  };
+}
+
+/** A guide or article. Author is the organisation — these are not bylined. */
+export function articleNode(
+  fm: { h1: string; seo: { description: string } },
+  path: string,
+): Node {
+  return {
+    "@type": "TechArticle",
+    "@id": `${SITE_URL}${path}#article`,
+    headline: fm.h1,
+    description: fm.seo.description,
+    author: { "@id": `${SITE_URL}/#organization` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    inLanguage: "en",
+    // No datePublished: nothing in the content records one, and a date that
+    // is really "when the build ran" is worse than none.
+  };
+}
+
+/** A hub listing its children, in the order the page shows them. */
+export function itemListNode(
+  items: { name: string; path: string }[],
+  path: string,
+): Node | null {
+  if (!items.length) return null;
+  return {
+    "@type": "ItemList",
+    "@id": `${SITE_URL}${path}#list`,
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      url: `${SITE_URL}${it.path}`,
+    })),
+  };
+}
+
+/**
+ * The general page graph.
+ *
+ * Every route composes from this rather than hand-assembling nodes, so the
+ * Organization node is identical everywhere and the @id references between
+ * nodes actually resolve. `type` picks the page-level node; everything else
+ * is opt-in.
+ */
+export function pageGraph(opts: {
+  type?: "WebPage" | "AboutPage" | "ContactPage" | "CollectionPage";
+  path: string;
+  name: string;
+  description: string;
+  crumbs?: { name: string; path: string }[];
+  faqs?: { q: string; a: string }[];
+  extra?: (Node | null)[];
+  /** The homepage, and only the homepage, declares the WebSite node. */
+  isHome?: boolean;
+}) {
+  const nodes: Node[] = [organizationNode()];
+  if (opts.isHome) nodes.push(webSiteNode());
+
+  nodes.push({
+    "@type": opts.type ?? "WebPage",
+    "@id": `${SITE_URL}${opts.path}#page`,
+    url: `${SITE_URL}${opts.path}`,
+    name: opts.name,
+    description: opts.description,
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    about: { "@id": `${SITE_URL}/#organization` },
+    inLanguage: "en",
+  });
+
+  if (opts.crumbs?.length) nodes.push(breadcrumbNode(opts.crumbs));
+  if (opts.faqs?.length) {
+    const faq = faqNode(opts.faqs);
+    if (faq) nodes.push(faq);
+  }
+  for (const n of opts.extra ?? []) if (n) nodes.push(n);
+
+  return { "@context": "https://schema.org", "@graph": nodes };
 }
 
 /** Assembles the full @graph for a product category page. */

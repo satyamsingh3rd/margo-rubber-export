@@ -1,0 +1,176 @@
+import Link from "next/link";
+import { getAllFrontmatter } from "@/lib/content";
+import { getPage } from "@/lib/content";
+import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { resourcesHubSchema } from "@/content/schemas";
+import { Container } from "@/components/ui/Section";
+import { Img } from "@/components/ui/Img";
+import {
+  ResourceCta,
+  ResourceLibrary,
+  type Guide,
+} from "@/components/sections/ResourceBlocks";
+
+export async function generateMetadata() {
+  const fm = await getPage("resources", resourcesHubSchema);
+  return buildMetadata(fm, "/resources");
+}
+
+/**
+ * /resources — brief C3.
+ *
+ * The guide cards are NOT listed in resources.mdx. They are read from the
+ * resources collection at build time, so adding a guide is one MDX file and it
+ * appears in the right category group with the counts updated. That is the same
+ * one-route-N-files pattern as /products and /industries.
+ */
+export default async function ResourcesPage() {
+  const fm = await getPage("resources", resourcesHubSchema);
+
+  const guides: Guide[] = getAllFrontmatter("resources")
+    .map((g) => ({
+      slug: g.slug,
+      h1: g.h1,
+      intro: g.intro,
+      category: g.category,
+      icon: g.icon,
+      readingMinutes: g.readingMinutes,
+      featured: g.featured,
+    }))
+    // Longest reads last within a group: the quick reference guides are the
+    // ones a specifying engineer wants first.
+    .sort((a, b) => a.readingMinutes - b.readingMinutes);
+
+  const categoryCount = new Set(guides.map((g) => g.category)).size;
+
+  return (
+    <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "CollectionPage",
+          path: "/resources",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Resources", path: "/resources" }],
+        })}
+      />
+
+      <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-12 md:pt-48">
+        {/* No `resources.*` group exists in the registry, so this borrows the
+            closest subject: a caliper on a moulded part. These guides are
+            about specifying dimensions and materials, and dimensional
+            measurement is that in one frame. Worth its own photograph on the
+            shoot list rather than a borrowed one. */}
+        <Img
+          k="about.story.gauge"
+          fill
+          priority
+          sizes="100vw"
+          className="-z-20 object-cover brightness-[0.9] contrast-[1.02]"
+        />
+        {/* Same two-scrim treatment as the export and certifications heroes:
+            the vertical wash only fades the bottom edge into the section
+            below, and the horizontal one does the work of protecting the
+            copy, so the photograph is not flattened to do both jobs. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(to bottom, color-mix(in srgb, var(--color-canvas) 42%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 30%, transparent) 45%, color-mix(in srgb, var(--color-canvas) 48%, transparent) 80%, var(--color-canvas) 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "linear-gradient(to right, color-mix(in srgb, var(--color-canvas) 76%, transparent) 0%, color-mix(in srgb, var(--color-canvas) 44%, transparent) 48%, transparent 78%)",
+          }}
+        />
+        <span
+          aria-hidden
+          className="bg-accent-400/10 pointer-events-none absolute -top-20 -left-32 -z-10 size-[32rem] rounded-full blur-3xl"
+        />
+        <Container>
+          <nav aria-label="Breadcrumb">
+            <ol className="text-eyebrow text-ink-4 flex flex-wrap items-center gap-2 font-mono uppercase">
+              {fm.breadcrumb.map((b, i) => (
+                <li key={b.label} className="flex items-center gap-2">
+                  {i > 0 && <span aria-hidden>/</span>}
+                  {b.href ? (
+                    <Link href={b.href} className="hover:text-ink transition-colors">
+                      {b.label}
+                    </Link>
+                  ) : (
+                    <span className="text-ink-2">{b.label}</span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          <h1 className="text-display mt-6">
+            {fm.h1Lines.map((line) => (
+              <span key={line} className="block">
+                {line.split("*").map((part, i) =>
+                  i % 2 === 1 ? (
+                    <span key={part} className="text-accent-400">
+                      {part}
+                    </span>
+                  ) : (
+                    part
+                  ),
+                )}
+              </span>
+            ))}
+          </h1>
+
+          {/* ink-2, matching the other photographic heroes: the dimmer
+              grey used for ledes on flat surfaces loses contrast here. */}
+          <p className="text-ink-2 mt-6 max-w-[52ch] leading-relaxed">
+            {fm.intro}
+          </p>
+
+          {/* Counts are derived, so they cannot drift from the library. */}
+          <dl className="text-ink-4 mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+            <div className="flex items-center gap-1.5">
+              <dt className="text-accent-400 font-semibold">{guides.length}</dt>
+              <dd>Guides</dd>
+            </div>
+            <span aria-hidden>·</span>
+            <div className="flex items-center gap-1.5">
+              <dt className="text-accent-400 font-semibold">{categoryCount}</dt>
+              <dd>Categories</dd>
+            </div>
+            <span aria-hidden>·</span>
+            <div className="flex items-center gap-1.5">
+              <dt className="text-accent-400 font-semibold">
+                {fm.lastUpdated}
+              </dt>
+              <dd>Last Updated</dd>
+            </div>
+          </dl>
+        </Container>
+      </header>
+
+      <ResourceLibrary
+        guides={guides}
+        categories={fm.categories}
+        searchPlaceholder={fm.searchPlaceholder}
+        allLabel={fm.allLabel}
+        featuredLabel={fm.featuredLabel}
+      />
+
+      <ResourceCta
+        icon={fm.cta.icon}
+        headingLines={fm.cta.headingLines}
+        body={fm.cta.body}
+        actions={fm.cta.actions}
+      />
+    </>
+  );
+}

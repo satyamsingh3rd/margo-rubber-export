@@ -342,7 +342,7 @@ export function SkuHero({
           <div>
             <div className="relative">
               <Plate k={main} ratio="aspect-[4/3]" sizes="(min-width:1024px) 46vw, 100vw" />
-              <span className="text-eyebrow bg-accent-400 text-canvas absolute top-4 right-4 rounded px-2.5 py-1 font-mono">
+              <span className="text-eyebrow bg-accent-400 text-ink absolute top-4 right-4 rounded px-2.5 py-1 font-mono">
                 {stockLabel ?? SAMPLE.stockLabel}
               </span>
               {/* Floating spec card over the lower-right of the plate. */}
@@ -427,7 +427,7 @@ export function SkuHero({
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href={`/contact?part=${encodeURIComponent(h1)}`}
-                className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
               >
                 Request Quote
                 <Arrow />
@@ -930,7 +930,7 @@ export function SkuRelated({
             <Eyebrow>Related products</Eyebrow>
             <h2 className="text-h2 mt-3">You May Also Need</h2>
           </div>
-          <Link href={`/products/${categorySlug}`} className="text-accent-400 hover:text-accent-300 inline-flex items-center gap-2 text-sm font-medium transition-colors">
+          <Link href={`/products/${categorySlug}`} className="text-accent-400 hover:opacity-80 inline-flex items-center gap-2 text-sm font-medium transition-colors">
             View all products
             <Arrow />
           </Link>
@@ -980,7 +980,7 @@ export function SkuCta({
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href={`/contact?part=${encodeURIComponent(h1)}`} className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors">
+            <Link href={`/contact?part=${encodeURIComponent(h1)}`} className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors">
               Request a quote
               <Arrow />
             </Link>

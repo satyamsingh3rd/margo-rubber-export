@@ -313,7 +313,7 @@ export function RfqForm({
               ← {backLabel}
             </button>
           )}
-          <EnquirySubmit className="bg-accent-400 text-canvas hover:bg-accent-300 flex-1 rounded-pill px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none sm:px-10">
+          <EnquirySubmit className="bg-accent-400 text-ink hover:opacity-90 flex-1 rounded-cta px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none sm:px-10">
             {step === 0 ? continueLabel : submitLabel} <span aria-hidden>→</span>
           </EnquirySubmit>
         </div>

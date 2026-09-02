@@ -73,7 +73,7 @@ const components: MDXComponents = {
     </div>
   ),
   th: ({ children }) => (
-    <th className="bg-accent-400 text-canvas px-4 py-3 text-left font-semibold whitespace-nowrap">
+    <th className="bg-accent-400 text-ink px-4 py-3 text-left font-semibold whitespace-nowrap">
       {children}
     </th>
   ),

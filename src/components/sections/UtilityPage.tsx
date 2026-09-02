@@ -132,7 +132,7 @@ export function UtilityPage({
   showTick?: boolean;
 }) {
   return (
-    <section className="bg-canvas relative isolate overflow-hidden py-28 md:py-36">
+    <section className="bg-canvas relative isolate overflow-hidden py-[70px]">
       <span
         aria-hidden
         className="bg-accent-400/10 pointer-events-none absolute -top-24 left-1/2 -z-10 size-[34rem] -translate-x-1/2 rounded-full blur-3xl"
@@ -204,7 +204,7 @@ export function UtilityPage({
                   <Link
                     key={a.label}
                     href={a.href}
-                    className="bg-accent-400 text-canvas hover:bg-accent-300 shadow-glow rounded-pill inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
+                    className="bg-accent-400 text-ink hover:opacity-90 shadow-glow rounded-cta inline-flex items-center gap-2 px-6 py-3.5 text-sm font-semibold transition-colors"
                   >
                     {a.label}
                     <Arrow />

@@ -44,3 +44,6 @@ next-env.d.ts
 .DS_Store
 .open-next/
 .wrangler/
+
+# Local-only enquiry store, written when DATABASE_URL is unset in dev.
+.enquiries.dev.json

@@ -143,9 +143,11 @@ export function DensityBlock({
           </div>
         </div>
 
-        {/* The scale itself. A gradient rather than a filled bar, because
-            density is continuous and any fill level would be a fiction. */}
-        <div className="from-accent-400/25 to-accent-400 mt-7 h-2.5 rounded-full bg-gradient-to-r" />
+        {/* The scale itself. Flat rather than a gradient — the brand allows
+            one blue — and unfilled, because density is continuous and any
+            fill level would be a fiction. Low-to-high is carried by the
+            labels either side. */}
+        <div className="bg-accent-400/60 mt-7 h-2.5 rounded-full" />
         <div className="text-ink-4 mt-3 flex items-center justify-between font-mono text-[10px]">
           <span>
             {scale.min} {scale.unit}
@@ -401,7 +403,7 @@ export function ApplicationCards({
                 className="text-ink-4/40 size-10"
               />
             )}
-            <span className="bg-accent-400 text-canvas absolute top-3 right-3 rounded px-2 py-1 font-mono text-[9px] tracking-[0.1em] uppercase">
+            <span className="bg-accent-400 text-ink absolute top-3 right-3 rounded px-2 py-1 font-mono text-[9px] tracking-[0.1em] uppercase">
               {a.tag}
             </span>
           </div>
