@@ -81,10 +81,33 @@ export function getAllFrontmatter<C extends Collection>(
   return getAllSlugs(collection).map((slug) => getFrontmatter(collection, slug));
 }
 
-/** Only published pages enter the sitemap and are indexable. */
-export function getPublishedSlugs(collection: Collection): string[] {
-  return getAllSlugs(collection).filter(
-    (slug) => getFrontmatter(collection, slug).status === "published",
+/**
+ * Publication status, read straight from frontmatter without validating the
+ * rest of the document.
+ *
+ * Deliberately not `getFrontmatter().status`. Two reasons:
+ *
+ *  · `COLLECTIONS.pages` maps every file in content/pages to the products-hub
+ *    schema, because the thirteen marketing pages each have a shape of their
+ *    own and the union has to point somewhere. Validating a page against it
+ *    throws for twelve of the thirteen.
+ *
+ *  · Even where the mapping is right, the sitemap should not fail to build
+ *    because an unrelated field on an unrelated page is malformed. Asking
+ *    "may this be indexed" should not require the whole document to be valid.
+ */
+export function getStatus(collection: string, slug: string): string {
+  const file = path.join(CONTENT_ROOT, collection, `${slug}.mdx`);
+  if (!fs.existsSync(file)) return "placeholder";
+  const { data } = matter(fs.readFileSync(file, "utf8"));
+  // Same default as the schema: anything unmarked is not published.
+  return typeof data.status === "string" ? data.status : "placeholder";
+}
+
+/** Only published pages enter the sitemap, are indexable, and emit schema. */
+export function getPublishedSlugs(collection: string): string[] {
+  return getAllSlugs(collection as Collection).filter(
+    (slug) => getStatus(collection, slug) === "published",
   );
 }
 
