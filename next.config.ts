@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   // Next 16: top-level, no longer experimental.
   cacheComponents: true,
 
+  // Sanity Studio pulls in packages that ship raw .ts inside node_modules,
+  // which Turbopack refuses with "Unknown module type". Naming them here
+  // hands them to the compiler instead of the bundler's asset pipeline.
+  transpilePackages: ["sanity", "@sanity/sdk-react", "@sanity/workbench"],
+
   async redirects() {
     // 301 map for the 26 legacy WooCommerce SKU URLs is finalised from a
     // Screaming Frog crawl immediately before cutover (blocker B15).
