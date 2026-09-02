@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getAllSlugs, getContent, getFrontmatter } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph, skuNode } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import {
   SkuAdvantages,
   SkuApplications,
@@ -92,6 +94,24 @@ export default async function SkuPage(
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: `/products/${category}/${product}`,
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [
+            { name: "Home", path: "/" },
+            { name: "Products", path: "/products" },
+            { name: categoryLabel, path: `/products/${category}` },
+            { name: fm.h1, path: `/products/${category}/${product}` },
+          ],
+          extra: [
+            skuNode(fm, `/products/${category}/${product}`, `/products/${category}`),
+          ],
+        })}
+      />
+
       <SkuHero
         categorySlug={category}
         categoryLabel={categoryLabel}

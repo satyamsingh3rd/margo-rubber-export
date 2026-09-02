@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllSlugs, getContent } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { articleNode, pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Section";
 
 export function generateStaticParams() {
@@ -61,6 +63,22 @@ export default async function ResourceGuidePage(
 
   return (
     <article className="bg-canvas">
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: `/resources/${slug}`,
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [
+            { name: "Home", path: "/" },
+            { name: "Resources", path: "/resources" },
+            { name: fm.h1, path: `/resources/${slug}` },
+          ],
+          faqs: fm.faqs,
+          extra: [articleNode(fm, `/resources/${slug}`)],
+        })}
+      />
+
       <header className="relative isolate overflow-hidden pt-36 pb-14 md:pt-48">
         <span
           aria-hidden

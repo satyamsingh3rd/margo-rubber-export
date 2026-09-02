@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getContent } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { itemListNode, pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Container, Eyebrow, Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Img } from "@/components/ui/Img";
@@ -30,6 +32,26 @@ export default async function ProductsHubPage() {
 
   return (
     <div className="bg-surface-2">
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "CollectionPage",
+          path: "/products",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Products", path: "/products" }],
+          extra: [
+            itemListNode(
+              fm.range.cards.map((c) => ({
+                name: c.title,
+                path: `/products/${c.slug}`,
+              })),
+              "/products",
+            ),
+          ],
+        })}
+      />
+
       <HubHero
         badge={fm.badge}
         lines={fm.h1Lines}

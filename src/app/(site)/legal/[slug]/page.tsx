@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getAllSlugs, getFrontmatter } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { LegalBody, LegalHero } from "@/components/sections/LegalBlocks";
 
 /**
@@ -52,6 +54,19 @@ export default async function LegalPage(props: PageProps<"/legal/[slug]">) {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: `/legal/${slug}`,
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [
+            { name: "Home", path: "/" },
+            { name: fm.h1, path: `/legal/${slug}` },
+          ],
+        })}
+      />
+
       <LegalHero
         badge={fm.badge}
         h1={fm.h1}

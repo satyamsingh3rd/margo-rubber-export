@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { certificationsPageSchema } from "@/content/schemas";
 import { Section } from "@/components/ui/Section";
 import {
@@ -31,6 +33,16 @@ export default async function CertificationsPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: "/certifications",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Certifications", path: "/certifications" }],
+        })}
+      />
+
       <CertHero
         badge={fm.badge}
         lines={fm.h1Lines}

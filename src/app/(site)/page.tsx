@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { homePageSchema } from "@/content/schemas";
 import {
   Edge,
@@ -37,6 +39,16 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: "/",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          isHome: true,
+        })}
+      />
+
       <HomeHero
         eyebrow={fm.hero.eyebrow}
         h1Lines={fm.hero.h1Lines}

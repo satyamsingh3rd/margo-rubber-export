@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { industriesHubSchema } from "@/content/schemas";
 import {
   EnquiryPanel,
@@ -18,6 +20,17 @@ export default async function IndustriesHubPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "CollectionPage",
+          path: "/industries",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Industries", path: "/industries" }],
+        })}
+      />
+
       <IndustriesHero
         badge={fm.badge}
         lines={fm.h1Lines}

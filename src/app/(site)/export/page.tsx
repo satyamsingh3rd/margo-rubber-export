@@ -1,6 +1,8 @@
 import { ExportLaneSequence } from "@/components/sections/ExportLaneSequence";
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { exportPageSchema } from "@/content/schemas";
 import {
   ExportDocuments,
@@ -32,6 +34,16 @@ export default async function ExportPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: "/export",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Export", path: "/export" }],
+        })}
+      />
+
       <ExportHero
         badge={fm.hero.badge}
         h1Lines={fm.hero.h1Lines}

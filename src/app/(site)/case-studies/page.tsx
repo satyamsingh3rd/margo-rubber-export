@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { caseStudiesPageSchema } from "@/content/schemas";
 import {
   CaseClosing,
@@ -32,6 +34,16 @@ export default async function CaseStudiesPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: "/case-studies",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Case Studies", path: "/case-studies" }],
+        })}
+      />
+
       <CaseHero
         eyebrow={fm.hero.eyebrow}
         h1Lines={fm.hero.h1Lines}

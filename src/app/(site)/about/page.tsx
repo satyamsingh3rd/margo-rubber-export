@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { aboutPageSchema } from "@/content/schemas";
 import {
   AboutHero,
@@ -39,6 +41,17 @@ export default async function AboutPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "AboutPage",
+          path: "/about",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "About", path: "/about" }],
+        })}
+      />
+
       <AboutHero
         badge={fm.badge}
         lines={fm.h1Lines}

@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { contactPageSchema } from "@/content/schemas";
 import {
   ContactHero,
@@ -23,6 +25,17 @@ export default async function ContactPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "ContactPage",
+          path: "/contact",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }],
+        })}
+      />
+
       <ContactHero
         badge={fm.badge}
         lines={fm.h1Lines}

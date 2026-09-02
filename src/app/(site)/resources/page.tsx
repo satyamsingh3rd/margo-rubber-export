@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getAllFrontmatter } from "@/lib/content";
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { resourcesHubSchema } from "@/content/schemas";
 import { Container } from "@/components/ui/Section";
 import { Img } from "@/components/ui/Img";
@@ -45,6 +47,17 @@ export default async function ResourcesPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          type: "CollectionPage",
+          path: "/resources",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Resources", path: "/resources" }],
+        })}
+      />
+
       <header className="bg-canvas relative isolate overflow-hidden pt-36 pb-12 md:pt-48">
         {/* No `resources.*` group exists in the registry, so this borrows the
             closest subject: a caliper on a moulded part. These guides are

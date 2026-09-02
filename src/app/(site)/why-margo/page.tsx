@@ -1,5 +1,7 @@
 import { getPage } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { pageGraph } from "@/lib/schema";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { whyMargoPageSchema } from "@/content/schemas";
 import {
   Capabilities,
@@ -37,6 +39,16 @@ export default async function WhyMargoPage() {
 
   return (
     <>
+      <JsonLd
+        status={fm.status}
+        graph={pageGraph({
+          path: "/why-margo",
+          name: fm.seo.title,
+          description: fm.seo.description,
+          crumbs: [{ name: "Home", path: "/" }, { name: "Why Margo", path: "/why-margo" }],
+        })}
+      />
+
       <WhyHero
         eyebrow={fm.hero.eyebrow}
         h1Lines={fm.hero.h1Lines}
