@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -22,7 +22,7 @@ import {
 } from "@/components/sections/AboutBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("about", aboutPageSchema);
+  const fm = await getSitePage("about", aboutPageSchema);
   return buildMetadata(fm, "/about");
 }
 
@@ -37,7 +37,7 @@ export async function generateMetadata() {
  * Organization JSON-LD. See the confirmWithMargo block in about.mdx.
  */
 export default async function AboutPage() {
-  const fm = await getPage("about", aboutPageSchema);
+  const fm = await getSitePage("about", aboutPageSchema);
 
   return (
     <>

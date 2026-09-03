@@ -40,6 +40,15 @@ export const seo = defineType({
       type: "string",
       description: "The one phrase this page should rank for. Optional.",
     }),
+    defineField({
+      name: "secondaryKeywords",
+      title: "Other search terms",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      description:
+        "Reference only — these are not written into the page. They record what it was written to rank for.",
+      options: { layout: "tags" },
+    }),
   ],
 });
 

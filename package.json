@@ -12,7 +12,15 @@
     "check:links": "node scripts/check-links.mts",
     "check:links:strict": "node scripts/check-links.mts --strict",
     "gen:blur": "node scripts/gen-blur.mts",
-    "check:enquiry": "node scripts/check-enquiry-map.mts"
+    "check:enquiry": "node scripts/check-enquiry-map.mts",
+    "check:schema": "sanity schema validate && node scripts/check-field-groups.mts && node scripts/check-labels.mts",
+    "gen:sanity-types": "sanity schema extract --path sanity/schema.json && sanity typegen generate",
+    "check:blocks": "node scripts/check-blocks-roundtrip.mts",
+    "migrate:products": "node scripts/migrate-products.mts",
+    "revalidate": "node scripts/revalidate.mts",
+    "check:cms": "node scripts/check-cms-source.mts",
+    "check:groups": "node scripts/check-field-groups.mts",
+    "check:labels": "node scripts/check-labels.mts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

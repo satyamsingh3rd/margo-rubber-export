@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { getAllSlugs, getContent, getFrontmatter } from "@/lib/content";
+import { getFrontmatter } from "@/lib/content";
+import { getSkuPage, skuSlugs } from "@/lib/sku-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph, skuNode } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -41,8 +42,8 @@ import {
 // 404 page. Kebab slugs never contain a double hyphen, so the split is safe.
 const fileFor = (category: string, product: string) => `${category}--${product}`;
 
-export function generateStaticParams() {
-  return getAllSlugs("skus").map((file) => {
+export async function generateStaticParams() {
+  return (await skuSlugs()).map((file) => {
     const i = file.indexOf("--");
     return { category: file.slice(0, i), product: file.slice(i + 2) };
   });
@@ -52,12 +53,10 @@ export async function generateMetadata(
   props: PageProps<"/products/[category]/[product]">,
 ) {
   const { category, product } = await props.params;
-  try {
-    const { frontmatter } = await getContent("skus", fileFor(category, product));
-    return buildMetadata(frontmatter, `/products/${category}/${product}`);
-  } catch {
-    return {};
-  }
+  const page = await getSkuPage(fileFor(category, product));
+  return page
+    ? buildMetadata(page.frontmatter, `/products/${category}/${product}`)
+    : {};
 }
 
 export default async function SkuPage(
@@ -65,14 +64,10 @@ export default async function SkuPage(
 ) {
   const { category, product } = await props.params;
 
-  let data;
-  try {
-    data = await getContent("skus", fileFor(category, product));
-  } catch {
-    notFound();
-  }
+  const page = await getSkuPage(fileFor(category, product));
+  if (!page) notFound();
 
-  const fm = data.frontmatter;
+  const fm = page.frontmatter;
 
   // A SKU whose file says it belongs elsewhere must not resolve here, or the
   // same part would be reachable under every category.

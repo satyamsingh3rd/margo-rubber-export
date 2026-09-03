@@ -1,12 +1,30 @@
+"use client";
+
 import NextImage from "next/image";
 import { getImage } from "@/content/images";
+import { useImageOverride } from "@/components/ui/ImageOverrideProvider";
 
 /**
  * The ONLY way an image reaches the page.
  *
  * Takes a registry key, never a path. Width/height/alt come from the registry,
- * so CLS is structurally impossible and alt text can't be forgotten. Swapping
- * the underlying file is a one-line change in images.ts.
+ * so CLS is structurally impossible and alt text can't be forgotten.
+ *
+ * TWO SOURCES, one contract.
+ *
+ * Most images on the site are still stock stand-ins held in the registry. When
+ * a real photograph arrives, somebody at Margo uploads it against this slot in
+ * the CMS, and it wins here — same key, same position, different file.
+ *
+ * The override supplies its own width, height, alt text and blurred
+ * placeholder, so every guarantee the registry provides survives the swap.
+ * Anything incomplete never reaches this component: `getImageOverrides` drops
+ * it and the stock image renders instead, on the principle that a worse-looking
+ * correct page beats a better-looking broken one.
+ *
+ * A client component because four of the components that draw images are
+ * themselves client components, and the override map has to be readable
+ * synchronously from all of them.
  */
 export function Img({
   k,
@@ -21,7 +39,12 @@ export function Img({
   sizes?: string;
   fill?: boolean;
 }) {
-  const img = getImage(k);
+  const stock = getImage(k);
+  const uploaded = useImageOverride(k);
+
+  const img = uploaded
+    ? { src: uploaded.url, alt: uploaded.alt, w: uploaded.w, h: uploaded.h, blur: uploaded.blur }
+    : stock;
 
   /**
    * Blur-up, but never on a priority image.

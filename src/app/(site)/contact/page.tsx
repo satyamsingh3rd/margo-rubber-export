@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -9,7 +9,7 @@ import {
 } from "@/components/sections/ContactBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("contact", contactPageSchema);
+  const fm = await getSitePage("contact", contactPageSchema);
   return buildMetadata(fm, "/contact");
 }
 
@@ -21,7 +21,7 @@ export async function generateMetadata() {
  * RFQ bar is also suppressed here, since it would point at the form it sits on.
  */
 export default async function ContactPage() {
-  const fm = await getPage("contact", contactPageSchema);
+  const fm = await getSitePage("contact", contactPageSchema);
 
   return (
     <>

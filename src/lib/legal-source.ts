@@ -3,6 +3,7 @@ import { client } from "../../sanity/client";
 import { legalBySlugQuery, legalSlugsQuery } from "../../sanity/queries";
 import { getAllSlugs, getFrontmatter } from "@/lib/content";
 import { legalSchema, type LegalPage } from "@/content/schemas";
+import { stripNullsDeep } from "@/content/blocks";
 
 /**
  * WHERE A LEGAL PAGE COMES FROM
@@ -25,31 +26,6 @@ import { legalSchema, type LegalPage } from "@/content/schemas";
 /** Cache tag for the whole collection, and for one page. */
 export const legalTag = (slug?: string) =>
   slug ? `legal:${slug}` : "legal";
-
-/**
- * GROQ returns `null` for a field with no value; Zod's `.optional()` means
- * `undefined`. Left alone, every unfilled optional field fails validation —
- * which is exactly what happened the first time this ran, on `seo.keywords`
- * and `sections[].navLabel`.
- *
- * The MDX loader has the same guard, but only at the top level, because
- * frontmatter nulls only ever appear there. Sanity nests them, so this walks
- * the whole tree. Fields declared `.nullable()` are unaffected: stripping
- * them to `undefined` lets their `.default(null)` put the null back.
- */
-function stripNullsDeep<T>(value: T): T {
-  if (Array.isArray(value)) {
-    return value.map(stripNullsDeep) as unknown as T;
-  }
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>)
-        .filter(([, v]) => v !== null)
-        .map(([k, v]) => [k, stripNullsDeep(v)]),
-    ) as T;
-  }
-  return value;
-}
 
 async function fromSanity(slug: string): Promise<LegalPage | null> {
   "use cache";

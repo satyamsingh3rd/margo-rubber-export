@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { utilityPageSchema } from "@/content/schemas";
 import { UtilityPage } from "@/components/sections/UtilityPage";
 
@@ -16,7 +16,7 @@ import { UtilityPage } from "@/components/sections/UtilityPage";
  * C-Pillar Garnish) must be redirected at the server, not land here.
  */
 export default async function NotFound() {
-  const fm = await getPage("not-found", utilityPageSchema);
+  const fm = await getSitePage("not-found", utilityPageSchema);
 
   return (
     <UtilityPage

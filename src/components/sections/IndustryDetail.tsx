@@ -461,3 +461,71 @@ export function ClosingBand({
 }
 
 export { Eyebrow };
+
+/* ── CUSTOM ENGINEERING PANEL ─────────────────────────────────────────── */
+
+/**
+ * Lifted verbatim out of the industry route.
+ *
+ * It was the one section written as inline JSX rather than a component, which
+ * was fine while the route owned the order of everything. Once the page became
+ * a block list it had to become a component like its neighbours, because a
+ * block is dispatched to a component and there was nothing to dispatch to.
+ *
+ * The markup is unchanged — this is a move, not a rewrite, and nine live pages
+ * are the reason for keeping it that way.
+ */
+export function CustomPanel({
+  eyebrow,
+  heading,
+  body,
+  bullets,
+  cta,
+  image,
+  imageCaption,
+}: {
+  eyebrow: string;
+  heading: string;
+  body?: string;
+  bullets: string[];
+  cta: { label: string; href: string };
+  image?: string;
+  imageCaption?: { title: string; note: string };
+}) {
+  return (
+    <div className="grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <Eyebrow variant="rule">{eyebrow}</Eyebrow>
+        <h2 className="text-h1 mt-4 max-w-[18ch]">{heading}</h2>
+        {body && (
+          <p className="text-ink-4 mt-5 max-w-[52ch] text-sm leading-relaxed">
+            {body}
+          </p>
+        )}
+        <ul className="mt-6 space-y-2.5">
+          {bullets.map((b) => (
+            <li key={b} className="text-ink-2 flex items-start gap-2.5 text-sm">
+              <span aria-hidden className="bg-accent-400 mt-1.5 size-1.5 shrink-0 rounded-full" />
+              {b}
+            </li>
+          ))}
+        </ul>
+        <Button href={cta.href} className="mt-8">
+          {cta.label} <span aria-hidden>→</span>
+        </Button>
+      </div>
+
+      {image && (
+        <div className="rounded-card relative aspect-[4/3] overflow-hidden">
+          <Img k={image} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+          {imageCaption && (
+            <div className="from-canvas absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-5">
+              <p className="text-ink text-sm font-semibold">{imageCaption.title}</p>
+              <p className="text-ink-4 mt-1 text-xs">{imageCaption.note}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

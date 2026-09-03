@@ -1,5 +1,5 @@
 import { ExportLaneSequence } from "@/components/sections/ExportLaneSequence";
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -14,7 +14,7 @@ import {
 } from "@/components/sections/ExportBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("export", exportPageSchema);
+  const fm = await getSitePage("export", exportPageSchema);
   return buildMetadata(fm, "/export");
 }
 
@@ -30,7 +30,7 @@ export async function generateMetadata() {
  * only from the homepage sector card and the footer. Flagged in §4.0.
  */
 export default async function ExportPage() {
-  const fm = await getPage("export", exportPageSchema);
+  const fm = await getSitePage("export", exportPageSchema);
 
   return (
     <>

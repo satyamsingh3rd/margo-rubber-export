@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getContent } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
+import { productsHubSchema } from "@/content/schemas";
 import { buildMetadata } from "@/lib/seo";
 import { itemListNode, pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -23,12 +24,12 @@ import {
 } from "@/components/sections/HubBlocks";
 
 export async function generateMetadata() {
-  const { frontmatter } = await getContent("pages", "products");
+  const frontmatter = await getSitePage("products", productsHubSchema);
   return buildMetadata(frontmatter, "/products");
 }
 
 export default async function ProductsHubPage() {
-  const { frontmatter: fm } = await getContent("pages", "products");
+  const fm = await getSitePage("products", productsHubSchema);
 
   return (
     <div className="bg-surface-2">

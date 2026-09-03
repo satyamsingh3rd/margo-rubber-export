@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/content";
+import { getSitePage } from "@/lib/page-source";
 import { buildMetadata } from "@/lib/seo";
 import { pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -18,7 +18,7 @@ import {
 } from "@/components/sections/HomeBlocks";
 
 export async function generateMetadata() {
-  const fm = await getPage("home", homePageSchema);
+  const fm = await getSitePage("home", homePageSchema);
   return buildMetadata(fm, "/");
 }
 
@@ -35,7 +35,7 @@ export async function generateMetadata() {
  * confirmWithMargo block in home.mdx.
  */
 export default async function HomePage() {
-  const fm = await getPage("home", homePageSchema);
+  const fm = await getSitePage("home", homePageSchema);
 
   return (
     <>

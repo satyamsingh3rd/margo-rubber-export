@@ -1,25 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAllSlugs, getContent } from "@/lib/content";
+import { getResourcePage, resourceSlugs } from "@/lib/resource-source";
+import { Prose } from "@/components/blocks/Prose";
 import { buildMetadata } from "@/lib/seo";
 import { articleNode, pageGraph } from "@/lib/schema";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Section";
 
-export function generateStaticParams() {
-  return getAllSlugs("resources").map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  return (await resourceSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata(
   props: PageProps<"/resources/[slug]">,
 ) {
   const { slug } = await props.params;
-  try {
-    const { frontmatter } = await getContent("resources", slug);
-    return buildMetadata(frontmatter, `/resources/${slug}`);
-  } catch {
-    return {};
-  }
+  const page = await getResourcePage(slug);
+  return page ? buildMetadata(page.frontmatter, `/resources/${slug}`) : {};
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -51,14 +48,10 @@ export default async function ResourceGuidePage(
   // runtime data, which makes the route blocking under cacheComponents and
   // stops the fallback shell prerendering. Same pattern as the products and
   // industries routes.
-  let data;
-  try {
-    data = await getContent("resources", slug);
-  } catch {
-    notFound();
-  }
+  const page = await getResourcePage(slug);
+  if (!page) notFound();
 
-  const { frontmatter: fm, Content, hasBody } = data;
+  const { frontmatter: fm, Content, prose, hasBody } = page;
   const related = fm.related;
 
   return (
@@ -116,7 +109,9 @@ export default async function ResourceGuidePage(
       <Container>
         {hasBody ? (
           <div className="prose-guide max-w-[68ch] pb-16">
-            <Content />
+            {/* Same wrapper for both sources, so a guide written in Studio and
+                one written in MDX are indistinguishable once rendered. */}
+            {prose ? <Prose value={prose} /> : Content ? <Content /> : null}
           </div>
         ) : (
           <div className="rounded-card border-line border-l-accent-400 mb-16 max-w-[68ch] border border-l-2 bg-[#0B0D10] p-7 md:p-9">

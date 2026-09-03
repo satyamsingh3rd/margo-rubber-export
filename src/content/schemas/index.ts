@@ -126,6 +126,303 @@ export const cardGridSchema = z.object({
 
 /* ------------------------------------------------------------------ */
 
+/* ── PRODUCT-CATEGORY SECTIONS ────────────────────────────────────────────
+ *
+ * Exported one by one rather than left inline, because each is now TWO things:
+ * a named field on the category page, and a member of the block union in
+ * src/content/blocks.ts. Declaring them once means a rule added here — a new
+ * required field, a tighter minimum — reaches both the .mdx files and the CMS
+ * without anyone remembering to change a second copy.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+
+/**
+ * Every numbered section on the page is a self-describing block: it owns
+ * its own eyebrow and heading. Nothing is an orphan heading in the MDX
+ * body — the body is reserved for genuine long-form prose (which this
+ * page type has none of; the resource articles are where it earns its keep).
+ */
+export const specSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    caption: z.string().optional(),
+    /** Filter chips + search. Off for short reference tables. */
+    controls: z.boolean().default(true),
+    columns: z.array(z.string()).min(2),
+    rows: z.array(z.array(z.string())).min(1),
+    footnote: z.string().optional(),
+  })
+  .refine((t) => t.rows.every((r) => r.length === t.columns.length), {
+    message: "Every spec-table row must have exactly as many cells as there are columns",
+  });
+
+
+/** Section 03 — the expandable material cards. */
+export const materialSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z
+      .array(
+        z.object({
+          code: z.string(),
+          name: z.string(),
+          tempRange: z.string(),
+          hardness: z.string(),
+          summary: z.string().min(20),
+          image: imageRefSchema.optional(),
+        }),
+      )
+      .min(1),
+  });
+
+
+/** Section 04 — AEO answer block + the standards cards. */
+export const standardsSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    /** The 40–60 word direct answer rendered before elaboration. */
+    answer: z.string().min(40),
+    items: z
+      .array(z.object({ code: z.string(), name: z.string(), body: z.string().min(20) }))
+      .default([]),
+  });
+
+
+/**
+ * Quality assurance, as the new comps draw it: the claim and a testimonial
+ * on the left, the test standards and documentation package on the right.
+ * Distinct from `standardsSection`, which is the older AEO answer block.
+ */
+export const qualitySectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    /** Required — this layout has no version without supporting copy. */
+    body: z.string().min(20),
+    quote: z
+      .object({
+        text: z.string().min(20),
+        author: z.string().min(2),
+        org: z.string().min(2),
+        initials: z.string().min(1).max(3),
+      })
+      .optional(),
+    badges: z
+      .array(z.object({ label: z.string(), icon: z.string().optional() }))
+      .default([]),
+    standards: z
+      .array(z.object({ name: z.string().min(3), code: z.string().min(2) }))
+      .min(1),
+    docPackage: z
+      .object({ title: z.string().min(4), body: z.string().min(20) })
+      .optional(),
+  });
+
+
+/** Section 05 — commercial terms. */
+export const commercialSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    rows: z
+      .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
+      .min(1),
+  });
+
+
+/**
+ * Catalogue of the sections, profiles or variants this category is made in.
+ * The extrusion comp's profile library; the nine tiles with EXT- codes.
+ */
+export const profileSectionSchema = z
+  .object({ ...sectionMeta.shape, ...cardGridSchema.shape });
+
+
+/** How the part is made, in ordered stages. Numbered in the render, so the
+ *  order of `steps` is the order shown — this is a real sequence. */
+export const processSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    steps: z
+      .array(
+        z.object({
+          name: z.string().min(3),
+          body: z.string().min(20),
+          icon: z.string().optional(),
+        }),
+      )
+      .min(2),
+  });
+
+
+/**
+ * The "specify in four lines" block: the handful of parameters that fully
+ * define a part, each with the value format expected.
+ */
+export const specifySectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z
+      .array(
+        z.object({
+          label: z.string().min(3),
+          /** The example or range, set beside the label. */
+          value: z.string().min(1),
+          body: z.string().min(20),
+          icon: z.string().optional(),
+        }),
+      )
+      .min(2),
+  });
+
+
+/** Where these parts end up. Same card shape as `profileSection`. */
+export const sectorsSectionSchema = z
+  .object({ ...sectionMeta.shape, ...cardGridSchema.shape });
+
+
+/**
+ * Two structures set against each other, each with its own property list.
+ * The Sponge & Foam comp opens with closed cell vs open cell, which is the
+ * first decision a foam buyer makes.
+ */
+export const compareSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    panels: z
+      .array(
+        z.object({
+          label: z.string().min(2),
+          caption: z.string().min(3),
+          /** Which cell diagram to draw — see CellDiagram. */
+          diagram: z.enum(["closed", "open"]),
+          rows: z
+            .array(z.object({ label: z.string(), value: z.string() }))
+            .min(1),
+        }),
+      )
+      .length(2),
+  });
+
+
+/**
+ * The compound selector: a tab per elastomer family, a detail panel for the
+ * selected one, and the full table beneath. The table repeats the panel
+ * content on purpose — the panel is for choosing, the table for comparing.
+ */
+export const compoundSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z
+      .array(
+        z.object({
+          code: z.string().min(1),
+          fullName: z.string().min(4),
+          hardness: z.string().min(2),
+          tempRange: z.string().min(2),
+          applications: z.string().min(10),
+        }),
+      )
+      .min(2),
+  });
+
+
+/** A single property presented as a range, with a pull quote beside it. */
+export const densitySectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    scale: z.object({
+      min: z.string(),
+      max: z.string(),
+      unit: z.string(),
+      lowLabel: z.string(),
+      lowNote: z.string(),
+      highLabel: z.string(),
+      highNote: z.string(),
+    }),
+    quote: z.object({ text: z.string().min(20), author: z.string().min(2) }),
+    bands: z
+      .array(z.object({ range: z.string(), note: z.string() }))
+      .min(2),
+  });
+
+
+/**
+ * A product that lives inside this category rather than beside it — the
+ * self-adhesive tape under Sponge & Foam. It gets its own heading block and
+ * its own comparisons, but not its own route.
+ */
+export const subCategorySectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    /** Fragment target — the mega-dropdown links straight to this block. */
+    id: z.string().regex(/^[a-z0-9-]+$/).optional(),
+    dividerLabel: z.string().optional(),
+    buildUp: z
+      .object({ label: z.string(), layers: z.array(z.string()).min(2) })
+      .optional(),
+    comparisons: z
+      .array(
+        z.object({
+          label: z.string().min(3),
+          items: z
+            .array(
+              z.object({
+                name: z.string().min(3),
+                /** Shown as a pill beside the name. */
+                tag: z.string().optional(),
+                /** label/value pairs, or bare points when value is unset. */
+                rows: z
+                  .array(
+                    z.object({
+                      label: z.string(),
+                      value: z.string().optional(),
+                      /** Renders as a caveat rather than a benefit. */
+                      caveat: z.boolean().default(false),
+                    }),
+                  )
+                  .min(1),
+              }),
+            )
+            .min(2),
+        }),
+      )
+      .default([]),
+    note: z.object({ title: z.string(), body: z.string().min(20) }).optional(),
+  });
+
+
+/** Photographed applications, each tagged with the compound used. */
+export const applicationsSectionSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z
+      .array(
+        z.object({
+          tag: z.string().min(2),
+          name: z.string().min(3),
+          body: z.string().min(10),
+          image: imageRefSchema.optional(),
+        }),
+      )
+      .min(1),
+  });
+
+
+/** Section 06 — closing enquiry band. */
+export const ctaSchema = z
+  .object({
+    ...sectionMeta.shape,
+    /** Required here — a CTA band with no supporting copy is never correct. */
+    body: z.string().min(20),
+    primary: z.object({ label: z.string(), href: z.string() }),
+    secondary: z.object({ label: z.string(), href: z.string() }).optional(),
+    /** Small facts set above the buttons — MOQ, sample qty, turnaround.
+     *  Their presence is what switches the closing band to the new comps'
+     *  centred, corner-bracketed panel. */
+    chips: z
+      .array(z.object({ label: z.string(), icon: z.string().optional() }))
+      .default([]),
+  });
+
 export const productCategorySchema = baseSchema.extend({
   /** Short label for cards, nav and breadcrumbs. */
   navLabel: z.string().min(2),
@@ -157,293 +454,35 @@ export const productCategorySchema = baseSchema.extend({
       }),
     )
     .default([]),
-  /**
-   * Every numbered section on the page is a self-describing block: it owns
-   * its own eyebrow and heading. Nothing is an orphan heading in the MDX
-   * body — the body is reserved for genuine long-form prose (which this
-   * page type has none of; the resource articles are where it earns its keep).
-   */
-  specSection: z
-    .object({
-      ...sectionMeta.shape,
-      caption: z.string().optional(),
-      /** Filter chips + search. Off for short reference tables. */
-      controls: z.boolean().default(true),
-      columns: z.array(z.string()).min(2),
-      rows: z.array(z.array(z.string())).min(1),
-      footnote: z.string().optional(),
-    })
-    .refine((t) => t.rows.every((r) => r.length === t.columns.length), {
-      message: "Every spec-table row must have exactly as many cells as there are columns",
-    })
-    .optional(),
+  specSection: specSectionSchema.optional(),
 
-  /** Section 03 — the expandable material cards. */
-  materialSection: z
-    .object({
-      ...sectionMeta.shape,
-      items: z
-        .array(
-          z.object({
-            code: z.string(),
-            name: z.string(),
-            tempRange: z.string(),
-            hardness: z.string(),
-            summary: z.string().min(20),
-            image: imageRefSchema.optional(),
-          }),
-        )
-        .min(1),
-    })
-    .optional(),
+  materialSection: materialSectionSchema.optional(),
 
-  /** Section 04 — AEO answer block + the standards cards. */
-  standardsSection: z
-    .object({
-      ...sectionMeta.shape,
-      /** The 40–60 word direct answer rendered before elaboration. */
-      answer: z.string().min(40),
-      items: z
-        .array(z.object({ code: z.string(), name: z.string(), body: z.string().min(20) }))
-        .default([]),
-    })
-    .optional(),
+  standardsSection: standardsSectionSchema.optional(),
 
-  /**
-   * Quality assurance, as the new comps draw it: the claim and a testimonial
-   * on the left, the test standards and documentation package on the right.
-   * Distinct from `standardsSection`, which is the older AEO answer block.
-   */
-  qualitySection: z
-    .object({
-      ...sectionMeta.shape,
-      /** Required — this layout has no version without supporting copy. */
-      body: z.string().min(20),
-      quote: z
-        .object({
-          text: z.string().min(20),
-          author: z.string().min(2),
-          org: z.string().min(2),
-          initials: z.string().min(1).max(3),
-        })
-        .optional(),
-      badges: z
-        .array(z.object({ label: z.string(), icon: z.string().optional() }))
-        .default([]),
-      standards: z
-        .array(z.object({ name: z.string().min(3), code: z.string().min(2) }))
-        .min(1),
-      docPackage: z
-        .object({ title: z.string().min(4), body: z.string().min(20) })
-        .optional(),
-    })
-    .optional(),
+  qualitySection: qualitySectionSchema.optional(),
 
-  /** Section 05 — commercial terms. */
-  commercialSection: z
-    .object({
-      ...sectionMeta.shape,
-      rows: z
-        .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
-        .min(1),
-    })
-    .optional(),
+  commercialSection: commercialSectionSchema.optional(),
 
-  /**
-   * Catalogue of the sections, profiles or variants this category is made in.
-   * The extrusion comp's profile library; the nine tiles with EXT- codes.
-   */
-  profileSection: z
-    .object({ ...sectionMeta.shape, ...cardGridSchema.shape })
-    .optional(),
+  profileSection: profileSectionSchema.optional(),
 
-  /** How the part is made, in ordered stages. Numbered in the render, so the
-   *  order of `steps` is the order shown — this is a real sequence. */
-  processSection: z
-    .object({
-      ...sectionMeta.shape,
-      steps: z
-        .array(
-          z.object({
-            name: z.string().min(3),
-            body: z.string().min(20),
-            icon: z.string().optional(),
-          }),
-        )
-        .min(2),
-    })
-    .optional(),
+  processSection: processSectionSchema.optional(),
 
-  /**
-   * The "specify in four lines" block: the handful of parameters that fully
-   * define a part, each with the value format expected.
-   */
-  specifySection: z
-    .object({
-      ...sectionMeta.shape,
-      items: z
-        .array(
-          z.object({
-            label: z.string().min(3),
-            /** The example or range, set beside the label. */
-            value: z.string().min(1),
-            body: z.string().min(20),
-            icon: z.string().optional(),
-          }),
-        )
-        .min(2),
-    })
-    .optional(),
+  specifySection: specifySectionSchema.optional(),
 
-  /** Where these parts end up. Same card shape as `profileSection`. */
-  sectorsSection: z
-    .object({ ...sectionMeta.shape, ...cardGridSchema.shape })
-    .optional(),
+  sectorsSection: sectorsSectionSchema.optional(),
 
-  /**
-   * Two structures set against each other, each with its own property list.
-   * The Sponge & Foam comp opens with closed cell vs open cell, which is the
-   * first decision a foam buyer makes.
-   */
-  compareSection: z
-    .object({
-      ...sectionMeta.shape,
-      panels: z
-        .array(
-          z.object({
-            label: z.string().min(2),
-            caption: z.string().min(3),
-            /** Which cell diagram to draw — see CellDiagram. */
-            diagram: z.enum(["closed", "open"]),
-            rows: z
-              .array(z.object({ label: z.string(), value: z.string() }))
-              .min(1),
-          }),
-        )
-        .length(2),
-    })
-    .optional(),
+  compareSection: compareSectionSchema.optional(),
 
-  /**
-   * The compound selector: a tab per elastomer family, a detail panel for the
-   * selected one, and the full table beneath. The table repeats the panel
-   * content on purpose — the panel is for choosing, the table for comparing.
-   */
-  compoundSection: z
-    .object({
-      ...sectionMeta.shape,
-      items: z
-        .array(
-          z.object({
-            code: z.string().min(1),
-            fullName: z.string().min(4),
-            hardness: z.string().min(2),
-            tempRange: z.string().min(2),
-            applications: z.string().min(10),
-          }),
-        )
-        .min(2),
-    })
-    .optional(),
+  compoundSection: compoundSectionSchema.optional(),
 
-  /** A single property presented as a range, with a pull quote beside it. */
-  densitySection: z
-    .object({
-      ...sectionMeta.shape,
-      scale: z.object({
-        min: z.string(),
-        max: z.string(),
-        unit: z.string(),
-        lowLabel: z.string(),
-        lowNote: z.string(),
-        highLabel: z.string(),
-        highNote: z.string(),
-      }),
-      quote: z.object({ text: z.string().min(20), author: z.string().min(2) }),
-      bands: z
-        .array(z.object({ range: z.string(), note: z.string() }))
-        .min(2),
-    })
-    .optional(),
+  densitySection: densitySectionSchema.optional(),
 
-  /**
-   * A product that lives inside this category rather than beside it — the
-   * self-adhesive tape under Sponge & Foam. It gets its own heading block and
-   * its own comparisons, but not its own route.
-   */
-  subCategorySection: z
-    .object({
-      ...sectionMeta.shape,
-      /** Fragment target — the mega-dropdown links straight to this block. */
-      id: z.string().regex(/^[a-z0-9-]+$/).optional(),
-      dividerLabel: z.string().optional(),
-      buildUp: z
-        .object({ label: z.string(), layers: z.array(z.string()).min(2) })
-        .optional(),
-      comparisons: z
-        .array(
-          z.object({
-            label: z.string().min(3),
-            items: z
-              .array(
-                z.object({
-                  name: z.string().min(3),
-                  /** Shown as a pill beside the name. */
-                  tag: z.string().optional(),
-                  /** label/value pairs, or bare points when value is unset. */
-                  rows: z
-                    .array(
-                      z.object({
-                        label: z.string(),
-                        value: z.string().optional(),
-                        /** Renders as a caveat rather than a benefit. */
-                        caveat: z.boolean().default(false),
-                      }),
-                    )
-                    .min(1),
-                }),
-              )
-              .min(2),
-          }),
-        )
-        .default([]),
-      note: z.object({ title: z.string(), body: z.string().min(20) }).optional(),
-    })
-    .optional(),
+  subCategorySection: subCategorySectionSchema.optional(),
 
-  /** Photographed applications, each tagged with the compound used. */
-  applicationsSection: z
-    .object({
-      ...sectionMeta.shape,
-      items: z
-        .array(
-          z.object({
-            tag: z.string().min(2),
-            name: z.string().min(3),
-            body: z.string().min(10),
-            image: imageRefSchema.optional(),
-          }),
-        )
-        .min(1),
-    })
-    .optional(),
+  applicationsSection: applicationsSectionSchema.optional(),
 
-  /** Section 06 — closing enquiry band. */
-  cta: z
-    .object({
-      ...sectionMeta.shape,
-      /** Required here — a CTA band with no supporting copy is never correct. */
-      body: z.string().min(20),
-      primary: z.object({ label: z.string(), href: z.string() }),
-      secondary: z.object({ label: z.string(), href: z.string() }).optional(),
-      /** Small facts set above the buttons — MOQ, sample qty, turnaround.
-       *  Their presence is what switches the closing band to the new comps'
-       *  centred, corner-bracketed panel. */
-      chips: z
-        .array(z.object({ label: z.string(), icon: z.string().optional() }))
-        .default([]),
-    })
-    .optional(),
+  cta: ctaSchema.optional(),
 
   anchors: z.array(anchorSchema).default([]),
   faqs: z.array(faqSchema).default([]),
@@ -453,6 +492,100 @@ export const productCategorySchema = baseSchema.extend({
     .array(z.enum(["Product", "BreadcrumbList", "FAQPage", "HowTo", "Organization", "WebSite"]))
     .default(["Product", "BreadcrumbList", "FAQPage"]),
 });
+
+/* ── INDUSTRY SECTIONS ─────────────────────────────────────────────────────
+ *
+ * Same reason as the product-category sections above: each is both a named
+ * field on the industry page and a member of the block union.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+
+/** Section 02: the products supplied to this sector, as switchable tabs. */
+export const industryComponentsSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z.array(
+      z.object({
+        key: z.string(),
+        name: z.string(),
+        body: z.string(),
+        bullets: z.array(z.string()).default([]),
+        image: imageRefSchema,
+        cta: z.object({ label: z.string(), href: z.string() }),
+      }),
+    ),
+  });
+
+
+/** Section 03: where the components end up. */
+export const industryApplicationsSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z.array(z.object({ name: z.string(), body: z.string(), image: imageRefSchema.optional() })),
+  });
+
+
+/** Section 04: why generic parts fail here. */
+export const industryConditionsSchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z.array(
+      z.object({
+        icon: z.enum(["shield", "wave", "thermo", "dust"]),
+        name: z.string(),
+        body: z.string(),
+      }),
+    ),
+  });
+
+
+/** Section 05: custom engineering split panel. */
+export const industryCustomSchema = z
+  .object({
+    ...sectionMeta.shape,
+    bullets: z.array(z.string()).default([]),
+    cta: z.object({ label: z.string(), href: z.string() }),
+    image: imageRefSchema.optional(),
+    imageCaption: z.object({ title: z.string(), note: z.string() }).optional(),
+  });
+
+
+/** Section 06: quality cards + document links. */
+export const industryQualitySchema = z
+  .object({
+    ...sectionMeta.shape,
+    items: z.array(z.object({ chip: z.string(), name: z.string(), body: z.string() })),
+    links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
+  });
+
+
+/** Section 07: export lane detail. */
+export const industryExportLaneSchema = z
+  .object({
+    ...sectionMeta.shape,
+    paragraphs: z.array(z.string()).default([]),
+    rows: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+    card: z
+      .object({
+        title: z.string(),
+        subtitle: z.string(),
+        regions: z.array(z.string()).default([]),
+        footnote: z.string().optional(),
+      })
+      .optional(),
+  });
+
+
+/** Section 09: closing CTA band. */
+export const industryClosingSchema = z
+  .object({
+    eyebrow: z.string(),
+    lines: z.array(z.string()).min(1),
+    accentLines: z.array(z.number()).default([]),
+    body: z.string(),
+    actions: z.array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") })),
+    contacts: z.array(z.object({ icon: z.enum(["phone", "email", "cert"]), text: z.string() })).default([]),
+  });
 
 export const industrySchema = baseSchema.extend({
   navLabel: z.string().min(2),
@@ -468,96 +601,22 @@ export const industrySchema = baseSchema.extend({
     .array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") }))
     .default([]),
 
-  /** Section 02: the products supplied to this sector, as switchable tabs. */
-  components: z
-    .object({
-      ...sectionMeta.shape,
-      items: z.array(
-        z.object({
-          key: z.string(),
-          name: z.string(),
-          body: z.string(),
-          bullets: z.array(z.string()).default([]),
-          image: imageRefSchema,
-          cta: z.object({ label: z.string(), href: z.string() }),
-        }),
-      ),
-    })
-    .optional(),
+  components: industryComponentsSchema.optional(),
 
-  /** Section 03: where the components end up. */
-  applications: z
-    .object({
-      ...sectionMeta.shape,
-      items: z.array(z.object({ name: z.string(), body: z.string(), image: imageRefSchema.optional() })),
-    })
-    .optional(),
+  applications: industryApplicationsSchema.optional(),
 
-  /** Section 04: why generic parts fail here. */
-  conditions: z
-    .object({
-      ...sectionMeta.shape,
-      items: z.array(
-        z.object({
-          icon: z.enum(["shield", "wave", "thermo", "dust"]),
-          name: z.string(),
-          body: z.string(),
-        }),
-      ),
-    })
-    .optional(),
+  conditions: industryConditionsSchema.optional(),
 
-  /** Section 05: custom engineering split panel. */
-  custom: z
-    .object({
-      ...sectionMeta.shape,
-      bullets: z.array(z.string()).default([]),
-      cta: z.object({ label: z.string(), href: z.string() }),
-      image: imageRefSchema.optional(),
-      imageCaption: z.object({ title: z.string(), note: z.string() }).optional(),
-    })
-    .optional(),
+  custom: industryCustomSchema.optional(),
 
-  /** Section 06: quality cards + document links. */
-  quality: z
-    .object({
-      ...sectionMeta.shape,
-      items: z.array(z.object({ chip: z.string(), name: z.string(), body: z.string() })),
-      links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
-    })
-    .optional(),
+  quality: industryQualitySchema.optional(),
 
-  /** Section 07: export lane detail. */
-  exportLane: z
-    .object({
-      ...sectionMeta.shape,
-      paragraphs: z.array(z.string()).default([]),
-      rows: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
-      card: z
-        .object({
-          title: z.string(),
-          subtitle: z.string(),
-          regions: z.array(z.string()).default([]),
-          footnote: z.string().optional(),
-        })
-        .optional(),
-    })
-    .optional(),
+  exportLane: industryExportLaneSchema.optional(),
 
   faqSection: sectionMeta.partial().optional(),
   faqs: z.array(faqSchema).default([]),
 
-  /** Section 09: closing CTA band. */
-  closing: z
-    .object({
-      eyebrow: z.string(),
-      lines: z.array(z.string()).min(1),
-      accentLines: z.array(z.number()).default([]),
-      body: z.string(),
-      actions: z.array(z.object({ label: z.string(), href: z.string(), variant: z.enum(["primary", "secondary"]).default("primary") })),
-      contacts: z.array(z.object({ icon: z.enum(["phone", "email", "cert"]), text: z.string() })).default([]),
-    })
-    .optional(),
+  closing: industryClosingSchema.optional(),
 
   /** Only the products actually used in this industry — never all nine. */
   related: relatedSchema,
@@ -2088,4 +2147,6 @@ export type Collection = keyof typeof COLLECTIONS;
 export type ProductCategory = z.infer<typeof productCategorySchema>;
 export type Industry = z.infer<typeof industrySchema>;
 export type Resource = z.infer<typeof resourceSchema>;
+export type Sku = z.infer<typeof skuSchema>;
+export type Legal = z.infer<typeof legalSchema>;
 export type Frontmatter<C extends Collection> = z.infer<(typeof COLLECTIONS)[C]>;

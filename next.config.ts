@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // Photographs uploaded through the CMS are served from Sanity's asset CDN.
+    // Next fetches each original once per size variant, optimises it, and
+    // serves its own cache from then on — so this costs Sanity bandwidth per
+    // variant, not per visitor.
+    remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],
   },
 
   // Next 16: top-level, no longer experimental.
